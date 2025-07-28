@@ -1,0 +1,16 @@
+extends: "spectral:oas"
+rules:
+  no-servers-without-url:
+    description: "Ensure that every server has a URL."
+    given: "$.servers[*]"
+    then:
+      field: "url"
+      function: "truthy"
+
+  no-example-in-parameters:
+    description: "Ensure no 'example' field is present in query parameters."
+    given: "$..parameters"
+    then:
+      field: "schema.example"
+      function: "truthy"
+      message: "The 'example' field should not be used in parameters."

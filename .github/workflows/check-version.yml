@@ -1,0 +1,108 @@
+name: Validate version
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes in `metadata.yml` and `openapi-rest.yml`
+        id: check_changes
+        run: |
+          # Fetch the base branch and the head branch
+          git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+          git fetch origin ${{ github.head_ref }}:${{ github.head_ref }}
+
+          # Check for changes in metadata.yml or openapi-rest.yml
+          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/api-first/metadata.yml' 'apis/**/api-first/openapi-rest.yml')
+          
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "is_changed=true" >> $GITHUB_ENV
+          else
+            echo "is_changed=false" >> $GITHUB_ENV
+          fi
+
+      - name: Print and Store Changed File Directory
+        if: env.is_changed == 'true'
+        run: |
+          CHANGED_DIR=""
+          for FILE in $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/api-first/metadata.yml' 'apis/**/api-first/openapi-rest.yml'); do
+            DIR=$(dirname "$FILE")
+            # If CHANGED_DIR is empty, set it; otherwise, check for uniqueness
+            if [ -z "$CHANGED_DIR" ]; then
+              CHANGED_DIR="$DIR"
+            elif [ "$CHANGED_DIR" != "$DIR" ]; then
+              echo "You can modify only one API via one PR."
+              exit 1
+            fi
+          done
+
+          if [ -z "$CHANGED_DIR" ]; then
+            echo "No changed directories found."
+          else
+            echo "CHANGED_DIR=${CHANGED_DIR}" >> $GITHUB_ENV
+            echo "Changed directory: ${CHANGED_DIR}"
+          fi
+
+      - name: Extract Versions from Files
+        if: env.is_changed == 'true'
+        run: |
+          METADATA_FILE="$CHANGED_DIR/metadata.yml"
+          OPENAPI_FILE="$CHANGED_DIR/openapi-rest.yml"
+
+          API_VERSION=$(yq e '.api.version' "$METADATA_FILE")
+          echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
+
+          OPENAPI_VERSION=$(yq e '.info.version' "$OPENAPI_FILE")
+          echo "OPENAPI_VERSION=$OPENAPI_VERSION" >> $GITHUB_ENV
+
+      - name: Compare Versions
+        if: env.is_changed == 'true'
+        run: |
+          echo "API version from metadata.yml: $API_VERSION"
+          echo "OpenAPI version from openapi-rest.yml: $OPENAPI_VERSION"
+
+          if [ "$API_VERSION" != "$OPENAPI_VERSION" ]; then
+            echo "Error: Versions in metadata.yml ($API_VERSION) and openapi-rest.yml ($OPENAPI_VERSION) should be the same."
+            exit 1
+          fi
+
+      - name: Extract Versions from develop Branch
+        if: env.is_changed == 'true'
+        run: |
+          # Checkout the develop branch
+          git fetch origin develop:develop
+          git checkout develop
+
+          # Set the path to the changed directory
+          METADATA_FILE="$CHANGED_DIR/metadata.yml"
+          OPENAPI_FILE="$CHANGED_DIR/openapi-rest.yml"
+
+          # Extract API version from develop branch
+          API_VERSION=$(yq e '.api.version' "$METADATA_FILE")
+          echo "DEV_API_VERSION=$API_VERSION" >> $GITHUB_ENV
+
+          # Extract OpenAPI version from develop branch
+          OPENAPI_VERSION=$(yq e '.info.version' "$OPENAPI_FILE")
+          echo "DEV_OPENAPI_VERSION=$OPENAPI_VERSION" >> $GITHUB_ENV
+          
+      - name: Compare Versions with develop
+        if: env.is_changed == 'true'
+        run: |
+          echo "API version from develop branch: ${{ env.DEV_API_VERSION }}"
+          echo "OpenAPI version from develop branch: ${{ env.DEV_OPENAPI_VERSION }}"
+          echo "API version from pull request: ${{ env.API_VERSION }}"
+          echo "OpenAPI version from pull request: ${{ env.OPENAPI_VERSION }}"
+
+          if [ "${{ env.API_VERSION }}" = "${{ env.DEV_API_VERSION }}" ] && [ "${{ env.OPENAPI_VERSION }}" = "${{ env.DEV_OPENAPI_VERSION }}" ]; then
+            echo "Error: The versions in the pull request and develop branch are the same. Please increase the versions."
+            exit 1
+          fi

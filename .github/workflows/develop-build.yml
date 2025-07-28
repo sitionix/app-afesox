@@ -1,0 +1,126 @@
+name: Maven CI for Develop
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2  # Ensure previous commit is available for comparison
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Verify GitHub Token Access
+        run: |
+          if [ -z "${{ secrets.APP_AFESOX }}" ]; then
+            echo "ERROR: Secret APP_AFESOX is not set or not accessible."
+            exit 1
+          fi
+
+      - name: Setup Maven settings
+        run: |
+          mkdir -p ~/.m2
+          echo "<settings>
+                  <servers>
+                    <server>
+                      <id>github</id>
+                      <username>${{ github.actor }}</username>
+                      <password>${{ secrets.APP_AFESOX }}</password>
+                    </server>
+                  </servers>
+                </settings>" > ~/.m2/settings.xml
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Detect changed YAML files
+        id: detect_yaml
+        run: |
+          # Detect changed YAML files, excluding deleted files and any in the `.github` directory
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AM HEAD^ HEAD | grep -E '\.yml$' | grep -v '^\.github/')
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No YAML files changed outside of the .github directory."
+            exit 0  # Exit gracefully if no relevant changes are detected
+          fi
+
+          # Output the list of changed files to a temporary file for further processing
+          echo "$CHANGED_FILES" > changed_files.txt
+
+      - name: Extract Version, Name, and Deploy for Each Changed File
+        run: |
+          # Read the changed files list from the temporary file
+          CHANGED_FILES=$(cat changed_files.txt)
+
+          # Initialize a flag to detect if any deployment was done
+          DEPLOYMENT_DONE=false
+
+          # Loop through each changed file
+          for FILE in $CHANGED_FILES; do
+            if [[ $FILE == *"metadata.yml"* ]]; then
+              # Extract version and name from metadata.yml
+              VERSION=$(yq e '.api.version' $FILE)
+              NAME=$(yq e '.api.name' $FILE)
+
+              # Skip if either value is not found
+              if [ -z "$VERSION" ] || [ -z "$NAME" ]; then
+                echo "No version or name found in $FILE. Skipping."
+                continue
+              fi
+
+              # Loop through all executions in the metadata.yml
+              EXECUTIONS=$(yq e '.api.executions[].type' $FILE)
+
+              for EXECUTION in $EXECUTIONS; do
+                # Construct artifact ID for each execution
+                ARTIFACT_ID="app-afesox-${NAME}-${EXECUTION}-stable"
+
+                # Set environment variables for Maven
+                export VERSION
+                export ARTIFACT_ID
+                export NAME
+                export EXECUTION
+
+                echo "Deploying ${NAME} with artifact ID ${ARTIFACT_ID}, version ${VERSION}, and execution type ${EXECUTION}..."
+
+                # Run Maven build for the current execution
+                mvn clean package -P${EXECUTION} -Dproject.version=${VERSION} || exit 1
+
+                # Run Maven deploy for the current execution
+                if mvn deploy -P${EXECUTION} -Dproject.version=${VERSION} -Dpackage=${ARTIFACT_ID}; then
+                  echo "Deployment of ${ARTIFACT_ID} with version ${VERSION} for execution type ${EXECUTION} successful."
+                  DEPLOYMENT_DONE=true
+                else
+                  echo "Deployment failed. Version ${VERSION} might already be deployed for ${ARTIFACT_ID}."
+                  continue
+                fi
+              done
+            fi
+          done
+
+          if [ "$DEPLOYMENT_DONE" = false ]; then
+            echo "No deployments were performed. Please check the changed files."
+            exit 1
+          fi
+      

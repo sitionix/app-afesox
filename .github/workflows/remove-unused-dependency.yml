@@ -1,0 +1,134 @@
+name: Remove unnecessary dependency
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  build:
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '/remove') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Post initial comment with workflow link
+        id: post-initial-comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+            
+            const comment_body = `
+            ### Workflow Execution Started
+            - **Job Status:** In Progress
+            - **[View Workflow Run](${workflow_run_url})**
+            `;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: issue_number,
+              body: comment_body,
+            });
+
+      - name: Verify GitHub Token Access
+        run: |
+          if [ -z "${{ secrets.APP_AFESOX }}" ]; then
+            echo "ERROR: Secret APP_AFESOX is not set or not accessible."
+            exit 1
+          fi
+
+      - name: Parse command and extract name
+        id: parse-command
+        run: |
+          echo "Comment: ${{ github.event.comment.body }}"
+          api_name=$(echo '${{ github.event.comment.body }}' | grep -oP '(?<=--name ")[^"]*')
+          echo "::set-output name=api_name::$api_name"
+
+      - name: Extract ticket number from PR title
+        id: extract-ticket-num
+        run: |
+          pr_title="${{ github.event.issue.title }}"
+          
+          # Check for the presence of brackets
+          if [[ ! "$pr_title" =~ \[.*\] ]]; then
+            echo "ERROR: Pull Request title must have the correct format [SITIONIX-*] description."
+            exit 1
+          fi
+
+          ticket_num=$(echo "$pr_title" | grep -oP '(?<=\[)[^]]*(?=\])' | tr '[:upper:]' '[:lower:]')
+          echo "::set-output name=ticket_num::$ticket_num"
+
+      - name: Read metadata and find api-spec-type and definition-path
+        id: find-api-spec
+        run: |
+          api_name="${{ steps.parse-command.outputs.api_name }}"
+          echo "Looking for API name: $api_name"
+          api_spec_type=$(yq eval ".apis[] | select(.name == \"$api_name\") | .api-spec-type" ./apis/metadata.yml)
+          definition_path=$(yq eval ".apis[] | select(.name == \"$api_name\") | .definition-path" ./apis/metadata.yml)
+          echo "Found api-spec-type: $api_spec_type"
+          echo "Found definition-path: $definition_path"
+          echo "::set-output name=api_spec_type::$api_spec_type"
+          echo "::set-output name=definition_path::$definition_path"
+
+      - name: Read additional metadata from definition-path
+        id: read-definition-metadata
+        run: |
+          definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
+          metadata_file="./apis/${definition_path}/metadata.yml"
+          version=$(yq eval '.api.version' $metadata_file)
+          name=$(yq eval '.api.name' $metadata_file)
+
+          echo "Found version: $version"
+          echo "Found name: $name"
+          echo "::set-output name=api_version::$version"
+          echo "::set-output name=api_name::$name"
+
+      - name: Export Environment Variables
+        run: |
+          echo "VERSION=${{ steps.read-definition-metadata.outputs.api_version }}" >> $GITHUB_ENV
+          echo "NAME=${{ steps.read-definition-metadata.outputs.api_name }}" >> $GITHUB_ENV
+          echo "ARTIFACT_ID=app-afesox-${{ steps.read-definition-metadata.outputs.api_name }}-${{ steps.find-api-spec.outputs.api_spec_type }}-${{ steps.extract-ticket-num.outputs.ticket_num }}-unstable" >> $GITHUB_ENV
+          echo "API_SPEC_TYPE=${{ steps.find-api-spec.outputs.api_spec_type }}" >> $GITHUB_ENV
+
+      - name: Remove Package
+        run: |
+          curl -X DELETE -H "Authorization: token ${{ secrets.APP_AFESOX }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/user/packages/maven/com.afesox.$ARTIFACT_ID"
+
+      - name: Post Success Comment
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const comment_body = `
+            ### Dependency Successfully Removed
+            - **Job Status:** Success
+            - The Maven dependency has been successfully removed from the repository.
+            `;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: issue_number,
+              body: comment_body,
+            });
+
+      - name: Check for Job Failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const failure_comment = `
+            ### Workflow Execution Failed
+            - **Job Status:** Failed
+            `;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: issue_number,
+              body: failure_comment,
+            });

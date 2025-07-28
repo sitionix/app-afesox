@@ -1,0 +1,10 @@
+api:
+  version: 0.0.6
+  visibility: PUBLIC
+  metadata:
+    version: "1.0"
+  type: application
+  name: athssox
+  executions:
+    - type: client
+    - type: api-first
