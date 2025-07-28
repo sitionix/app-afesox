@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.1
+  version: 0.0.2
   contact:
     name: APP Sitionix
 servers:
@@ -61,7 +61,6 @@ components:
         password:
           type: string
           example: qwerty1234
-
   responses:
     BadRequest:
       description: Bad Request
