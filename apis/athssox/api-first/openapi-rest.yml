@@ -61,6 +61,7 @@ components:
         password:
           type: string
           example: qwerty1234
+
   responses:
     BadRequest:
       description: Bad Request
