@@ -57,17 +57,17 @@
         </dependency>
 
         <!-- OpenAPI Generator CLI -->
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>openapi-generator-cli</artifactId>
-            <version>6.5.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.openapitools</groupId>-->
+<!--            <artifactId>openapi-generator-cli</artifactId>-->
+<!--            <version>6.6.0</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.slf4j</groupId>-->
+<!--                    <artifactId>slf4j-simple</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
