@@ -123,6 +123,7 @@
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
                                         <useSpringBoot3>true</useSpringBoot3>
+                                        <annotationLibrary>none</annotationLibrary>
                                     </configOptions>
                                 </configuration>
                             </execution>
@@ -161,6 +162,7 @@
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
                                         <useSpringBoot3>true</useSpringBoot3>
+                                        <annotationLibrary>none</annotationLibrary>
                                     </configOptions>
                                 </configuration>
                             </execution>
