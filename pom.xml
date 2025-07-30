@@ -113,6 +113,7 @@
                                         <useTags>true</useTags>
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
+                                        <useSpringBoot3>true</useSpringBoot3>
                                     </configOptions>
                                 </configuration>
                             </execution>
@@ -150,6 +151,7 @@
                                         <useTags>true</useTags>
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
+                                        <useSpringBoot3>true</useSpringBoot3>
                                     </configOptions>
                                 </configuration>
                             </execution>
