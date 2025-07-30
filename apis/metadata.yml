@@ -10,4 +10,4 @@ apis:
     definition-path: /bffsox/api-first
   - name: CLIENT Backend for Frontend SOX
     api-spec-type: client
-    definition-path: /bffsox/api-first
+    definition-path: /bffssox/api-first

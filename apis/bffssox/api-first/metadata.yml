@@ -1,0 +1,10 @@
+api:
+  version: 0.0.1
+  visibility: PUBLIC
+  metadata:
+    version: "1.0"
+  type: application
+  name: bffssox
+  executions:
+    - type: client
+    - type: api-first
