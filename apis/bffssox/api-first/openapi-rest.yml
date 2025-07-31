@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: Api specification for auth service
-  version: 0.0.9
+  version: 0.0.10
   contact:
     name: APP Sitionix
 servers:
@@ -14,7 +14,7 @@ paths:
   /api/v1/user:
     post:
       description: Service that create user
-      summary: API for user creation
+      summary: API for user creation 4
       operationId: createUser
       tags:
         - User
