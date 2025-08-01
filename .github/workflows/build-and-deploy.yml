@@ -108,7 +108,18 @@ jobs:
             await github.rest.issues.createComment({
               ...repo,
               issue_number,
-              body: `❌ Deploy job execution was interrupted.\nMore details: 🔗 [View Workflow Run](${workflow_run_url})`
+            const body = [
+              '### ❌ Deployment Failed',
+              '',
+              '🚫 The delete job was **interrupted** during execution.',
+              '',
+              `🔎 You can check the logs here: [**View Workflow Run**](${workflow_run_url})`
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
             });
 
   notify-success:
@@ -136,7 +147,7 @@ jobs:
             const version = `${{ inputs.version }}`;
 
             const body = [
-              '✅🚀 **Deployment successful.** 🚀✅',
+              '✅ 🚀 **Deployment successful.** 🚀 ✅',
               '',
               '```xml',
               `<dependency>`,
