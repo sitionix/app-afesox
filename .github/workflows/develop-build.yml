@@ -81,5 +81,6 @@ jobs:
       name: ${{ matrix.name }}
       version: ${{ matrix.version }}
       execution: ${{ matrix.execution }}
+      variant: stable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
