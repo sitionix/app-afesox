@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       name: ${{ steps.read-definition-metadata.outputs.api_name }}
-      version: ${{ steps.read-definition-metadata.outputs.api_version }}
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
       ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
+      version: ${{ steps.read-definition-metadata.outputs.api_version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -91,8 +91,18 @@ jobs:
           echo "api_version=$version" >> $GITHUB_OUTPUT
           echo "api_name=$name" >> $GITHUB_OUTPUT
 
-  deploy:
+  delete-unused-version:
     needs: build
+    uses: ./.github/workflows/delete-unused-version.yml
+    with:
+      name: ${{ needs.build.outputs.name }}
+      execution: ${{ needs.build.outputs.execution }}
+      ticket: ${{ needs.build.outputs.ticket }}
+    secrets:
+      APP_AFESOX: ${{ secrets.APP_AFESOX }}
+
+  deploy:
+    needs: [build, delete-unused-version]
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       name: ${{ needs.build.outputs.name }}

@@ -69,14 +69,6 @@ jobs:
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
           echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
 
-      - name: Delete unstable version
-        uses: ./.github/actions/delete-existing-package-version
-        with:
-          name: ${{ env.NAME }}
-          execution: ${{ env.EXECUTION }}
-          variant: ${{ env.VARIANT }}
-          token: ${{ secrets.APP_AFESOX }}
-
       - name: Build and Deploy
         run: |
           echo "::group::🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"

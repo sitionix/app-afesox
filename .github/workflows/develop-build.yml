@@ -32,7 +32,7 @@ jobs:
           CHANGED=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
 
           if [ -z "$CHANGED" ]; then
-            echo "::error:: \ud83d\uded1 No metadata.yml changed. Nothing to build or deploy."
+            echo "::error:: 🛑 No metadata.yml changed. Nothing to build or deploy."
             echo "changed=none" >> $GITHUB_OUTPUT
             exit 1
           fi
