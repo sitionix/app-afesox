@@ -53,9 +53,15 @@ jobs:
 
       - name: 🔴 Comment failure to PR
         if: failure() && github.event.pull_request.number
-        env:
-          GH_TOKEN: ${{ secrets.APP_AFESOX }}
-        run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          gh pr comment "$PR_NUMBER" \
-            --body "❌ While building was encontered error. [View logs]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body: `❌ Job execution was interrupted.More details: [View Workflow Run](${workflow_run_url})`
+                });
