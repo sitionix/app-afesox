@@ -112,27 +112,32 @@ jobs:
           while read FILE; do
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
-            EXEC_TYPE=$(yq e '.api.executions' "$FILE" | head -n 1)
 
-            if [[ "$EXEC_TYPE" == "["* ]]; then
-              EXECUTIONS=$(yq e -o=json '.api.executions | map(.type)' "$FILE" | jq -r '.[]')
-            else
-              echo "Invalid executions format in $FILE"
-              continue
+            EXECUTIONS=$(yq e -o=json '.api.executions | map(.type)' "$FILE" 2>/dev/null || echo "[]")
+
+            if [[ "$EXECUTIONS" == "[]" ]]; then
+              echo "::error:: ❌ No valid executions found in $FILE"
+              exit 1
             fi
 
             if [ -z "$VERSION" ] || [ -z "$NAME" ]; then
-              echo "Skipping invalid metadata: $FILE"
-              continue
+              echo "::error:: ❌ Missing version or name in $FILE"
+              exit 1
             fi
 
-            for EXEC in $EXECUTIONS; do
-              ARTIFACT_ID="app-afesox-${NAME}-${EXEC}-stable"
-              echo "\n➡️ Deploying $ARTIFACT_ID version $VERSION using profile $EXEC"
+            echo "🧪 Found executions in $FILE: $EXECUTIONS"
 
-              mvn clean package -P$EXEC -Dproject.version=$VERSION || exit 1
+            for EXEC in $(echo "$EXECUTIONS" | jq -r '.[]'); do
+              ARTIFACT_ID="app-afesox-${NAME}-${EXEC}-stable"
+              echo "➡️ Deploying $ARTIFACT_ID version $VERSION using profile $EXEC"
+
+              mvn clean package -P$EXEC -Dproject.version=$VERSION || {
+                echo "::error:: ❌ Package failed for $ARTIFACT_ID"
+                exit 1
+              }
+
               mvn deploy -P$EXEC -Dproject.version=$VERSION -Dpackage=$ARTIFACT_ID || {
-                echo "Fallback: artifact might exist, skipping deploy"
+                echo "⚠️ Fallback: deploy failed or artifact exists. Skipping deploy."
               }
             done
           done < changed_files.txt
