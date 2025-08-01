@@ -1,0 +1,47 @@
+name: Delete Unstable Version Workflow
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+        description: 'API name'
+      execution:
+        required: true
+        type: string
+        description: 'Execution profile (e.g. server, client)'
+      ticket:
+        required: true
+        type: string
+        description: 'Ticket string (e.g. sitionix)'
+
+jobs:
+  delete:
+    name: Delete Unstable Package Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Construct artifactId from inputs
+        id: build-artifact-id
+        run: |
+          ARTIFACT_ID="app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}-unstable"
+          echo "artifact_id=$ARTIFACT_ID" >> $GITHUB_OUTPUT
+
+      - name: Delete version via GitHub API
+        env:
+          GH_TOKEN: ${{ secrets.APP_AFESOX }}
+          ARTIFACT_ID: ${{ steps.build-artifact-id.outputs.artifact_id }}
+        run: |
+          PACKAGE_NAME=$(echo "$ARTIFACT_ID" | tr '_' '-')
+          echo "Attempting to delete package version: $PACKAGE_NAME"
+          PACKAGE_VERSIONS=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/orgs/${{ github.repository_owner }}/packages/maven/$PACKAGE_NAME/versions" | jq '.[].id')
+
+          for VERSION_ID in $PACKAGE_VERSIONS; do
+            echo "Deleting version ID: $VERSION_ID"
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/${{ github.repository_owner }}/packages/maven/$PACKAGE_NAME/versions/$VERSION_ID"
+          done
