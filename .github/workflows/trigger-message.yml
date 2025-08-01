@@ -58,7 +58,7 @@ jobs:
       - name: Parse command and extract name
         id: parse-command
         run: |
-          api_name=$(echo '${{ github.event.comment.body }}' | grep -oP '(?<=--name \")[^\"]*')
+          api_name=$(echo '${{ github.event.comment.body }}' | grep -oP '(?<=--name \"))[^"]*')
           echo "api_name=$api_name" >> $GITHUB_OUTPUT
 
       - name: Extract ticket number from PR title
@@ -101,3 +101,23 @@ jobs:
       variant: ${{ needs.build.outputs.ticket }}-unstable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
+
+  comment-dependency:
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post dependency block to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const artifactId = `app-afesox-${{ needs.build.outputs.name }}-${{ needs.build.outputs.execution }}-${{ needs.build.outputs.ticket }}-unstable`;
+            const dependencyBlock = `\n<dependency>\n  <groupId>com.afesox</groupId>\n  <artifactId>${artifactId}</artifactId>\n  <version>${{ needs.build.outputs.version }}</version>\n</dependency>`;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number,
+              body: `### 📦 Maven Dependency Ready
+  \`\`\`xml
+  ${dependencyBlock}
+  \`\`\`
+  ` });
