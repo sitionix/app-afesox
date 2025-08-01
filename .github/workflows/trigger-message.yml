@@ -114,7 +114,7 @@ jobs:
 
   notify-failure:
     name: PR Failure Comment
-    if: failure() && github.event.pull_request.number
+    if: failure() && github.event.issue.pull_request
     needs: [build, delete-unused-version, deploy]
     runs-on: ubuntu-latest
     steps:
