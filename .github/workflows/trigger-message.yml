@@ -132,11 +132,13 @@ jobs:
               ...repo,
               issue_number,
             const body = [
-              '### ❌ Deployment Failed',
+              '---',
+              '### ❌ Build Job Failed',
               '',
-              '🚫 The Preparation build job was **interrupted** during execution.',
+              '> ⚠️ **The build job could not be completed.**',
               '',
-              `🔎 You can check the logs here: [**View Workflow Run**](${workflow_run_url})`
+              `🔍 [View Workflow Run Logs](${workflow_run_url})`,
+              '---'
             ].join('\n');
 
             await github.rest.issues.createComment({
