@@ -93,7 +93,7 @@ jobs:
 
   delete-unused-version:
     needs: build
-    uses: ./.github/workflows/delete-unused-version.yml
+    uses: ./.github/workflows/delete-existing-package-version.yml
     with:
       name: ${{ needs.build.outputs.name }}
       execution: ${{ needs.build.outputs.execution }}
