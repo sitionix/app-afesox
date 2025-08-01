@@ -41,7 +41,8 @@ jobs:
           PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
           REPO: ${{ github.repository }}
         run: |
-          PACKAGE_NAME=$(echo "$ARTIFACT_ID" | tr '_' '-')
+          GROUP_ID="com.afesox"
+          PACKAGE_NAME="$GROUP_ID.$ARTIFACT_ID"
           echo "Attempting to delete package version: $PACKAGE_NAME"
 
           PACKAGE_VERSIONS=$(gh api \
