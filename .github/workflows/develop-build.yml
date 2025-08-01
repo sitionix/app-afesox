@@ -45,10 +45,9 @@ jobs:
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
             EXECUTIONS=$(yq e -o=json '.api.executions | map(.type)' "$FILE")
-            while IFS= read -r EXEC; do
-              ITEM=$(jq -n --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '{name: $name, execution: $execution, version: $version}')
-              MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq ". + [\$ITEM]")
-            done < <(echo "$EXECUTIONS" | jq -r '.[]')
+            for EXEC in $(echo "$EXECUTIONS" | jq -r '.[]'); do
+              MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '. + [{name: $name, execution: $execution, version: $version}]')
+            done
           done < changed_files.txt
 
           MATRIX_JSON=$(jq -n --argjson items "$MATRIX_ITEMS" '{include: $items}')
