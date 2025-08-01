@@ -1,0 +1,77 @@
+name: Build and Deploy
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      execution:
+        required: true
+        type: string
+    secrets:
+      APP_AFESOX:
+        required: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy (${{ inputs.name }} - ${{ inputs.execution }} - ${{ inputs.version }})
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v3
+        with:
+          path: ~/.openapi-generator
+          key: openapi-${{ hashFiles('**/openapi-rest.yml') }}
+
+      - name: Setup Maven settings
+        run: |
+          mkdir -p ~/.m2
+          echo "<settings>
+                  <servers>
+                    <server>
+                      <id>github</id>
+                      <username>${{ github.actor }}</username>
+                      <password>${{ secrets.APP_AFESOX }}</password>
+                    </server>
+                  </servers>
+                </settings>" > ~/.m2/settings.xml
+
+      - name: Set dynamic environment variables
+        run: |
+          echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-stable" >> $GITHUB_ENV
+          echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
+          echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
+
+      - name: Build and Deploy
+        run: |
+          echo "::group::🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
+          set -euo pipefail
+
+          mvn clean deploy -P$EXECUTION \
+            -Dproject.version=$VERSION \
+            -DARTIFACT_ID=$ARTIFACT_ID \
+            -DVERSION=$VERSION \
+            -DNAME=$NAME || { echo "::error:: Maven deploy failed"; exit 1; }
+          echo "::endgroup::"
