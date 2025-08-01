@@ -98,6 +98,7 @@ jobs:
       name: ${{ needs.build.outputs.name }}
       execution: ${{ needs.build.outputs.execution }}
       ticket: ${{ needs.build.outputs.ticket }}-unstable
+      issue_number: ${{ github.event.issue.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
 
@@ -109,6 +110,5 @@ jobs:
       version: ${{ needs.build.outputs.version }}
       execution: ${{ needs.build.outputs.execution }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
-      issue_number: ${{ github.event.issue.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
