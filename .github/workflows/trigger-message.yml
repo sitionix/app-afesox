@@ -97,7 +97,7 @@ jobs:
     with:
       name: ${{ needs.build.outputs.name }}
       execution: ${{ needs.build.outputs.execution }}
-      ticket: ${{ needs.build.outputs.ticket }}
+      ticket: ${{ needs.build.outputs.ticket }}-unstable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
 

@@ -27,7 +27,7 @@ jobs:
       - name: Construct artifactId from inputs
         id: build-artifact-id
         run: |
-          ARTIFACT_ID="app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}-unstable"
+          ARTIFACT_ID="app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}"
           echo "artifact_id=$ARTIFACT_ID" >> $GITHUB_OUTPUT
 
       - name: Retrieve package owner from GitHub context
