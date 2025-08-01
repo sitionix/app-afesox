@@ -12,6 +12,9 @@ inputs:
   variant:
     required: true
     description: 'Variant string (e.g. sitionix-unstable)'
+  token:
+    required: true
+    description: 'GitHub token for package deletion'
 
 runs:
   using: 'composite'
@@ -29,7 +32,7 @@ runs:
       if: steps.check-variant.outputs.unstable == 'true'
       shell: bash
       env:
-        AUTH_HEADER: "token ${{ secrets.APP_AFESOX }}"
+        AUTH_HEADER: "token ${{ inputs.token }}"
       run: |
         ARTIFACT_ID="app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}"
         echo "Attempting to delete unstable version of artifact: $ARTIFACT_ID"
