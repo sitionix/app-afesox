@@ -15,9 +15,6 @@ on:
         required: true
         type: string
         description: 'Ticket string (e.g. sitionix)'
-    secrets:
-      APP_AFESOX:
-        required: true
 
 jobs:
   delete:
@@ -27,24 +24,29 @@ jobs:
       - name: Construct artifactId from inputs
         id: build-artifact-id
         run: |
-          ARTIFACT_ID="com.afesox.app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}-unstable"
+          ARTIFACT_ID="app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}-unstable"
           echo "artifact_id=$ARTIFACT_ID" >> $GITHUB_OUTPUT
+
+      - name: Retrieve package owner from GitHub context
+        id: resolve-owner
+        run: echo "owner=${{ github.repository_owner }}" >> $GITHUB_OUTPUT
 
       - name: Delete version via GitHub API
         env:
           GH_TOKEN: ${{ secrets.APP_AFESOX }}
           ARTIFACT_ID: ${{ steps.build-artifact-id.outputs.artifact_id }}
+          PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
         run: |
           PACKAGE_NAME=$(echo "$ARTIFACT_ID" | tr '_' '-')
           echo "Attempting to delete package version: $PACKAGE_NAME"
           PACKAGE_VERSIONS=$(gh api \
             -H "Accept: application/vnd.github+json" \
-            "/orgs/${{ github.repository_owner }}/packages/maven/$PACKAGE_NAME/versions" | jq '.[].id')
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME/versions" | jq '.[].id')
 
           for VERSION_ID in $PACKAGE_VERSIONS; do
             echo "Deleting version ID: $VERSION_ID"
             gh api \
               --method DELETE \
               -H "Accept: application/vnd.github+json" \
-              "/orgs/${{ github.repository_owner }}/packages/maven/$PACKAGE_NAME/versions/$VERSION_ID"
+              "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME/versions/$VERSION_ID"
           done
