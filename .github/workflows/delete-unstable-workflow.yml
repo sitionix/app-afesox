@@ -27,7 +27,7 @@ jobs:
       - name: Construct artifactId from inputs
         id: build-artifact-id
         run: |
-          ARTIFACT_ID="app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}-unstable"
+          ARTIFACT_ID="com.afesox.app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}-unstable"
           echo "artifact_id=$ARTIFACT_ID" >> $GITHUB_OUTPUT
 
       - name: Delete version via GitHub API
