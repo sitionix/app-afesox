@@ -23,11 +23,28 @@ jobs:
         id: set_outputs
         run: |
           CHANGED=$(git diff --name-only --diff-filter=AM HEAD^ HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
+
           if [ -z "$CHANGED" ]; then
             echo "No relevant YAML changes. Skipping..."
             echo "changed=none" >> $GITHUB_OUTPUT
             exit 0
           fi
+
+          VERSION_CHANGED=false
+
+          for FILE in $CHANGED; do
+            DIFF=$(git diff HEAD^ HEAD -- "$FILE" | grep 'api.version' || true)
+            if [ -n "$DIFF" ]; then
+              VERSION_CHANGED=true
+              break
+            fi
+          done
+
+          if [ "$VERSION_CHANGED" = false ]; then
+            echo "❌ metadata.yml was changed but version not bumped!"
+            exit 1
+          fi
+
           echo "$CHANGED" > changed_files.txt
           echo "changed=true" >> $GITHUB_OUTPUT
 
@@ -103,7 +120,7 @@ jobs:
             for EXEC in $EXECUTIONS; do
               ARTIFACT_ID="app-afesox-${NAME}-${EXEC}-stable"
               echo "\n➡️ Deploying $ARTIFACT_ID version $VERSION using profile $EXEC"
-          
+
               mvn clean package -P$EXEC -Dproject.version=$VERSION || exit 1
               mvn deploy -P$EXEC -Dproject.version=$VERSION -Dpackage=$ARTIFACT_ID || {
                 echo "Fallback: artifact might exist, skipping deploy"
