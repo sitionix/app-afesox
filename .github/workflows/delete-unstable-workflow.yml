@@ -23,6 +23,7 @@ jobs:
   delete:
     name: Delete Unstable Package
     runs-on: ubuntu-latest
+    if: endsWith(inputs.ticket, '-unstable')
     steps:
       - name: Construct artifactId from inputs
         id: build-artifact-id
