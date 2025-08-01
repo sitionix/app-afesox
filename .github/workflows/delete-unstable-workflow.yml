@@ -15,9 +15,9 @@ on:
         required: true
         type: string
         description: 'Ticket string (e.g. sitionix)'
-      secrets:
-        APP_AFESOX:
-          required: true
+    secrets:
+      GH_TOKEN:
+        required: true
 
 jobs:
   delete:
@@ -36,7 +36,7 @@ jobs:
 
       - name: Delete version via GitHub API
         env:
-          GH_TOKEN: ${{ secrets.APP_AFESOX }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           ARTIFACT_ID: ${{ steps.build-artifact-id.outputs.artifact_id }}
           PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
         run: |
