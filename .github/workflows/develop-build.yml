@@ -22,18 +22,23 @@ jobs:
       - name: Detect changed metadata.yml files
         id: set_outputs
         run: |
-          CHANGED=$(git diff --name-only --diff-filter=AM HEAD^ HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
+          git fetch origin develop --depth=2
+
+          BASE=$(git rev-parse origin/develop^1)
+          HEAD=$(git rev-parse origin/develop)
+
+          CHANGED=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
 
           if [ -z "$CHANGED" ]; then
-            echo "No relevant YAML changes. Skipping..."
+            echo "::error:: 🛑 No metadata.yml changed. Nothing to build or deploy."
             echo "changed=none" >> $GITHUB_OUTPUT
-            exit 0
+            exit 1
           fi
 
           VERSION_CHANGED=false
 
           for FILE in $CHANGED; do
-            DIFF=$(git diff HEAD^ HEAD -- "$FILE" | grep 'api.version' || true)
+            DIFF=$(git diff $BASE $HEAD -- "$FILE" | grep 'api.version' || true)
             if [ -n "$DIFF" ]; then
               VERSION_CHANGED=true
               break
@@ -41,7 +46,7 @@ jobs:
           done
 
           if [ "$VERSION_CHANGED" = false ]; then
-            echo "❌ metadata.yml was changed but version not bumped!"
+            echo "::error:: ❌ metadata.yml was changed but version not bumped!"
             exit 1
           fi
 
