@@ -21,7 +21,7 @@ on:
 
 jobs:
   delete:
-    name: Delete Unstable Package Version
+    name: Delete Unstable Package
     runs-on: ubuntu-latest
     steps:
       - name: Construct artifactId from inputs
@@ -34,7 +34,7 @@ jobs:
         id: resolve-owner
         run: echo "owner=${{ github.repository_owner }}" >> $GITHUB_OUTPUT
 
-      - name: Delete version via GitHub API
+      - name: Delete entire package via GitHub API
         env:
           GH_TOKEN: ${{ secrets.APP_AFESOX }}
           ARTIFACT_ID: ${{ steps.build-artifact-id.outputs.artifact_id }}
@@ -42,18 +42,10 @@ jobs:
         run: |
           GROUP_ID="com.afesox"
           PACKAGE_NAME="$GROUP_ID.$ARTIFACT_ID"
-          echo "Attempting to delete package version: $PACKAGE_NAME"
+          echo "Deleting entire package: $PACKAGE_NAME"
 
-          PACKAGE_VERSIONS=$(gh api \
+          gh api \
+            --method DELETE \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME/versions" | jq '.[].id')
-
-          for VERSION_ID in $PACKAGE_VERSIONS; do
-            echo "Deleting version ID: $VERSION_ID"
-            gh api \
-              --method DELETE \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME/versions/$VERSION_ID"
-          done
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME"
