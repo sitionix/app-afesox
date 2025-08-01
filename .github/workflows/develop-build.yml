@@ -131,12 +131,16 @@ jobs:
               ARTIFACT_ID="app-afesox-${NAME}-${EXEC}-stable"
               echo "➡️ Deploying $ARTIFACT_ID version $VERSION using profile $EXEC"
 
-              mvn clean package -P$EXEC -Dproject.version=$VERSION || {
+              export ARTIFACT_ID
+              export VERSION
+              export NAME
+
+              mvn clean package -P$EXEC || {
                 echo "::error:: ❌ Package failed for $ARTIFACT_ID"
                 exit 1
               }
 
-              mvn deploy -P$EXEC -Dproject.version=$VERSION -Dpackage=$ARTIFACT_ID || {
+              mvn deploy -P$EXEC -Dpackage=$ARTIFACT_ID || {
                 echo "⚠️ Fallback: deploy failed or artifact exists. Skipping deploy."
               }
             done
