@@ -24,8 +24,8 @@ jobs:
         run: |
           git fetch origin develop --depth=2
 
-          BASE=$(git rev-parse origin/develop^1)
-          HEAD=$(git rev-parse origin/develop)
+          BASE=$(git rev-parse FETCH_HEAD^)
+          HEAD=$(git rev-parse FETCH_HEAD)
 
           CHANGED=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
 
