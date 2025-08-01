@@ -42,10 +42,8 @@ jobs:
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
-            await github.rest.issues.createComment({
-              ...context.repo,
-              issue_number,
-              const body = [
+            
+            const body = [
               '---',
               '### 🚀 Workflow Execution Started',
               '',
@@ -53,7 +51,7 @@ jobs:
               `- **🔗 [View Workflow Run](${workflow_run_url})**`,
               '---'
             ].join('\n');
-
+            
             await github.rest.issues.createComment({
               ...repo,
               issue_number,
@@ -141,9 +139,7 @@ jobs:
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
-            await github.rest.issues.createComment({
-              ...repo,
-              issue_number,
+
             const body = [
               '---',
               '### ❌ Build Job Failed',
