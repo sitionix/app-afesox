@@ -50,3 +50,12 @@ jobs:
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME"
+
+      - name: 🔴 Comment failure to PR
+        if: failure() && github.event.pull_request.number
+        env:
+          GH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          gh pr comment "$PR_NUMBER" \
+            --body "❌ While building was encontered error. [View logs]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
