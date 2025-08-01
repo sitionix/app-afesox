@@ -149,7 +149,11 @@ jobs:
             const version = `${{ inputs.version }}`;
 
             const body = [
-              '✅ 🚀 **Deployment successful.** 🚀 ✅',
+              '---',
+              '### ✅🎉 Deployment Successful! 🎉✅',
+              '',
+              '<details>',
+              '<summary>📦 Maven Dependency Snippet</summary>',
               '',
               '```xml',
               `<dependency>`,
@@ -158,8 +162,10 @@ jobs:
               `  <version>${version}</version>`,
               `</dependency>`,
               '```',
+              '</details>',
               '',
-              `🔗 [View Workflow Run](${workflow_run_url})`
+              `🔗 [View Workflow Run](${workflow_run_url})`,
+              '---'
             ].join('\n');
 
             await github.rest.issues.createComment({

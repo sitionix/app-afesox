@@ -45,7 +45,19 @@ jobs:
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number,
-              body: `### Workflow Execution Started\n- **Job Status:** In Progress\n- **[View Workflow Run](${workflow_run_url})**`
+            const body = [
+              '---',
+              '### 🚀 Workflow Execution Started',
+              '',
+              '- **Job Status:** In Progress',
+              `- **🔗 [View Workflow Run](${workflow_run_url})**`,
+              '---'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
             });
 
       - name: Verify GitHub Token Access
