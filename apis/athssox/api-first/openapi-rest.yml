@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.5
+  version: 0.0.6
   contact:
     name: APP Sitionix
 servers:
