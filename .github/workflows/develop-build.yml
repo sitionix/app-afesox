@@ -65,7 +65,7 @@ jobs:
     if: needs.detect.outputs.changed != 'none'
     strategy:
       matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
-    name: Build and Deploy (${{ matrix.name }} - ${{ matrix.execution }})
+    name: Build and Deploy (${{ matrix.name }} - ${{ matrix.execution }} - ${{ matrix.version }})
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
