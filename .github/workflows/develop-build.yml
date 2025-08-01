@@ -24,8 +24,8 @@ jobs:
         run: |
           git fetch origin develop --depth=2
 
-          BASE=$(git rev-parse FETCH_HEAD^)
-          HEAD=$(git rev-parse FETCH_HEAD)
+          BASE=$(git rev-parse origin/develop^)
+          HEAD=$(git rev-parse origin/develop)
 
           CHANGED=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
 
@@ -64,9 +64,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect
     if: needs.detect.outputs.changed != 'none'
-    strategy:
-      matrix:
-        execution: [api-first, client]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -115,7 +112,7 @@ jobs:
           while read FILE; do
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
-            EXECUTIONS=$(yq e '.api.executions[].type' "$FILE")
+            EXECUTIONS=$(yq e -o=json '.api.executions[].type' "$FILE" | jq -r '.[]')
 
             if [ -z "$VERSION" ] || [ -z "$NAME" ]; then
               echo "Skipping invalid metadata: $FILE"
