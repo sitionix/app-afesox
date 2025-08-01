@@ -112,7 +112,14 @@ jobs:
           while read FILE; do
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
-            EXECUTIONS=$(yq e -o=json '.api.executions[].type' "$FILE" | jq -r '.[]')
+            EXEC_TYPE=$(yq e '.api.executions' "$FILE" | head -n 1)
+
+            if [[ "$EXEC_TYPE" == "["* ]]; then
+              EXECUTIONS=$(yq e -o=json '.api.executions | map(.type)' "$FILE" | jq -r '.[]')
+            else
+              echo "Invalid executions format in $FILE"
+              continue
+            fi
 
             if [ -z "$VERSION" ] || [ -z "$NAME" ]; then
               echo "Skipping invalid metadata: $FILE"
