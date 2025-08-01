@@ -15,10 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install yq (fixed version)
+      - name: Install yq and jq
         run: |
           wget https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/local/bin/yq
           chmod +x /usr/local/bin/yq
+          sudo apt-get update && sudo apt-get install -y jq
 
       - name: Detect changed metadata.yml files
         id: set_outputs
