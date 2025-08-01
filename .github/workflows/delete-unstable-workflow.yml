@@ -16,7 +16,7 @@ on:
         type: string
         description: 'Ticket string (e.g. sitionix)'
     secrets:
-      GH_TOKEN:
+      APP_AFESOX:
         required: true
 
 jobs:
