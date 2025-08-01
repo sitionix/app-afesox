@@ -33,33 +33,6 @@ jobs:
           git fetch origin $PR_BRANCH
           git checkout $PR_BRANCH
 
-      - name: Post initial comment with workflow link
-        id: post-initial-comment
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const issue_number = context.issue.number;
-            const run_id = process.env.GITHUB_RUN_ID;
-            const repo = context.repo;
-            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
-            await github.rest.issues.createComment({
-              ...context.repo,
-              issue_number,
-            const body = [
-              '---',
-              '### 🚀 Workflow Execution Started',
-              '',
-              '- **Job Status:** In Progress',
-              `- **🔗 [View Workflow Run](${workflow_run_url})**`,
-              '---'
-            ].join('\n');
-
-            await github.rest.issues.createComment({
-              ...repo,
-              issue_number,
-              body
-            });
-
       - name: Verify GitHub Token Access
         run: |
           if [ -z "${{ secrets.APP_AFESOX }}" ]; then
@@ -150,6 +123,35 @@ jobs:
               '> ⚠️ **The build job could not be completed.**',
               '',
               `🔍 [View Workflow Run Logs](${workflow_run_url})`,
+              '---'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
+            });
+  notify-start:
+    name: Post initial comment with workflow link
+    runs-on: ubuntu-latest
+    uses: actions/github-script@v6
+    steps:
+      - name: Post initial comment with workflow link
+        id: post-initial-comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+
+            const body = [
+              '---',
+              '### 🚀 Workflow Execution Started',
+              '',
+              '- **Job Status:** In Progress ✅',
+              `- **🔗 [View Workflow Run](${workflow_run_url})**`,
               '---'
             ].join('\n');
 
