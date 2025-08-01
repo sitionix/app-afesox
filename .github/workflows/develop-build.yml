@@ -40,14 +40,14 @@ jobs:
           echo "changed=true" >> $GITHUB_OUTPUT
 
           MATRIX_ITEMS=()
-          for FILE in $CHANGED; do
+          while IFS= read -r FILE; do
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
             EXECUTIONS=$(yq e -o=json '.api.executions | map(.type)' "$FILE")
             for EXEC in $(echo "$EXECUTIONS" | jq -r '.[]'); do
               MATRIX_ITEMS+=("{\"name\":\"$NAME\",\"execution\":\"$EXEC\",\"version\":\"$VERSION\"}")
             done
-          done
+          done < changed_files.txt
 
           MATRIX_JSON=$(jq -n --argjson items "[${MATRIX_ITEMS[*]}]" '{include: $items}')
           echo "matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
