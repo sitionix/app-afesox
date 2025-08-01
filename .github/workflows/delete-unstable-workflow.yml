@@ -39,7 +39,6 @@ jobs:
           GH_TOKEN: ${{ secrets.APP_AFESOX }}
           ARTIFACT_ID: ${{ steps.build-artifact-id.outputs.artifact_id }}
           PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
-          REPO: ${{ github.repository }}
         run: |
           GROUP_ID="com.afesox"
           PACKAGE_NAME="$GROUP_ID.$ARTIFACT_ID"
@@ -48,7 +47,7 @@ jobs:
           PACKAGE_VERSIONS=$(gh api \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/repos/$REPO/packages/maven/$PACKAGE_NAME/versions" | jq '.[].id')
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME/versions" | jq '.[].id')
 
           for VERSION_ID in $PACKAGE_VERSIONS; do
             echo "Deleting version ID: $VERSION_ID"
@@ -56,5 +55,5 @@ jobs:
               --method DELETE \
               -H "Authorization: Bearer $GH_TOKEN" \
               -H "Accept: application/vnd.github+json" \
-              "/repos/$REPO/packages/maven/$PACKAGE_NAME/versions/$VERSION_ID"
+              "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME/versions/$VERSION_ID"
           done
