@@ -111,7 +111,7 @@ jobs:
             const body = [
               '### ❌ Deployment Failed',
               '',
-              '🚫 The delete job was **interrupted** during execution.',
+              '🚫 The deploy job was **interrupted** during execution.',
               '',
               `🔎 You can check the logs here: [**View Workflow Run**](${workflow_run_url})`
             ].join('\n');
