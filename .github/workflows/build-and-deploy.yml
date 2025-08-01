@@ -12,6 +12,10 @@ on:
       execution:
         required: true
         type: string
+      variant:
+        required: false
+        type: string
+        default: stable
     secrets:
       APP_AFESOX:
         required: true
@@ -60,9 +64,10 @@ jobs:
       - name: Set dynamic environment variables
         run: |
           echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
-          echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-stable" >> $GITHUB_ENV
+          echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
           echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
+          echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
 
       - name: Build and Deploy
         run: |
@@ -73,5 +78,6 @@ jobs:
             -Dproject.version=$VERSION \
             -DARTIFACT_ID=$ARTIFACT_ID \
             -DVERSION=$VERSION \
-            -DNAME=$NAME || { echo "::error:: Maven deploy failed"; exit 1; }
+            -DNAME=$NAME \
+            -DVARIANT=$VARIANT || { echo "::error:: Maven deploy failed"; exit 1; }
           echo "::endgroup::"

@@ -16,6 +16,7 @@ jobs:
       name: ${{ steps.read-definition-metadata.outputs.api_name }}
       version: ${{ steps.read-definition-metadata.outputs.api_version }}
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
+      ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -97,5 +98,6 @@ jobs:
       name: ${{ needs.build.outputs.name }}
       version: ${{ needs.build.outputs.version }}
       execution: ${{ needs.build.outputs.execution }}
+      variant: ${{ needs.build.outputs.ticket }}-unstable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
