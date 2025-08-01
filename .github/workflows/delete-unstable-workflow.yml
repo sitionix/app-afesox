@@ -55,14 +55,14 @@ jobs:
             --method DELETE \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1) || true
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1)
+
+          echo "$RESPONSE"
 
           if echo "$RESPONSE" | grep -q '404'; then
             echo "Package not found, skipping delete."
             exit 0
           fi
-
-          echo "$RESPONSE"
 
   notify-failure:
     name: Delete failure comment
@@ -83,15 +83,15 @@ jobs:
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
-            await github.rest.issues.createComment({
-              ...repo,
-              issue_number,
+
             const body = [
-              '### ❌ Deployment Failed',
+              '---',
+              '### ❌ Delete Job Failed',
               '',
-              '🚫 The delete job was **interrupted** during execution.',
+              '> ⚠️ **The delete job could not be completed.**',
               '',
-              `🔎 You can check the logs here: [**View Workflow Run**](${workflow_run_url})`
+              `🔍 [View Workflow Run Logs](${workflow_run_url})`,
+              '---'
             ].join('\n');
 
             await github.rest.issues.createComment({
