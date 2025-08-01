@@ -70,11 +70,11 @@ jobs:
           echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
 
       - name: Delete unstable version
-        uses: ./.github/workflows/delete-existing-package-version.yml
+        uses: ./.github/actions/delete-existing-package-version.yml
         with:
-          name: ${{ some.api_name }}
-          execution: ${{ some.api_spec_type }}
-          variant: ${{ some.ticket }}-unstable
+          name: ${{ env.NAME }}
+          execution: ${{ env.EXECUTION }}
+          variant: ${{ env.VARIANT }}
         secrets:
           APP_AFESOX: ${{ secrets.APP_AFESOX }}
 
