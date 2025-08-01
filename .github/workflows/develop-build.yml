@@ -17,22 +17,22 @@ jobs:
 
       - name: Install yq and jq
         run: |
+          sudo apt-get update && sudo apt-get install -y jq
           wget https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/local/bin/yq
           chmod +x /usr/local/bin/yq
-          sudo apt-get update && sudo apt-get install -y jq
 
       - name: Detect changed metadata.yml files
         id: set_outputs
         run: |
           git fetch origin develop --depth=2
 
-          BASE=$(git rev-parse origin/develop^)
-          HEAD=$(git rev-parse origin/develop)
+          BASE=$(git merge-base HEAD origin/develop)
+          HEAD=$(git rev-parse HEAD)
 
           CHANGED=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
 
           if [ -z "$CHANGED" ]; then
-            echo "::error:: 🛑 No metadata.yml changed. Nothing to build or deploy."
+            echo "::error:: \ud83d\uded1 No metadata.yml changed. Nothing to build or deploy."
             echo "changed=none" >> $GITHUB_OUTPUT
             exit 1
           fi
@@ -45,10 +45,22 @@ jobs:
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
             EXECUTIONS=$(yq e '.api.executions[].type' "$FILE")
+
+            if [ -z "$VERSION" ] || [ -z "$NAME" ] || [ -z "$EXECUTIONS" ]; then
+              echo "::error:: Invalid metadata file: $FILE"
+              exit 1
+            fi
+
             for EXEC in $EXECUTIONS; do
               MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '. + [{name: $name, execution: $execution, version: $version}]')
             done
           done < changed_files.txt
+
+          COUNT=$(echo "$MATRIX_ITEMS" | jq length)
+          if (( COUNT > 250 )); then
+            echo "::error:: Too many matrix items ($COUNT > 250)"
+            exit 1
+          fi
 
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
 
@@ -118,10 +130,12 @@ jobs:
 
       - name: Build and Deploy
         run: |
-          echo "🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
+          echo "::group::\ud83d\udd27 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
+          set -euo pipefail
 
           mvn clean deploy -P$EXECUTION \
             -Dproject.version=$VERSION \
             -DARTIFACT_ID=$ARTIFACT_ID \
             -DVERSION=$VERSION \
-            -DNAME=$NAME
+            -DNAME=$NAME || { echo "::error:: Maven deploy failed"; exit 1; }
+          echo "::endgroup::"
