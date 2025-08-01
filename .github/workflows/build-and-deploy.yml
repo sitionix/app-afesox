@@ -108,7 +108,7 @@ jobs:
             await github.rest.issues.createComment({
               ...repo,
               issue_number,
-              body: `❌ Deploy job execution was interrupted.\nMore details: [View Workflow Run](${workflow_run_url})`
+              body: `❌ Deploy job execution was interrupted.\nMore details: 🔗 [View Workflow Run](${workflow_run_url})`
             });
 
   notify-success:

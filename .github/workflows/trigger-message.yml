@@ -131,5 +131,5 @@ jobs:
             await github.rest.issues.createComment({
               ...repo,
               issue_number,
-              body: `❌ Preparation build job was interrupted.\nMore details: [View Workflow Run](${workflow_run_url})`
+              body: `❌ Preparation build job was interrupted.\nMore details: 🔗 [View Workflow Run](${workflow_run_url})`
             });

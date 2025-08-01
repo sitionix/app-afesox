@@ -79,5 +79,5 @@ jobs:
             await github.rest.issues.createComment({
               ...repo,
               issue_number,
-              body: `❌ Delete job execution was interrupted.\nMore details: [View Workflow Run](${workflow_run_url})`
+              body: `❌ Delete job execution was interrupted.\nMore details: 🔗 [View Workflow Run](${workflow_run_url})`
             });
