@@ -112,6 +112,12 @@ jobs:
       - name: Build and Deploy
         run: |
           echo "🔧 Building ${{ matrix.name }} (${{ matrix.execution }}) - version ${{ matrix.version }}"
-          mvn --file apis/${{ matrix.name }}/${{ matrix.execution }}/pom.xml clean deploy -P${{ matrix.execution }} || \
-          mvn --file app-${{ matrix.name }}/pom.xml clean deploy -P${{ matrix.execution }} || \
-          echo "No valid pom.xml found for ${{ matrix.name }} - ${{ matrix.execution }}"
+
+          POM_PATH="apis/${{ matrix.name }}/api-first/pom.xml"
+
+          if [ -f "$POM_PATH" ]; then
+            mvn --file "$POM_PATH" clean deploy -P${{ matrix.execution }} -Dproject.version=${{ matrix.version }}
+          else
+            echo "❌ No pom.xml found at $POM_PATH"
+            exit 1
+          fi
