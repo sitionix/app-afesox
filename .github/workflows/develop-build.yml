@@ -44,14 +44,13 @@ jobs:
           while IFS= read -r FILE; do
             VERSION=$(yq e '.api.version' "$FILE")
             NAME=$(yq e '.api.name' "$FILE")
-            EXECUTIONS=$(yq e -o=json '.api.executions | map(.type)' "$FILE")
-            for EXEC in $(echo "$EXECUTIONS" | jq -r '.[]'); do
+            EXECUTIONS=$(yq e '.api.executions[].type' "$FILE")
+            for EXEC in $EXECUTIONS; do
               MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '. + [{name: $name, execution: $execution, version: $version}]')
             done
           done < changed_files.txt
 
-          MATRIX_JSON=$(jq -n --argjson items "$MATRIX_ITEMS" '{include: $items}')
-          echo "matrix=$MATRIX_JSON" >> $GITHUB_OUTPUT
+          echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
 
       - name: Upload changed files
         if: steps.set_outputs.outputs.changed != 'none'
