@@ -58,7 +58,7 @@ jobs:
             "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME"
 
   notify-failure:
-    name: PR Failure Comment
+    name: Delete failure comment
     if: failure()
     needs: delete
     runs-on: ubuntu-latest
@@ -79,5 +79,5 @@ jobs:
             await github.rest.issues.createComment({
               ...repo,
               issue_number,
-              body: `❌ Job execution was interrupted.\nMore details: [View Workflow Run](${workflow_run_url})`
+              body: `❌ Delete job execution was interrupted.\nMore details: [View Workflow Run](${workflow_run_url})`
             });

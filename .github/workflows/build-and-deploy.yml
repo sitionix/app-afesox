@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: stable
+      issue_number:
+        required: false
+        type: number
+        description: 'Issue or PR number (optional)'
     secrets:
       APP_AFESOX:
         required: true
@@ -81,3 +85,70 @@ jobs:
             -DNAME=$NAME \
             -DVARIANT=$VARIANT || { echo "::error:: Maven deploy failed"; exit 1; }
           echo "::endgroup::"
+
+  notify-failure:
+    name: Deploy failure message
+    if: failure()
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = ${{ inputs.issue_number }};
+            if (!issue_number) {
+              console.log('No issue number provided, skipping comment.');
+              return;
+            }
+
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body: `❌ Deploy job execution was interrupted.\nMore details: [View Workflow Run](${workflow_run_url})`
+            });
+
+  notify-success:
+    name: Deploy success message
+    if: success()
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post success comment to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = ${{ inputs.issue_number }};
+            if (!issue_number) {
+              console.log('No issue number provided, skipping comment.');
+              return;
+            }
+
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+
+            const groupId = "com.afesox";
+            const artifactId = `app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}`;
+            const version = `${{ inputs.version }}`;
+
+            const body = `
+  ✅ Deployment successful.
+  \`\`\`xml
+  <dependency>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
+  </dependency>
+  \`\`\`
+  🔗 [View Workflow Run](${workflow_run_url})
+  `.trim();
+  
+  await github.rest.issues.createComment({
+  ...repo,
+  issue_number,
+  body
+  });
