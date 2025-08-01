@@ -5,12 +5,15 @@ on:
     inputs:
       name:
         required: true
+        type: string
         description: 'API name'
       execution:
         required: true
+        type: string
         description: 'Execution profile (e.g. server, client)'
       ticket:
         required: true
+        type: string
         description: 'Ticket string (e.g. sitionix)'
 
 jobs:
