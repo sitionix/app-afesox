@@ -38,7 +38,7 @@ jobs:
           VERSION_CHANGED=false
 
           for FILE in $CHANGED; do
-            DIFF=$(git diff $BASE $HEAD -- "$FILE" | grep 'api.version' || true)
+            DIFF=$(git diff $BASE $HEAD -- "$FILE" | grep '^[+-][[:space:]]*version:' || true)
             if [ -n "$DIFF" ]; then
               VERSION_CHANGED=true
               break
