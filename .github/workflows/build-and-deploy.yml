@@ -117,7 +117,7 @@ jobs:
     needs: build-and-deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Post success comment to PR
+      - name: Post comment to PR
         uses: actions/github-script@v6
         with:
           script: |
@@ -135,20 +135,23 @@ jobs:
             const artifactId = `app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}`;
             const version = `${{ inputs.version }}`;
 
-            const body = `
-  ✅ Deployment successful.
-  \`\`\`xml
-  <dependency>
-  <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <version>${version}</version>
-  </dependency>
-  \`\`\`
-  🔗 [View Workflow Run](${workflow_run_url})
-  `.trim();
-  
-  await github.rest.issues.createComment({
-  ...repo,
-  issue_number,
-  body
-  });
+            const body = [
+              '✅🚀 **Deployment successful.** 🚀✅',
+              '',
+              '```xml',
+              `<dependency>`,
+              `  <groupId>${groupId}</groupId>`,
+              `  <artifactId>${artifactId}</artifactId>`,
+              `  <version>${version}</version>`,
+              `</dependency>`,
+              '```',
+              '',
+              `🔗 [View Workflow Run](${workflow_run_url})`
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
+            });
+
