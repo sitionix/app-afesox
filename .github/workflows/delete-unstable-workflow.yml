@@ -6,19 +6,15 @@ on:
       name:
         required: true
         type: string
-        description: 'API name'
       execution:
         required: true
         type: string
-        description: 'Execution profile (e.g. server, client)'
       ticket:
         required: true
         type: string
-        description: 'Ticket string (e.g. sitionix)'
       issue_number:
         required: false
         type: number
-        description: 'Issue or PR number (optional)'
     secrets:
       APP_AFESOX:
         required: true
@@ -50,21 +46,15 @@ jobs:
           GROUP_ID="com.afesox"
           PACKAGE_NAME="$GROUP_ID.$ARTIFACT_ID"
           echo "Deleting entire package: $PACKAGE_NAME"
-          
-          RESPONSE=$(gh api \
+
+          echo "::group::📋 GitHub API Raw Output"
+          gh api \
             --method DELETE \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1)
-          
-          echo "::group::🧾 GitHub API Response"
-          echo "$RESPONSE"
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" \
+            || echo "GH API call failed with exit code $?"
           echo "::endgroup::"
-          
-          if echo "$RESPONSE" | grep -q '404'; then
-            echo "Package not found, skipping delete."
-            exit 0
-          fi
 
   notify-failure:
     name: Delete failure comment
