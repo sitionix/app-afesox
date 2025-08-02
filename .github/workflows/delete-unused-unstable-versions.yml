@@ -7,10 +7,32 @@ on:
       - develop
 
 jobs:
-  show-title-if-merged:
-    if: github.event.pull_request.merged == true
+  detect:
+    uses: ./.github/workflows/detect-metadata-changes.yml
+
+  delete-artifact:
+    needs: detect
     runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
+
     steps:
-      - name: Print PR title
+      - name: Parse ticket from PR title
+        id: parse
         run: |
-          echo "PR Title: ${{ github.event.pull_request.title }}"
+          title="${{ github.event.pull_request.title }}"
+          echo "Full PR title: $title"
+
+          if [[ "$title" =~ \[([A-Z]+-[0-9]+(-[0-9]+)?)\] ]]; then
+            ticket="${BASH_REMATCH[1]}"
+            echo "ticket=$ticket-unstable" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Failed to extract ticket"
+            exit 1
+          fi
+
+      - name: Echo final values
+        run: |
+          echo "🎟 Ticket: ${{ steps.parse.outputs.ticket }}"
+          echo "🔢 PR Number: ${{ github.event.pull_request.number }}"
+          echo "📦 Artifact Name: com.afesox.app-${{ matrix.name }}-${{ matrix.execution }}-${{ steps.parse.outputs.ticket }}"
