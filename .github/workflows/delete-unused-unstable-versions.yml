@@ -1,4 +1,4 @@
-name: Print PR Title on Merge to develop
+name: Post Delete Unused API Version
 
 on:
   pull_request:
@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
+    outputs:
+      ticket: ${{ steps.parse.outputs.ticket }}
 
     steps:
       - name: Parse ticket from PR title
@@ -38,7 +40,7 @@ jobs:
     with:
       name: ${{ matrix.name }}
       execution: ${{ matrix.execution }}
-      ticket: ${{ steps.parse.outputs.ticket }}
-      issue_number: ${{ github.event.issue.number }}
+      ticket: ${{ needs.prepare-artifact.outputs.ticket }}
+      issue_number: ${{ github.event.pull_request.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
