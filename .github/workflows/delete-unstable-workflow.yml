@@ -43,18 +43,41 @@ jobs:
           ARTIFACT_ID: ${{ steps.build-artifact-id.outputs.artifact_id }}
           PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
         run: |
+          set -e
           GROUP_ID="com.afesox"
           PACKAGE_NAME="$GROUP_ID.$ARTIFACT_ID"
           echo "Deleting entire package: $PACKAGE_NAME"
 
           echo "::group::📋 GitHub API Raw Output"
+          set +e
           gh api \
             --method DELETE \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" \
-            || echo "GH API call failed with exit code $?"
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME"
+          STATUS=$?
+          set -e
           echo "::endgroup::"
+
+          if [ $STATUS -eq 0 ]; then
+            echo "✅ Successfully deleted package."
+            exit 0
+          fi
+
+          echo "⚠️ DELETE failed. Checking if it's a 404..."
+          MESSAGE=$(gh api \
+            --method GET \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1 || true)
+
+          if echo "$MESSAGE" | grep -q '404'; then
+            echo "🔍 Package not found. Skipping delete."
+            exit 0
+          fi
+
+          echo "❌ GitHub API DELETE failed with exit code $STATUS"
+          exit $STATUS
 
   notify-failure:
     name: Delete failure comment

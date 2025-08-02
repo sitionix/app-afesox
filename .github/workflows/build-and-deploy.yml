@@ -122,7 +122,6 @@ jobs:
               body
             });
 
-
   notify-success:
     name: Deploy success message
     if: success()
