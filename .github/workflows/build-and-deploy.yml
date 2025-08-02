@@ -87,7 +87,7 @@ jobs:
           echo "::endgroup::"
 
   notify-failure:
-    name: Deploy failure message
+    name: Deploy notify failure
     if: failure()
     needs: build-and-deploy
     runs-on: ubuntu-latest
@@ -105,9 +105,7 @@ jobs:
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
-            await github.rest.issues.createComment({
-              ...repo,
-              issue_number,
+
             const body = [
               '---',
               '### ❌ Deploy Job Failed',
@@ -123,6 +121,7 @@ jobs:
               issue_number,
               body
             });
+
 
   notify-success:
     name: Deploy success message
