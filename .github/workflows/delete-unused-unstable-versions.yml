@@ -10,7 +10,7 @@ jobs:
   detect:
     uses: ./.github/workflows/detect-metadata-changes.yml
 
-  delete-artifact:
+  prepare-artifact:
     needs: detect
     runs-on: ubuntu-latest
     strategy:
@@ -25,14 +25,20 @@ jobs:
 
           if [[ "$title" =~ \[([A-Z]+-[0-9]+(-[0-9]+)?)\] ]]; then
             ticket="${BASH_REMATCH[1]}"
-            echo "ticket=$ticket-unstable" >> $GITHUB_OUTPUT
+            ticket_lower=$(echo "$ticket" | tr '[:upper:]' '[:lower:]')
+            echo "ticket=${ticket_lower}-unstable" >> $GITHUB_OUTPUT
           else
             echo "❌ Failed to extract ticket"
             exit 1
           fi
 
-      - name: Echo final values
-        run: |
-          echo "🎟 Ticket: ${{ steps.parse.outputs.ticket }}"
-          echo "🔢 PR Number: ${{ github.event.pull_request.number }}"
-          echo "📦 Artifact Name: com.afesox.app-${{ matrix.name }}-${{ matrix.execution }}-${{ steps.parse.outputs.ticket }}"
+  delete-unused-version:
+    needs: prepare-artifact
+    uses: ./.github/workflows/delete-unstable-workflow.yml
+    with:
+      name: ${{ matrix.name }}
+      execution: ${{ matrix.execution }}
+      ticket: ${{ steps.parse.outputs.ticket }}
+      issue_number: ${{ github.event.issue.number }}
+    secrets:
+      APP_AFESOX: ${{ secrets.APP_AFESOX }}
