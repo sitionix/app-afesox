@@ -1,0 +1,16 @@
+name: Print PR Title on Merge to develop
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+
+jobs:
+  show-title-if-merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print PR title
+        run: |
+          echo "PR Title: ${{ github.event.pull_request.title }}"
