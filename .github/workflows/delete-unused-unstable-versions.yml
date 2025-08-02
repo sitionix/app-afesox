@@ -10,17 +10,13 @@ jobs:
   detect:
     uses: ./.github/workflows/detect-metadata-changes.yml
 
-  prepare-artifact:
-    needs: detect
+  parse-ticket:
     runs-on: ubuntu-latest
-    strategy:
-      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
     outputs:
-      ticket: ${{ steps.parse.outputs.ticket }}
-
+      ticket: ${{ steps.extract.outputs.ticket }}
     steps:
-      - name: Parse ticket from PR title
-        id: parse
+      - name: Extract ticket from PR title
+        id: extract
         run: |
           title="${{ github.event.pull_request.title }}"
           echo "Full PR title: $title"
@@ -35,12 +31,14 @@ jobs:
           fi
 
   delete-unused-version:
-    needs: prepare-artifact
+    needs: [detect, parse-ticket]
     uses: ./.github/workflows/delete-unstable-workflow.yml
+    strategy:
+      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
     with:
       name: ${{ matrix.name }}
       execution: ${{ matrix.execution }}
-      ticket: ${{ needs.prepare-artifact.outputs.ticket }}
+      ticket: ${{ needs.parse-ticket.outputs.ticket }}
       issue_number: ${{ github.event.pull_request.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
