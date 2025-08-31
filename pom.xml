@@ -195,7 +195,7 @@
         <repository>
             <id>github</id>
             <name>Api-first Event Sitionix generator</name>
-            <url>https://maven.pkg.github.com/vladvinskevitch/app-afesox</url>
+            <url>https://maven.pkg.github.com/sitionix/app-afesox</url>
         </repository>
     </distributionManagement>
 </project>
