@@ -1,4 +1,8 @@
-# Contribution Workflow Guidelines
+# Sitionix Platform Service Specifications
+
+This repository captures the API-first contracts that power the customer lifecycle within the Sitionix platform. The specifications describe how platform services collaborate to onboard new clients, maintain their profiles, and coordinate the secure interactions required by downstream applications. By keeping these definitions in one place, the repo ensures every team integrates against the same source of truth when building features for Sitionix users.
+
+## Contribution Workflow Guidelines
 
 This project follows a standardized workflow for preparing changes. Use the rules below whenever you start new work.
 
