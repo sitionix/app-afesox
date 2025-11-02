@@ -36,3 +36,7 @@ Once the pull request is merged into the `develop` branch, the CI pipeline autom
 
 To keep this automation working, ensure that each pull request bumps the project version to a new value. The fresh version number lets the pipeline create both unstable and stable builds without conflicts and keeps quality gates and release checks passing.
 
+## Resolve Merge Conflicts Immediately
+
+Keep every pull request in a mergeable state. If GitHub reports conflicts with the target branch, fetch the latest changes, resolve the conflicts locally, and push the updated branch before requesting reviewers or triggering `/generate`. This guarantees that automation can run without interruption and that reviewers only see conflict-free diffs.
+
