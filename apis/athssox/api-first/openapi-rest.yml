@@ -2,130 +2,67 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.9
+  version: 0.0.8
   contact:
     name: APP Sitionix
 servers:
   - description: Localhost (dev only)
     url: 'http://localhost:8080/athssox'
 tags:
-  - name: Auth
+  - name: User
 paths:
-  /api/v1/auth/login:
+  /api/v1/user:
     post:
-      description: Service that authenticates user and creates a session
-      summary: API for user login
-      operationId: login
+      description: Service that create user
+      summary: API for user creation
+      operationId: createUser
       tags:
-        - Auth
+        - User
       requestBody:
-        description: Login payload
+        description: User body
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequestDTO'
+              $ref: '#/components/schemas/UserDTO'
       responses:
-        '200':
+        '201':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponseDTO'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
+                $ref: '#/components/schemas/UserResponseDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
 components:
   schemas:
-    LoginRequestDTO:
+    UserResponseDTO:
       type: object
-      required:
-        - email
-        - password
-        - siteId
-        - sessionSourceId
-        - userAgent
       properties:
-        email:
-          type: string
-          format: email
-          example: user@example.com
-        password:
-          type: string
-          example: StrongPassword123
-        siteId:
-          type: string
-          format: uuid
-          example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
-        sessionSourceId:
-          type: string
-          example: chrome-uuid-12345
-        userAgent:
-          type: string
-          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)...
-    LoginResponseDTO:
-      type: object
-      required:
-        - accessToken
-        - refreshToken
-        - expiresIn
-        - tokenType
-      properties:
-        accessToken:
-          type: string
-          example: eyJhbGciOi...
-        refreshToken:
-          type: string
-          example: dGhpc0lzUmVmcmVzaA==
-        expiresIn:
+        id:
           type: integer
           format: int64
-          example: 3600
-        tokenType:
+          example: 12345
+        username:
           type: string
-          example: Bearer
-    ErrorDTO:
+          example: Edvard
+    UserDTO:
       type: object
       required:
-        - code
-        - title
-        - details
+        - username
+        - password
       properties:
-        code:
-          type: integer
-          example: 401
-        title:
+        username:
           type: string
-          example: Unauthorized
-        details:
+          example: Edvard
+        password:
           type: string
-          example: Invalid email or password
+          example: qwerty1234
   responses:
     BadRequest:
       description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
     InternalServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
