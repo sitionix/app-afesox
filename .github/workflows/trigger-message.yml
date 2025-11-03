@@ -17,6 +17,7 @@ jobs:
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
       ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
       version: ${{ steps.read-definition-metadata.outputs.api_version }}
+      ref: ${{ steps.compute-ref.outputs.sha }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -102,6 +103,11 @@ jobs:
           echo "api_version=$version" >> $GITHUB_OUTPUT
           echo "api_name=$name" >> $GITHUB_OUTPUT
 
+      - name: Compute current ref
+        id: compute-ref
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   delete-unused-version:
     needs: build
     uses: ./.github/workflows/delete-unstable-workflow.yml
@@ -122,6 +128,7 @@ jobs:
       execution: ${{ needs.build.outputs.execution }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
       issue_number: ${{ github.event.issue.number }}
+      ref: ${{ needs.build.outputs.ref }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
 
