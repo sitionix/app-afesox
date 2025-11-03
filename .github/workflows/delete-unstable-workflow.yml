@@ -54,8 +54,17 @@ jobs:
             --method DELETE \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME"
+            "/user/packages/maven/$PACKAGE_NAME"
           STATUS=$?
+
+          if [ $STATUS -ne 0 ]; then
+            gh api \
+              --method DELETE \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME"
+            STATUS=$?
+          fi
           set -e
           echo "::endgroup::"
 
@@ -69,7 +78,15 @@ jobs:
             --method GET \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            "/users/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1 || true)
+            "/user/packages/maven/$PACKAGE_NAME" 2>&1 || true)
+
+          if echo "$MESSAGE" | grep -q '404'; then
+            MESSAGE=$(gh api \
+              --method GET \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1 || true)
+          fi
 
           if echo "$MESSAGE" | grep -q '404'; then
             echo "🔍 Package not found. Skipping delete."
