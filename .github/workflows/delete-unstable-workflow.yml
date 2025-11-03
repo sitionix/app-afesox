@@ -89,6 +89,14 @@ jobs:
           fi
 
           if echo "$MESSAGE" | grep -q '404'; then
+            MESSAGE=$(gh api \
+              --method GET \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/$PACKAGE_OWNER/packages/maven/$PACKAGE_NAME" 2>&1 || true)
+          fi
+
+          if echo "$MESSAGE" | grep -q '404'; then
             echo "🔍 Package not found. Skipping delete."
             exit 0
           fi
