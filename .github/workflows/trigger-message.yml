@@ -17,6 +17,7 @@ jobs:
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
       ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
       version: ${{ steps.read-definition-metadata.outputs.api_version }}
+      branch: ${{ steps.fetch-pr-branch.outputs.branch }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,6 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch and checkout pull request branch
+        id: fetch-pr-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -32,6 +34,7 @@ jobs:
           echo "Pull request branch: $PR_BRANCH"
           git fetch origin $PR_BRANCH
           git checkout $PR_BRANCH
+          echo "branch=$PR_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Post initial comment with workflow link
         id: post-initial-comment
@@ -121,6 +124,7 @@ jobs:
       version: ${{ needs.build.outputs.version }}
       execution: ${{ needs.build.outputs.execution }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
+      ref: ${{ needs.build.outputs.branch }}
       issue_number: ${{ github.event.issue.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}

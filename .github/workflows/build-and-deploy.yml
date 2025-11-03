@@ -20,6 +20,10 @@ on:
         required: false
         type: number
         description: 'Issue or PR number (optional)'
+      ref:
+        required: false
+        type: string
+        default: ''
     secrets:
       APP_AFESOX:
         required: true
@@ -29,7 +33,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy (${{ inputs.name }} - ${{ inputs.execution }} - ${{ inputs.version }})
     steps:
-      - name: Checkout code
+      - name: Checkout code (target ref)
+        if: ${{ inputs.ref != '' }}
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Checkout code (default ref)
+        if: ${{ inputs.ref == '' }}
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
