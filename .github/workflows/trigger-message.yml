@@ -17,21 +17,27 @@ jobs:
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
       ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
       version: ${{ steps.read-definition-metadata.outputs.api_version }}
+      branch: ${{ steps.determine-pr-branch.outputs.branch }}
     steps:
+      - name: Determine pull request branch
+        id: determine-pr-branch
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo,
+              pull_number: issue_number
+            });
+            const branch = pr.head.ref;
+            core.info(`Pull request branch: ${branch}`);
+            core.setOutput('branch', branch);
+
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Fetch and checkout pull request branch
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PR_NUMBER=${{ github.event.issue.number }}
-          PR_BRANCH=$(gh pr view $PR_NUMBER --json headRefName -q '.headRefName')
-          echo "Pull request branch: $PR_BRANCH"
-          git fetch origin $PR_BRANCH
-          git checkout $PR_BRANCH
+          ref: ${{ steps.determine-pr-branch.outputs.branch }}
 
       - name: Post initial comment with workflow link
         id: post-initial-comment
@@ -121,6 +127,7 @@ jobs:
       version: ${{ needs.build.outputs.version }}
       execution: ${{ needs.build.outputs.execution }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
+      branch: ${{ needs.build.outputs.branch }}
       issue_number: ${{ github.event.issue.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
