@@ -16,14 +16,12 @@ on:
         required: false
         type: string
         default: stable
-      branch:
-        required: false
-        type: string
-        default: develop
       issue_number:
         required: false
         type: number
-        description: 'Issue or PR number (optional)'
+      ref:
+        required: false
+        type: string
     secrets:
       APP_AFESOX:
         required: true
@@ -36,13 +34,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.branch }}
-
-      - name: Set up JDK 17
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Log deploy/build source
+        run: |
+          echo "DEPLOY_REF_INPUT=${{ inputs.ref }}"
+          echo "GITHUB_SHA=${{ github.sha }}"
+          echo "GITHUB_REF=${{ github.ref }}"
+          echo "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)"
+          echo "CURRENT_SHA=$(git rev-parse HEAD)"
+          REMOTE_BRANCH=$(git branch -r --contains HEAD | head -n1 | xargs)
+          echo "REMOTE_BRANCH=${REMOTE_BRANCH}"
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: '21'
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -89,7 +96,7 @@ jobs:
             -DARTIFACT_ID=$ARTIFACT_ID \
             -DVERSION=$VERSION \
             -DNAME=$NAME \
-            -DVARIANT=$VARIANT || { echo "::error:: Maven deploy failed"; exit 1; }
+            -DVARIANT=$VARIANT
           echo "::endgroup::"
 
   notify-failure:
@@ -103,11 +110,7 @@ jobs:
         with:
           script: |
             const issue_number = ${{ inputs.issue_number }};
-            if (!issue_number) {
-              console.log('No issue number provided, skipping comment.');
-              return;
-            }
-
+            if (!issue_number) return;
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
@@ -139,11 +142,7 @@ jobs:
         with:
           script: |
             const issue_number = ${{ inputs.issue_number }};
-            if (!issue_number) {
-              console.log('No issue number provided, skipping comment.');
-              return;
-            }
-
+            if (!issue_number) return;
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
