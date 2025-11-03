@@ -135,7 +135,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const issue_number = ${{ inputs.issue_number }};
+            const issue_number = context.issue.number;
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
