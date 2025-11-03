@@ -34,6 +34,12 @@ jobs:
           git fetch origin $PR_BRANCH
           git checkout $PR_BRANCH
 
+      - name: Log build source (PR)
+        run: |
+            echo "BUILD_TRIGGER=issue_comment"
+            echo "PR_NUMBER=${{ github.event.issue.number }}"
+            echo "PR_BRANCH=$(git rev-parse --abbrev-ref HEAD)"
+            echo "PR_SHA=$(git rev-parse HEAD)"
       - name: Post initial comment with workflow link
         id: post-initial-comment
         uses: actions/github-script@v6
