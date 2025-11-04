@@ -149,7 +149,7 @@
                                         <dateLibrary>java8</dateLibrary>
                                         <useSpringBoot3>true</useSpringBoot3>
                                         <useLombok>true</useLombok>
-                                        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor @lombok.NoArgsConstructor</additionalModelTypeAnnotations>
+                                        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
                                     </configOptions>
                                 </configuration>
                             </execution>
