@@ -75,6 +75,12 @@
             <version>6.1.13</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- OpenAPI Generator CLI -->
 <!--        <dependency>-->
@@ -142,6 +148,8 @@
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
                                         <useSpringBoot3>true</useSpringBoot3>
+                                        <useLombok>true</useLombok>
+                                        <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                     </configOptions>
                                 </configuration>
                             </execution>
@@ -180,6 +188,8 @@
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
                                         <useSpringBoot3>true</useSpringBoot3>
+                                        <useLombok>true</useLombok>
+                                        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
                                     </configOptions>
                                 </configuration>
                             </execution>

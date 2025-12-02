@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.8
+  version: 0.0.11
   contact:
     name: APP Sitionix
 servers:
@@ -10,59 +10,199 @@ servers:
     url: 'http://localhost:8080/athssox'
 tags:
   - name: User
+  - name: Auth
 paths:
-  /api/v1/user:
+  /api/v1/users:
     post:
-      description: Service that create user
-      summary: API for user creation
-      operationId: createUser
+      description: Service that registers a new user
+      summary: API for user registration
+      operationId: registerUser
       tags:
         - User
       requestBody:
-        description: User body
+        description: User registration payload
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDTO'
+              $ref: '#/components/schemas/RegisterUserDTO'
       responses:
         '201':
           description: Success
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponseDTO'
+                $ref: '#/components/schemas/ResponseRegisterUserDTO'
         '400':
           $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /api/v1/auth/login:
+    post:
+      description: Service that authenticates user and creates a session
+      summary: API for user login
+      operationId: login
+      tags:
+        - Auth
+      requestBody:
+        description: Login payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDTO'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   schemas:
-    UserResponseDTO:
+    ResponseRegisterUserDTO:
       type: object
       properties:
-        id:
+        message:
+          type: string
+          example: User registered successfully
+        userId:
           type: integer
           format: int64
-          example: 12345
-        username:
+          example: 123
+        status:
           type: string
-          example: Edvard
-    UserDTO:
+          enum:
+            - PENDING_EMAIL_VERIFY
+            - ACTIVE
+            - INACTIVE
+            - BANNED
+    RegisterUserDTO:
       type: object
       required:
-        - username
+        - email
+        - siteId
+        - role
         - password
       properties:
-        username:
-          type: string
-          example: Edvard
         password:
           type: string
           example: qwerty1234
+        email:
+          type: string
+          format: email
+          example: some@sitionix.com
+        siteId:
+          type: string
+          format: uuid
+          example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+        role:
+          type: string
+          format: enum
+          enum:
+              - SUPER_ADMIN
+              - ECOSYSTEM_OWNER
+              - SITE_ADMIN
+              - SITE_USER
+    LoginRequestDTO:
+      type: object
+      required:
+        - email
+        - password
+        - siteId
+        - sessionSourceId
+        - userAgent
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          example: StrongPassword123
+        siteId:
+          type: string
+          format: uuid
+          example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+        sessionSourceId:
+          type: string
+          example: chrome-uuid-12345
+        userAgent:
+          type: string
+          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)...
+    LoginResponseDTO:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - tokenType
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+          description: Bearer token that authorizes subsequent requests
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        refreshToken:
+          type: string
+          description: Token used to refresh the access token
+          example: dGhpc0lzUmVmcmVzaA==
+        tokenType:
+          type: string
+          description: Type of token returned
+          example: Bearer
+        expiresIn:
+          type: integer
+          format: int64
+          description: Time in seconds until the token expires
+          example: 3600
+    ErrorDTO:
+      type: object
+      required:
+        - code
+        - title
+        - details
+      properties:
+        code:
+          type: integer
+          example: 401
+        title:
+          type: string
+          example: Unauthorized
+        details:
+          type: string
+          example: Invalid email or password
   responses:
     BadRequest:
       description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
     InternalServerError:
       description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
