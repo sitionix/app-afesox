@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.3
+  version: 0.0.4
   contact:
     name: APP Sitionix
 servers:
@@ -10,7 +10,34 @@ servers:
     url: 'http://localhost:8080/bffssox'
 tags:
   - name: Auth
+  - name: User
 paths:
+  /api/v1/users:
+    post:
+      description: Service that registers a new user
+      summary: API for user registration
+      operationId: registerUser
+      tags:
+        - User
+      requestBody:
+        description: User registration payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserDTO'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseRegisterUserDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /api/v1/auth/login:
     post:
       description: Service that authenticates user and creates a session
@@ -41,6 +68,50 @@ paths:
 
 components:
   schemas:
+    ResponseRegisterUserDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User registered successfully
+        userId:
+          type: integer
+          format: int64
+          example: 123
+        status:
+          type: string
+          enum:
+            - PENDING_EMAIL_VERIFY
+            - ACTIVE
+            - INACTIVE
+            - BANNED
+    RegisterUserDTO:
+      type: object
+      required:
+        - email
+        - siteId
+        - role
+        - password
+      properties:
+        password:
+          type: string
+          example: qwerty1234
+        email:
+          type: string
+          format: email
+          example: some@sitionix.com
+        siteId:
+          type: string
+          format: uuid
+          example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+        role:
+          type: string
+          format: enum
+          enum:
+              - SUPER_ADMIN
+              - ECOSYSTEM_OWNER
+              - SITE_ADMIN
+              - SITE_USER
     LoginRequestDTO:
       type: object
       required:
