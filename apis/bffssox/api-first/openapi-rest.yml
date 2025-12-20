@@ -165,22 +165,22 @@ components:
       content:
         application/json:
           schema:
-            $ref: '../common/components.yml#/components/schemas/ErrorDTO'
+            $ref: '../../common/components.yml#/components/schemas/ErrorDTO'
     InternalServerError:
       description: Internal Server Error
       content:
         application/json:
           schema:
-            $ref: '../common/components.yml#/components/schemas/ErrorDTO'
+            $ref: '../../common/components.yml#/components/schemas/ErrorDTO'
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '../common/components.yml#/components/schemas/ErrorDTO'
+            $ref: '../../common/components.yml#/components/schemas/ErrorDTO'
     Forbidden:
       description: Forbidden
       content:
         application/json:
           schema:
-            $ref: '../common/components.yml#/components/schemas/ErrorDTO'
+            $ref: '../../common/components.yml#/components/schemas/ErrorDTO'
