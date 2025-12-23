@@ -14,12 +14,14 @@
         <env.artifact.name>${env.NAME}</env.artifact.name>
         <env.event.name>${env.EVENT_NAME}</env.event.name>
         <env.event.version>${env.EVENT_VERSION}</env.event.version>
+        <env.event.service>${env.EVENT_SERVICE}</env.event.service>
         <env.event.package>${env.EVENT_PACKAGE}</env.event.package>
         <env.event.class>${env.EVENT_CLASS}</env.event.class>
         <env.event.wrapper.package>${env.EVENT_WRAPPER_PACKAGE}</env.event.wrapper.package>
 
         <event.name>${env.event.name}</event.name>
         <event.version>${env.event.version}</event.version>
+        <event.service>${env.event.service}</event.service>
         <event.package>${env.event.package}</event.package>
         <event.class>${env.event.class}</event.class>
         <event.wrapper.package>${env.event.wrapper.package}</event.wrapper.package>
@@ -269,7 +271,7 @@
                                             </includes>
                                         </resource>
                                         <resource>
-                                            <directory>${project.basedir}/apis/${env.artifact.name}/event/${event.name}/${event.version}</directory>
+                                            <directory>${project.basedir}/apis/${event.service}/event/${event.name}/${event.version}</directory>
                                             <filtering>false</filtering>
                                             <includes>
                                                 <include>**/*.avsc</include>
@@ -383,7 +385,7 @@
                                             </includes>
                                         </resource>
                                         <resource>
-                                            <directory>${project.basedir}/apis/${env.artifact.name}/event/${event.name}/${event.version}</directory>
+                                            <directory>${project.basedir}/apis/${event.service}/event/${event.name}/${event.version}</directory>
                                             <filtering>false</filtering>
                                             <includes>
                                                 <include>**/*.avsc</include>

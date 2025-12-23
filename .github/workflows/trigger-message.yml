@@ -17,6 +17,12 @@ jobs:
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
       ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
       version: ${{ steps.read-definition-metadata.outputs.api_version }}
+      event_service: ${{ steps.read-definition-metadata.outputs.event_service }}
+      event_name: ${{ steps.read-definition-metadata.outputs.event_name }}
+      event_version: ${{ steps.read-definition-metadata.outputs.event_version }}
+      event_package: ${{ steps.read-definition-metadata.outputs.event_package }}
+      event_class: ${{ steps.read-definition-metadata.outputs.event_class }}
+      event_wrapper_package: ${{ steps.read-definition-metadata.outputs.event_wrapper_package }}
       ref: ${{ steps.compute-ref.outputs.sha }}
     steps:
       - name: Checkout repository
@@ -97,6 +103,10 @@ jobs:
           echo "Looking for API name: $api_name"
           api_spec_type=$(yq eval ".apis[] | select(.name == \"$api_name\") | .api-spec-type" ./apis/metadata.yml)
           definition_path=$(yq eval ".apis[] | select(.name == \"$api_name\") | .definition-path" ./apis/metadata.yml)
+          if [ -z "$api_spec_type" ] || [ "$api_spec_type" = "null" ]; then
+            echo "ERROR: name not found in apis/metadata.yml"
+            exit 1
+          fi
           echo "api_spec_type=$api_spec_type" >> $GITHUB_OUTPUT
           echo "definition_path=$definition_path" >> $GITHUB_OUTPUT
 
@@ -104,10 +114,27 @@ jobs:
         id: read-definition-metadata
         run: |
           metadata_file="./apis/${{ steps.find-api-spec.outputs.definition_path }}/metadata.yml"
-          version=$(yq eval '.api.version' $metadata_file)
-          name=$(yq eval '.api.name' $metadata_file)
-          echo "api_version=$version" >> $GITHUB_OUTPUT
-          echo "api_name=$name" >> $GITHUB_OUTPUT
+          if [[ "${{ steps.find-api-spec.outputs.api_spec_type }}" == event-* ]]; then
+            version=$(yq eval '.event.version' $metadata_file)
+            name=$(yq eval '.event.name' $metadata_file)
+            service=$(yq eval '.event.service' $metadata_file)
+            package=$(yq eval '.event.package' $metadata_file)
+            class_name=$(yq eval '.event.class' $metadata_file)
+            wrapper_package=$(yq eval '.event.wrapper-package' $metadata_file)
+            echo "api_version=$version" >> $GITHUB_OUTPUT
+            echo "api_name=${service}-${name}" >> $GITHUB_OUTPUT
+            echo "event_service=$service" >> $GITHUB_OUTPUT
+            echo "event_name=$name" >> $GITHUB_OUTPUT
+            echo "event_version=$version" >> $GITHUB_OUTPUT
+            echo "event_package=$package" >> $GITHUB_OUTPUT
+            echo "event_class=$class_name" >> $GITHUB_OUTPUT
+            echo "event_wrapper_package=$wrapper_package" >> $GITHUB_OUTPUT
+          else
+            version=$(yq eval '.api.version' $metadata_file)
+            name=$(yq eval '.api.name' $metadata_file)
+            echo "api_version=$version" >> $GITHUB_OUTPUT
+            echo "api_name=$name" >> $GITHUB_OUTPUT
+          fi
 
       - name: Compute current ref
         id: compute-ref
@@ -132,6 +159,12 @@ jobs:
       name: ${{ needs.build.outputs.name }}
       version: ${{ needs.build.outputs.version }}
       execution: ${{ needs.build.outputs.execution }}
+      event_service: ${{ needs.build.outputs.event_service }}
+      event_name: ${{ needs.build.outputs.event_name }}
+      event_version: ${{ needs.build.outputs.event_version }}
+      event_package: ${{ needs.build.outputs.event_package }}
+      event_class: ${{ needs.build.outputs.event_class }}
+      event_wrapper_package: ${{ needs.build.outputs.event_wrapper_package }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
       issue_number: ${{ github.event.issue.number }}
       ref: ${{ needs.build.outputs.ref }}

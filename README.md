@@ -59,6 +59,13 @@ Common metadata schema:
 apis/common/event/Metadata.avsc
 ```
 
+Register event builds for `/generate` in:
+
+```
+apis/metadata.yml
+```
+
+
 Example dummy event:
 
 ```
@@ -71,7 +78,7 @@ apis/common/event/Metadata.avsc
 
 ```
 mvn clean package -Pevent-producer \
-  -DNAME=athssox \
+  -DEVENT_SERVICE=athssox \
   -DEVENT_NAME=dummy \
   -DEVENT_VERSION=v1 \
   -DEVENT_PACKAGE=com.app_afesox.athssox.events.dummy \
@@ -83,7 +90,7 @@ mvn clean package -Pevent-producer \
 
 ```
 mvn clean package -Pevent-consumer \
-  -DNAME=athssox \
+  -DEVENT_SERVICE=athssox \
   -DEVENT_NAME=dummy \
   -DEVENT_VERSION=v1 \
   -DEVENT_PACKAGE=com.app_afesox.athssox.events.dummy \

@@ -12,6 +12,24 @@ on:
       execution:
         required: true
         type: string
+      event_service:
+        required: false
+        type: string
+      event_name:
+        required: false
+        type: string
+      event_version:
+        required: false
+        type: string
+      event_package:
+        required: false
+        type: string
+      event_class:
+        required: false
+        type: string
+      event_wrapper_package:
+        required: false
+        type: string
       variant:
         required: false
         type: string
@@ -85,6 +103,14 @@ jobs:
           echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
           echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
+          if [ -n "${{ inputs.event_name }}" ]; then
+            echo "EVENT_SERVICE=${{ inputs.event_service }}" >> $GITHUB_ENV
+            echo "EVENT_NAME=${{ inputs.event_name }}" >> $GITHUB_ENV
+            echo "EVENT_VERSION=${{ inputs.event_version }}" >> $GITHUB_ENV
+            echo "EVENT_PACKAGE=${{ inputs.event_package }}" >> $GITHUB_ENV
+            echo "EVENT_CLASS=${{ inputs.event_class }}" >> $GITHUB_ENV
+            echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}" >> $GITHUB_ENV
+          fi
 
       - name: Build and Deploy
         run: |
@@ -176,4 +202,3 @@ jobs:
               issue_number,
               body
             });
-
