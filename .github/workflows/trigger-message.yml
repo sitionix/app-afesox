@@ -148,6 +148,7 @@ jobs:
               echo "ERROR: event metadata is incomplete in $metadata_file"
               exit 1
             fi
+            echo "Resolved event metadata: service=$service name=$name version=$version"
             echo "api_version=$version" >> $GITHUB_OUTPUT
             echo "api_name=${service}-${name}" >> $GITHUB_OUTPUT
             echo "event_service=$service" >> $GITHUB_OUTPUT

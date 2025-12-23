@@ -112,6 +112,25 @@ jobs:
             echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}" >> $GITHUB_ENV
           fi
 
+      - name: Validate event inputs
+        if: startsWith(inputs.execution, 'event-')
+        run: |
+          echo "EVENT_SERVICE=${{ inputs.event_service }}"
+          echo "EVENT_NAME=${{ inputs.event_name }}"
+          echo "EVENT_VERSION=${{ inputs.event_version }}"
+          echo "EVENT_PACKAGE=${{ inputs.event_package }}"
+          echo "EVENT_CLASS=${{ inputs.event_class }}"
+          echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}"
+          if [ -z "${{ inputs.event_service }}" ] || \
+             [ -z "${{ inputs.event_name }}" ] || \
+             [ -z "${{ inputs.event_version }}" ] || \
+             [ -z "${{ inputs.event_package }}" ] || \
+             [ -z "${{ inputs.event_class }}" ] || \
+             [ -z "${{ inputs.event_wrapper_package }}" ]; then
+            echo "ERROR: Missing event inputs for event build."
+            exit 1
+          fi
+
       - name: Build and Deploy
         run: |
           echo "::group::🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
