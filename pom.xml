@@ -240,8 +240,12 @@
                                     <goal>schema</goal>
                                 </goals>
                                 <configuration>
-                                    <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
+                                    <sourceDirectory>${project.basedir}/apis</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
+                                    <includes>
+                                        <include>common/event/*.avsc</include>
+                                        <include>${event.service}/event/${event.name}/${event.version}/**/*.avsc</include>
+                                    </includes>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -254,32 +258,6 @@
                         <artifactId>maven-resources-plugin</artifactId>
                         <version>3.3.1</version>
                         <executions>
-                            <execution>
-                                <id>stage-avro-schemas</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/avro-schemas</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/common/event</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/${event.service}/event/${event.name}/${event.version}</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <id>generate-producer-wrapper</id>
                                 <phase>generate-sources</phase>
@@ -354,8 +332,12 @@
                                     <goal>schema</goal>
                                 </goals>
                                 <configuration>
-                                    <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
+                                    <sourceDirectory>${project.basedir}/apis</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
+                                    <includes>
+                                        <include>common/event/*.avsc</include>
+                                        <include>${event.service}/event/${event.name}/${event.version}/**/*.avsc</include>
+                                    </includes>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -368,32 +350,6 @@
                         <artifactId>maven-resources-plugin</artifactId>
                         <version>3.3.1</version>
                         <executions>
-                            <execution>
-                                <id>stage-avro-schemas</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/avro-schemas</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/common/event</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/${event.service}/event/${event.name}/${event.version}</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <id>generate-consumer-wrapper</id>
                                 <phase>generate-sources</phase>
