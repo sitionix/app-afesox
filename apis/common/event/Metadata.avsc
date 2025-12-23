@@ -1,0 +1,20 @@
+{
+  "type": "record",
+  "name": "Metadata",
+  "namespace": "com.app_afesox.events",
+  "fields": [
+    {
+      "name": "idempotencyId",
+      "type": "string"
+    },
+    {
+      "name": "createdAt",
+      "type": "long",
+      "doc": "Epoch millis"
+    },
+    {
+      "name": "eventType",
+      "type": "string"
+    }
+  ]
+}
