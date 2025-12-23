@@ -10,10 +10,14 @@ apis:
     definition-path: /bffssox/api-first
   - name: CLIENT Backend for Frontend SOX
     api-spec-type: client
-    definition-path: /bffssox/api-firsti what
+    definition-path: /bffssox/api-first
   - name: EVENT Dummy ATHSSOX Producer
     api-spec-type: event-producer
-    definition-path: /athssox/event/dummy/v1
+    definition-path: /athssox/event
+    event-name: dummy
+    event-version: v1
   - name: EVENT Dummy ATHSSOX Consumer
     api-spec-type: event-consumer
-    definition-path: /athssox/event/dummy/v1
+    definition-path: /athssox/event
+    event-name: dummy
+    event-version: v1

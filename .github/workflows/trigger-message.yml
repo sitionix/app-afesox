@@ -107,20 +107,51 @@ jobs:
             echo "ERROR: name not found in apis/metadata.yml"
             exit 1
           fi
+          if [[ "$api_spec_type" == event-* ]]; then
+            event_name=$(yq eval ".apis[] | select(.name == \"$api_name\") | .event-name" ./apis/metadata.yml)
+            event_version=$(yq eval ".apis[] | select(.name == \"$api_name\") | .event-version" ./apis/metadata.yml)
+            if [ -z "$event_name" ] || [ "$event_name" = "null" ] || \
+               [ -z "$event_version" ] || [ "$event_version" = "null" ]; then
+              echo "ERROR: event-name or event-version missing in apis/metadata.yml"
+              exit 1
+            fi
+            echo "event_name=$event_name" >> $GITHUB_OUTPUT
+            echo "event_version=$event_version" >> $GITHUB_OUTPUT
+          fi
           echo "api_spec_type=$api_spec_type" >> $GITHUB_OUTPUT
           echo "definition_path=$definition_path" >> $GITHUB_OUTPUT
 
       - name: Read additional metadata from definition-path
         id: read-definition-metadata
         run: |
-          metadata_file="./apis/${{ steps.find-api-spec.outputs.definition_path }}/metadata.yml"
           if [[ "${{ steps.find-api-spec.outputs.api_spec_type }}" == event-* ]]; then
+            definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
+            event_name="${{ steps.find-api-spec.outputs.event_name }}"
+            event_version="${{ steps.find-api-spec.outputs.event_version }}"
+            event_service=$(echo "$definition_path" | cut -d'/' -f2)
+            metadata_file="./apis/${definition_path}/${event_name}/${event_version}/metadata.yml"
+            if [ ! -f "$metadata_file" ]; then
+              echo "ERROR: event metadata.yml not found at $metadata_file"
+              exit 1
+            fi
             version=$(yq eval '.event.version' $metadata_file)
             name=$(yq eval '.event.name' $metadata_file)
             service=$(yq eval '.event.service' $metadata_file)
+            if [ -z "$service" ] || [ "$service" = "null" ]; then
+              service="$event_service"
+            fi
             package=$(yq eval '.event.package' $metadata_file)
             class_name=$(yq eval '.event.class' $metadata_file)
             wrapper_package=$(yq eval '.event.wrapper-package' $metadata_file)
+            if [ -z "$version" ] || [ "$version" = "null" ] || \
+               [ -z "$name" ] || [ "$name" = "null" ] || \
+               [ -z "$service" ] || [ "$service" = "null" ] || \
+               [ -z "$package" ] || [ "$package" = "null" ] || \
+               [ -z "$class_name" ] || [ "$class_name" = "null" ] || \
+               [ -z "$wrapper_package" ] || [ "$wrapper_package" = "null" ]; then
+              echo "ERROR: event metadata is incomplete in $metadata_file"
+              exit 1
+            fi
             echo "api_version=$version" >> $GITHUB_OUTPUT
             echo "api_name=${service}-${name}" >> $GITHUB_OUTPUT
             echo "event_service=$service" >> $GITHUB_OUTPUT
@@ -130,6 +161,11 @@ jobs:
             echo "event_class=$class_name" >> $GITHUB_OUTPUT
             echo "event_wrapper_package=$wrapper_package" >> $GITHUB_OUTPUT
           else
+            metadata_file="./apis/${{ steps.find-api-spec.outputs.definition_path }}/metadata.yml"
+            if [ ! -f "$metadata_file" ]; then
+              echo "ERROR: metadata.yml not found at $metadata_file"
+              exit 1
+            fi
             version=$(yq eval '.api.version' $metadata_file)
             name=$(yq eval '.api.name' $metadata_file)
             echo "api_version=$version" >> $GITHUB_OUTPUT
