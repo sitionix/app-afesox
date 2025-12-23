@@ -65,10 +65,8 @@ Register event builds for `/generate` in:
 apis/metadata.yml
 ```
 
-Event entries need:
-- `definition-path: /<service>/event`
-- `event-name`
-- `event-version`
+Event entries use:
+- `definition-path: /<service>/event/<event-name>/<version>`
 
 
 Example dummy event:

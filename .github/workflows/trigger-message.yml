@@ -107,17 +107,6 @@ jobs:
             echo "ERROR: name not found in apis/metadata.yml"
             exit 1
           fi
-          if [[ "$api_spec_type" == event-* ]]; then
-            event_name=$(yq eval ".apis[] | select(.name == \"$api_name\") | .event-name" ./apis/metadata.yml)
-            event_version=$(yq eval ".apis[] | select(.name == \"$api_name\") | .event-version" ./apis/metadata.yml)
-            if [ -z "$event_name" ] || [ "$event_name" = "null" ] || \
-               [ -z "$event_version" ] || [ "$event_version" = "null" ]; then
-              echo "ERROR: event-name or event-version missing in apis/metadata.yml"
-              exit 1
-            fi
-            echo "event_name=$event_name" >> $GITHUB_OUTPUT
-            echo "event_version=$event_version" >> $GITHUB_OUTPUT
-          fi
           echo "api_spec_type=$api_spec_type" >> $GITHUB_OUTPUT
           echo "definition_path=$definition_path" >> $GITHUB_OUTPUT
 
@@ -128,11 +117,15 @@ jobs:
           echo "Resolved api_spec_type: $api_spec_type"
           if echo "$api_spec_type" | grep -q "^event-"; then
             definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
-            event_name="${{ steps.find-api-spec.outputs.event_name }}"
-            event_version="${{ steps.find-api-spec.outputs.event_version }}"
             definition_path="${definition_path#/}"
             event_service=$(echo "$definition_path" | cut -d'/' -f1)
-            metadata_file="./apis/${definition_path}/${event_name}/${event_version}/metadata.yml"
+            event_name=$(echo "$definition_path" | cut -d'/' -f3)
+            event_version=$(echo "$definition_path" | cut -d'/' -f4)
+            if [ -z "$event_name" ] || [ -z "$event_version" ]; then
+              echo "ERROR: event definition-path must be /<service>/event/<event-name>/<version>"
+              exit 1
+            fi
+            metadata_file="./apis/${definition_path}/metadata.yml"
             if [ ! -f "$metadata_file" ]; then
               echo "ERROR: event metadata.yml not found at $metadata_file"
               exit 1
