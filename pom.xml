@@ -256,7 +256,7 @@
                         <executions>
                             <execution>
                                 <id>stage-avro-schemas</id>
-                                <phase>generate-sources</phase>
+                                <phase>generate-resources</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
@@ -370,7 +370,7 @@
                         <executions>
                             <execution>
                                 <id>stage-avro-schemas</id>
-                                <phase>generate-sources</phase>
+                                <phase>generate-resources</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
