@@ -124,11 +124,14 @@ jobs:
       - name: Read additional metadata from definition-path
         id: read-definition-metadata
         run: |
-          if [[ "${{ steps.find-api-spec.outputs.api_spec_type }}" == event-* ]]; then
+          api_spec_type="${{ steps.find-api-spec.outputs.api_spec_type }}"
+          echo "Resolved api_spec_type: $api_spec_type"
+          if echo "$api_spec_type" | grep -q "^event-"; then
             definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
             event_name="${{ steps.find-api-spec.outputs.event_name }}"
             event_version="${{ steps.find-api-spec.outputs.event_version }}"
-            event_service=$(echo "$definition_path" | cut -d'/' -f2)
+            definition_path="${definition_path#/}"
+            event_service=$(echo "$definition_path" | cut -d'/' -f1)
             metadata_file="./apis/${definition_path}/${event_name}/${event_version}/metadata.yml"
             if [ ! -f "$metadata_file" ]; then
               echo "ERROR: event metadata.yml not found at $metadata_file"
@@ -161,7 +164,9 @@ jobs:
             echo "event_class=$class_name" >> $GITHUB_OUTPUT
             echo "event_wrapper_package=$wrapper_package" >> $GITHUB_OUTPUT
           else
-            metadata_file="./apis/${{ steps.find-api-spec.outputs.definition_path }}/metadata.yml"
+            definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
+            definition_path="${definition_path#/}"
+            metadata_file="./apis/${definition_path}/metadata.yml"
             if [ ! -f "$metadata_file" ]; then
               echo "ERROR: metadata.yml not found at $metadata_file"
               exit 1
