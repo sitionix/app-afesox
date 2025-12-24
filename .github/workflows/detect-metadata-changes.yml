@@ -39,6 +39,8 @@ jobs:
           if [ -z "$CHANGED_API" ] && [ -z "$CHANGED_EVENT" ]; then
             echo "changed=none" >> $GITHUB_OUTPUT
             echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+            echo "matrix_api={\"include\":[]}" >> $GITHUB_OUTPUT
+            echo "matrix_event={\"include\":[]}" >> $GITHUB_OUTPUT
             exit 0
           fi
 
@@ -107,7 +109,12 @@ jobs:
             exit 1
           fi
 
+          API_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api")]')
+          EVENT_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "event")]')
+
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
+          echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
+          echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
 
       - name: Upload changed files
         if: steps.set_outputs.outputs.changed != 'none'
