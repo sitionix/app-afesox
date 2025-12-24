@@ -38,28 +38,16 @@ if [ "$mode" = "consumer" ]; then
 fi
 
 channels_json=$(yq -o=json '.channels' "$asyncapi")
-channel_count=$(echo "$channels_json" | yq -r --arg tag "$tag" --arg mode "$publish_or_subscribe" '
-  to_entries
-  | map(select(.value[$mode].tags[].name == $tag))
-  | length
-')
+escaped_tag=$(printf '%s' "$tag" | sed 's/"/\\"/g')
+count_expr="to_entries | map(select(.value.${publish_or_subscribe}.tags[].name == \"${escaped_tag}\")) | length"
+channel_count=$(echo "$channels_json" | yq -r "$count_expr")
 
 if [ "$channel_count" -eq 0 ]; then
   echo "ERROR: No $publish_or_subscribe channels found with tag $tag in $asyncapi"
   exit 1
 fi
 
-echo "$channels_json" | yq -r --arg tag "$tag" --arg mode "$publish_or_subscribe" '
-  to_entries
-  | map(select(.value[$mode].tags[].name == $tag))
-  | .[]
-  | [
-      .key,
-      .value[$mode]["x-itx-metadata-version"],
-      .value[$mode]["x-itx-envelop-namespace"],
-      .value[$mode]["x-itx-envelop-name"]
-    ] | @tsv
-' | while IFS=$'\t' read -r channel meta_version envelope_namespace envelope_name; do
+echo "$channels_json" | yq -r "to_entries | map(select(.value.${publish_or_subscribe}.tags[].name == \"${escaped_tag}\")) | .[] | [ .key, .value.${publish_or_subscribe}[\"x-itx-metadata-version\"], .value.${publish_or_subscribe}[\"x-itx-envelop-namespace\"], .value.${publish_or_subscribe}[\"x-itx-envelop-name\"] ] | @tsv" | while IFS=$'\t' read -r channel meta_version envelope_namespace envelope_name; do
   if [ -z "$meta_version" ] || [ "$meta_version" = "null" ]; then
     echo "ERROR: Missing x-itx-metadata-version for channel $channel"
     exit 1
@@ -78,6 +66,24 @@ echo "$channels_json" | yq -r --arg tag "$tag" --arg mode "$publish_or_subscribe
     class_name="${class_name}Consumer"
   fi
 
+  placeholder_array=$(CHANNEL_TEMPLATE="$channel" python3 - <<'PY'
+import os, re
+
+channel = os.environ["CHANNEL_TEMPLATE"]
+names = sorted(dict.fromkeys(re.findall(r'\$\{([^}]+)\}', channel)))
+if names:
+    print(", ".join(f"\"{name}\"" for name in names))
+else:
+    print("")
+PY
+)
+  placeholder_array=$(printf '%s' "$placeholder_array" | tr -d '\n')
+  if [ -z "$placeholder_array" ]; then
+    placeholder_init="{}"
+  else
+    placeholder_init="{${placeholder_array}}"
+  fi
+
   cat > "${out_dir}/${class_name}.java" <<EOF
 package ${base_package};
 
@@ -94,10 +100,31 @@ import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.core.env.Environment;
 import ${envelope_namespace}.${envelope_name};
 
 public class ${class_name} implements AutoCloseable {
-  private final String topic = "${channel}";
+EOF
+  printf '  private static final String DEFAULT_TOPIC = "%s";\n' "$(printf '%s' "$channel" | sed 's/\\/\\\\/g; s/"/\\"/g')" >> "${out_dir}/${class_name}.java"
+  cat >> "${out_dir}/${class_name}.java" <<EOF
+  private static final String[] PLACEHOLDER_KEYS = ${placeholder_init};
+  private final String topic;
+
+  private static String resolveTopic(Environment environment) {
+    if (PLACEHOLDER_KEYS.length == 0 || environment == null) {
+      return DEFAULT_TOPIC;
+    }
+    String topic = DEFAULT_TOPIC;
+    for (String key : PLACEHOLDER_KEYS) {
+      String value = environment.getProperty(key);
+      if (value == null) {
+        throw new IllegalStateException(
+            "Missing property '" + key + "' required to resolve topic " + DEFAULT_TOPIC);
+      }
+      topic = topic.replace("\${" + key + "}", value);
+    }
+    return topic;
+  }
 EOF
 
   if [ "$mode" = "producer" ]; then
@@ -105,6 +132,15 @@ EOF
   private final KafkaProducer<String, ${envelope_name}> producer;
 
   public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer) {
+    this(properties, valueSerializer, DEFAULT_TOPIC);
+  }
+
+  public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer, Environment environment) {
+    this(properties, valueSerializer, resolveTopic(environment));
+  }
+
+  public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer, String topic) {
+    this.topic = topic;
     this.producer = new KafkaProducer<>(properties, new StringSerializer(), valueSerializer);
   }
 
@@ -117,8 +153,17 @@ EOF
   private final KafkaConsumer<String, ${envelope_name}> consumer;
 
   public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer) {
+    this(properties, valueDeserializer, DEFAULT_TOPIC);
+  }
+
+  public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer, Environment environment) {
+    this(properties, valueDeserializer, resolveTopic(environment));
+  }
+
+  public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer, String topic) {
+    this.topic = topic;
     this.consumer = new KafkaConsumer<>(properties, new StringDeserializer(), valueDeserializer);
-    this.consumer.subscribe(Collections.singletonList(topic));
+    this.consumer.subscribe(Collections.singletonList(this.topic));
   }
 
   public void pollOnce(Duration timeout, Consumer<ConsumerRecord<String, ${envelope_name}>> handler) {

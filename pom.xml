@@ -228,18 +228,14 @@
                                 <id>generate-avro</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
                                 </goals>
                                 <configuration>
-                                    <sourceDirectory>${project.basedir}/apis</sourceDirectory>
+                                    <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
                                     <includes>
-                                        <include>common/event/*.avsc</include>
-                                        <include>${event.service}/event/${event.name}/**/*.avsc</include>
+                                        <include>**/*.avpr</include>
                                     </includes>
-                                    <imports>
-                                        <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
-                                    </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -252,6 +248,23 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>3.3.0</version>
                         <executions>
+                            <execution>
+                                <id>stage-event-avro</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/scripts/stage-avro-schemas.sh</argument>
+                                        <argument>${event.service}</argument>
+                                        <argument>${event.name}</argument>
+                                        <argument>${project.build.directory}/generated-sources/avro-schemas</argument>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>generate-producer-wrappers</id>
                                 <phase>generate-sources</phase>
@@ -323,18 +336,14 @@
                                 <id>generate-avro</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
                                 </goals>
                                 <configuration>
-                                    <sourceDirectory>${project.basedir}/apis</sourceDirectory>
+                                    <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
                                     <includes>
-                                        <include>common/event/*.avsc</include>
-                                        <include>${event.service}/event/${event.name}/**/*.avsc</include>
+                                        <include>**/*.avpr</include>
                                     </includes>
-                                    <imports>
-                                        <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
-                                    </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -347,6 +356,23 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>3.3.0</version>
                         <executions>
+                            <execution>
+                                <id>stage-event-avro</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/scripts/stage-avro-schemas.sh</argument>
+                                        <argument>${event.service}</argument>
+                                        <argument>${event.name}</argument>
+                                        <argument>${project.build.directory}/generated-sources/avro-schemas</argument>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>generate-consumer-wrappers</id>
                                 <phase>generate-sources</phase>
