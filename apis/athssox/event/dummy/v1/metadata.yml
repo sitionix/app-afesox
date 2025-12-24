@@ -1,7 +1,0 @@
-event:
-  version: v1
-  name: dummy
-  service: athssox
-  package: com.app_afesox.athssox.events.dummy
-  class: DummyEvent
-  wrapper-package: com.app_afesox.athssox.events.dummy.kafka

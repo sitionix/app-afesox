@@ -13,7 +13,9 @@ apis:
     definition-path: /bffssox/api-first
   - name: EVENT Dummy ATHSSOX Producer
     api-spec-type: event-producer
-    definition-path: /athssox/event/dummy/v1
+    definition-path: /athssox/event
+    event-tag: Dummy
   - name: EVENT Dummy ATHSSOX Consumer
     api-spec-type: event-consumer
-    definition-path: /athssox/event/dummy/v1
+    definition-path: /athssox/event
+    event-tag: Dummy
