@@ -12,19 +12,12 @@
         <env.project.artifactId>${env.ARTIFACT_ID}</env.project.artifactId>
         <env.project.version>${env.VERSION}</env.project.version>
         <env.artifact.name>${env.NAME}</env.artifact.name>
-        <env.event.name>${EVENT_NAME}</env.event.name>
-        <env.event.version>${EVENT_VERSION}</env.event.version>
-        <env.event.service>${EVENT_SERVICE}</env.event.service>
-        <env.event.package>${EVENT_PACKAGE}</env.event.package>
-        <env.event.class>${EVENT_CLASS}</env.event.class>
-        <env.event.wrapper.package>${EVENT_WRAPPER_PACKAGE}</env.event.wrapper.package>
-
-        <event.name>${env.event.name}</event.name>
-        <event.version>${env.event.version}</event.version>
-        <event.service>${env.event.service}</event.service>
-        <event.package>${env.event.package}</event.package>
-        <event.class>${env.event.class}</event.class>
-        <event.wrapper.package>${env.event.wrapper.package}</event.wrapper.package>
+        <event.name>${EVENT_NAME}</event.name>
+        <event.version>${EVENT_VERSION}</event.version>
+        <event.service>${EVENT_SERVICE}</event.service>
+        <event.package>${EVENT_PACKAGE}</event.package>
+        <event.class>${EVENT_CLASS}</event.class>
+        <event.wrapper.package>${EVENT_WRAPPER_PACKAGE}</event.wrapper.package>
     </properties>
 
     <dependencies>
