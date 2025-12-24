@@ -1,0 +1,11 @@
+api:
+  version: 1.0.0
+  visibility: PUBLIC
+  metadata:
+    version: "1.0"
+  description: Dummy Event API
+  definition: asyncapi.yml
+  contact:
+    name: ATHSSOX
+    email: athssox@sitionix.com
+  type: application

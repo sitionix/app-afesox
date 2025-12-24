@@ -11,14 +11,30 @@ jobs:
 
   build-and-deploy:
     needs: detect
-    if: needs.detect.outputs.changed != 'none'
     strategy:
-      matrix: ${{ fromJson(needs.detect.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_api).include }}
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       name: ${{ matrix.name }}
       version: ${{ matrix.version }}
       execution: ${{ matrix.execution }}
+      variant: stable
+    secrets:
+      APP_AFESOX: ${{ secrets.APP_AFESOX }}
+
+  build-and-deploy-event:
+    needs: detect
+    strategy:
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_event).include }}
+    uses: ./.github/workflows/build-and-deploy-event.yml
+    with:
+      name: ${{ matrix.name }}
+      version: ${{ matrix.version }}
+      execution: ${{ matrix.execution }}
+      event_service: ${{ matrix.event_service }}
+      event_name: ${{ matrix.event_name }}
+      event_tag: ${{ matrix.event_tag }}
+      event_wrapper_package: com.app_afesox.${{ matrix.event_service }}.events.${{ matrix.event_name }}.kafka
       variant: stable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}

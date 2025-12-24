@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy Event
 
 on:
   workflow_call:
@@ -10,6 +10,18 @@ on:
         required: true
         type: string
       execution:
+        required: true
+        type: string
+      event_service:
+        required: true
+        type: string
+      event_name:
+        required: true
+        type: string
+      event_tag:
+        required: true
+        type: string
+      event_wrapper_package:
         required: true
         type: string
       variant:
@@ -29,7 +41,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy (${{ inputs.name }} - ${{ inputs.execution }} - ${{ inputs.version }})
+    name: Build and Deploy Event (${{ inputs.event_service }} - ${{ inputs.execution }} - ${{ inputs.version }})
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -65,6 +77,12 @@ jobs:
           path: ~/.openapi-generator
           key: openapi-${{ hashFiles('**/openapi-rest.yml') }}
 
+      - name: Install yq
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+          wget https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
       - name: Setup Maven settings
         run: |
           mkdir -p ~/.m2
@@ -80,22 +98,47 @@ jobs:
 
       - name: Set dynamic environment variables
         run: |
+          event_exec=$(echo "${{ inputs.execution }}" | sed 's/^event-//')
           echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
-          echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
+          echo "ARTIFACT_ID=app-afesox-${{ inputs.event_service }}-event-${{ inputs.event_name }}-${event_exec}-${{ inputs.variant }}" >> $GITHUB_ENV
           echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
           echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
+          echo "EVENT_SERVICE=${{ inputs.event_service }}" >> $GITHUB_ENV
+          echo "EVENT_NAME=${{ inputs.event_name }}" >> $GITHUB_ENV
+          echo "EVENT_TAG=${{ inputs.event_tag }}" >> $GITHUB_ENV
+          echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}" >> $GITHUB_ENV
+
+      - name: Validate event inputs
+        run: |
+          echo "EVENT_SERVICE=${{ inputs.event_service }}"
+          echo "EVENT_NAME=${{ inputs.event_name }}"
+          echo "EVENT_TAG=${{ inputs.event_tag }}"
+          echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}"
+          if [ -z "${{ inputs.event_service }}" ] || \
+             [ -z "${{ inputs.event_name }}" ] || \
+             [ -z "${{ inputs.event_tag }}" ] || \
+             [ -z "${{ inputs.event_wrapper_package }}" ]; then
+            echo "ERROR: Missing event inputs for event build."
+            exit 1
+          fi
 
       - name: Build and Deploy
         run: |
-          echo "::group::🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
+          echo "::group::🔧 Building $EVENT_SERVICE ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
           set -euo pipefail
+          EVENT_ARGS="-DEVENT_SERVICE=${{ inputs.event_service }} \
+            -DEVENT_NAME=${{ inputs.event_name }} \
+            -DEVENT_TAG=${{ inputs.event_tag }} \
+            -DEVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}"
+
           mvn clean deploy -P$EXECUTION \
             -Dproject.version=$VERSION \
             -DARTIFACT_ID=$ARTIFACT_ID \
             -DVERSION=$VERSION \
             -DNAME=$NAME \
-            -DVARIANT=$VARIANT
+            -DVARIANT=$VARIANT \
+            $EVENT_ARGS
           echo "::endgroup::"
 
   notify-failure:
@@ -147,7 +190,8 @@ jobs:
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
 
             const groupId = "com.afesox";
-            const artifactId = `app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}`;
+            const eventExec = `${{ inputs.execution }}`.replace('event-', '');
+            const artifactId = `app-afesox-${{ inputs.event_service }}-event-${{ inputs.event_name }}-${eventExec}-${{ inputs.variant }}`;
             const version = `${{ inputs.version }}`;
 
             const body = [

@@ -11,10 +11,10 @@ import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import ${event.package}.${event.class};
 
-public class ${event.class}Consumer implements AutoCloseable {
+public class EventConsumer implements AutoCloseable {
     private final KafkaConsumer<String, ${event.class}> consumer;
 
-    public ${event.class}Consumer(Properties properties, Deserializer<${event.class}> valueDeserializer, String topic) {
+    public EventConsumer(Properties properties, Deserializer<${event.class}> valueDeserializer, String topic) {
         this.consumer = new KafkaConsumer<>(properties, new StringDeserializer(), valueDeserializer);
         this.consumer.subscribe(Collections.singletonList(topic));
     }

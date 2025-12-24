@@ -1,0 +1,42 @@
+asyncapi: 2.0.0
+info:
+  title: EVENT ATHSSOX Dummy
+  version: 1.0.0
+  description: Dummy event for ATHSSOX
+defaultContentType: application/*+avro
+
+channels:
+  athssox.dummy.${environment}.public.v1:
+    description: Dummy event topic
+    parameters:
+      environment:
+        $ref: '#/components/parameters/environment'
+    publish:
+      summary: Publish dummy event
+      operationId: publishDummy
+      tags:
+        - name: Dummy
+      bindings:
+        kafka:
+          bindingVersion: 'latest'
+      x-itx-metadata-version: v1
+      x-itx-envelop-namespace: com.app_afesox.athssox.events.dummy
+      x-itx-envelop-name: DummyEventEnvelope
+      message:
+        $ref: '#/components/messages/DummyEvent'
+
+components:
+  messages:
+    DummyEvent:
+      name: DummyEvent
+      title: Dummy event
+      summary: Dummy event payload
+      contentType: application/*+avro
+      schemaFormat: application/vnd.apache.avro+json;version=1.0.0
+      payload:
+        $ref: "dummy/v1/imports/dummy_event.avsc"
+  parameters:
+    environment:
+      description: The environment identifier
+      schema:
+        type: string

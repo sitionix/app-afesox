@@ -12,17 +12,10 @@
         <env.project.artifactId>${env.ARTIFACT_ID}</env.project.artifactId>
         <env.project.version>${env.VERSION}</env.project.version>
         <env.artifact.name>${env.NAME}</env.artifact.name>
-        <env.event.name>${env.EVENT_NAME}</env.event.name>
-        <env.event.version>${env.EVENT_VERSION}</env.event.version>
-        <env.event.package>${env.EVENT_PACKAGE}</env.event.package>
-        <env.event.class>${env.EVENT_CLASS}</env.event.class>
-        <env.event.wrapper.package>${env.EVENT_WRAPPER_PACKAGE}</env.event.wrapper.package>
-
-        <event.name>${env.event.name}</event.name>
-        <event.version>${env.event.version}</event.version>
-        <event.package>${env.event.package}</event.package>
-        <event.class>${env.event.class}</event.class>
-        <event.wrapper.package>${env.event.wrapper.package}</event.wrapper.package>
+        <event.name>${EVENT_NAME}</event.name>
+        <event.service>${EVENT_SERVICE}</event.service>
+        <event.tag>${EVENT_TAG}</event.tag>
+        <event.wrapper.package>${EVENT_WRAPPER_PACKAGE}</event.wrapper.package>
     </properties>
 
     <dependencies>
@@ -235,11 +228,14 @@
                                 <id>generate-avro</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
                                 </goals>
                                 <configuration>
                                     <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
+                                    <includes>
+                                        <include>**/*.avpr</include>
+                                    </includes>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -248,53 +244,44 @@
                     </plugin>
 
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.3.1</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
-                                <id>stage-avro-schemas</id>
-                                <phase>generate-sources</phase>
+                                <id>stage-event-avro</id>
+                                <phase>initialize</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/avro-schemas</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/common/event</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/${env.artifact.name}/event/${event.name}/${event.version}</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/scripts/stage-avro-schemas.sh</argument>
+                                        <argument>${event.service}</argument>
+                                        <argument>${event.name}</argument>
+                                        <argument>${project.build.directory}/generated-sources/avro-schemas</argument>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>generate-producer-wrapper</id>
+                                <id>generate-producer-wrappers</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/events</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/src/main/resources/event-templates/producer</directory>
-                                            <filtering>true</filtering>
-                                            <includes>
-                                                <include>EventProducer.java</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/scripts/generate-event-wrappers.sh</argument>
+                                        <argument>producer</argument>
+                                        <argument>${event.service}</argument>
+                                        <argument>${event.tag}</argument>
+                                        <argument>${project.basedir}/apis/${event.service}/event/asyncapi.yml</argument>
+                                        <argument>${project.build.directory}/generated-sources/events</argument>
+                                        <argument>${event.wrapper.package}</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -349,11 +336,14 @@
                                 <id>generate-avro</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
                                 </goals>
                                 <configuration>
                                     <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
+                                    <includes>
+                                        <include>**/*.avpr</include>
+                                    </includes>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -362,53 +352,44 @@
                     </plugin>
 
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.3.1</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
-                                <id>stage-avro-schemas</id>
-                                <phase>generate-sources</phase>
+                                <id>stage-event-avro</id>
+                                <phase>initialize</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/avro-schemas</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/common/event</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                        <resource>
-                                            <directory>${project.basedir}/apis/${env.artifact.name}/event/${event.name}/${event.version}</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>**/*.avsc</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/scripts/stage-avro-schemas.sh</argument>
+                                        <argument>${event.service}</argument>
+                                        <argument>${event.name}</argument>
+                                        <argument>${project.build.directory}/generated-sources/avro-schemas</argument>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>generate-consumer-wrapper</id>
+                                <id>generate-consumer-wrappers</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/generated-sources/events</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.basedir}/src/main/resources/event-templates/consumer</directory>
-                                            <filtering>true</filtering>
-                                            <includes>
-                                                <include>EventConsumer.java</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/scripts/generate-event-wrappers.sh</argument>
+                                        <argument>consumer</argument>
+                                        <argument>${event.service}</argument>
+                                        <argument>${event.tag}</argument>
+                                        <argument>${project.basedir}/apis/${event.service}/event/asyncapi.yml</argument>
+                                        <argument>${project.build.directory}/generated-sources/events</argument>
+                                        <argument>${event.wrapper.package}</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>
@@ -441,7 +422,7 @@
 
     <distributionManagement>
         <repository>
-            <id>github</id>
+            <id>github-app-afesox</id>
             <name>Api-first Event Sitionix generator</name>
             <url>https://maven.pkg.github.com/sitionix/app-afesox</url>
         </repository>
