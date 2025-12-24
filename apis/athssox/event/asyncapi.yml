@@ -1,7 +1,7 @@
 asyncapi: 2.0.0
 info:
   title: EVENT ATHSSOX Dummy
-  version: 0.0.3
+  version: 0.0.2
   description: Dummy event for ATHSSOX
 defaultContentType: application/*+avro
 
