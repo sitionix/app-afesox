@@ -239,6 +239,9 @@
                                         <include>common/event/*.avsc</include>
                                         <include>${event.service}/event/${event.name}/${event.version}/**/*.avsc</include>
                                     </includes>
+                                    <imports>
+                                        <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
+                                    </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -331,6 +334,9 @@
                                         <include>common/event/*.avsc</include>
                                         <include>${event.service}/event/${event.name}/${event.version}/**/*.avsc</include>
                                     </includes>
+                                    <imports>
+                                        <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
+                                    </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
