@@ -37,13 +37,10 @@ if [ "$mode" = "consumer" ]; then
   publish_or_subscribe="subscribe"
 fi
 
-export EVENT_TAG="$tag"
-export EVENT_MODE="$publish_or_subscribe"
-
 channels_json=$(yq -o=json '.channels' "$asyncapi")
 channel_count=$(echo "$channels_json" | yq -r '
   to_entries
-  | map(select(.value[env("EVENT_MODE")].tags[].name == env("EVENT_TAG")))
+  | map(select(.value['"$publish_or_subscribe"'].tags[].name == "'$tag'"))
   | length
 ')
 
@@ -54,13 +51,13 @@ fi
 
 echo "$channels_json" | yq -r '
   to_entries
-  | map(select(.value[env("EVENT_MODE")].tags[].name == env("EVENT_TAG")))
+  | map(select(.value['"$publish_or_subscribe"'].tags[].name == "'$tag'"))
   | .[]
   | [
       .key,
-      .value[$mode]["x-itx-metadata-version"],
-      .value[$mode]["x-itx-envelop-namespace"],
-      .value[$mode]["x-itx-envelop-name"]
+      .value['"$publish_or_subscribe"']["x-itx-metadata-version"],
+      .value['"$publish_or_subscribe"']["x-itx-envelop-namespace"],
+      .value['"$publish_or_subscribe"']["x-itx-envelop-name"]
     ] | @tsv
 ' | while IFS=$'\t' read -r channel meta_version envelope_namespace envelope_name; do
   if [ -z "$meta_version" ] || [ "$meta_version" = "null" ]; then
