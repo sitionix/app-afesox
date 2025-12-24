@@ -90,15 +90,16 @@ jobs:
                 exit 1
               fi
 
-              yq -r ".apis[] | select(.definition-path == \"/${SERVICE}/event\") | [.api-spec-type, .event-tag] | @tsv" apis/metadata.yml | while IFS=$'\t' read -r EXEC EVENT_TAG; do
-                if [ -z "$EXEC" ] || [ -z "$EVENT_TAG" ]; then
-                  echo "::error:: Invalid event entry in apis/metadata.yml for ${SERVICE}"
-                  exit 1
-                fi
-                EVENT_NAME=$(echo "$EVENT_TAG" | tr '[:upper:]' '[:lower:]')
-                NAME="${SERVICE}-event-${EVENT_NAME}"
-                MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" --arg event_service "$SERVICE" --arg event_name "$EVENT_NAME" --arg event_tag "$EVENT_TAG" '. + [{kind: "event", name: $name, execution: $execution, version: $version, event_service: $event_service, event_name: $event_name, event_tag: $event_tag}]')
-              done
+          EVENT_MATRIX=$(yq -r ".apis[] | select(.definition-path == \"/${SERVICE}/event\") | [.api-spec-type, .event-tag] | @tsv" apis/metadata.yml)
+          while IFS=$'\t' read -r EXEC EVENT_TAG; do
+            if [ -z "$EXEC" ] || [ -z "$EVENT_TAG" ]; then
+              echo "::error:: Invalid event entry in apis/metadata.yml for ${SERVICE}"
+              exit 1
+            fi
+            EVENT_NAME=$(echo "$EVENT_TAG" | tr '[:upper:]' '[:lower:]')
+            NAME="${SERVICE}-event-${EVENT_NAME}"
+            MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" --arg event_service "$SERVICE" --arg event_name "$EVENT_NAME" --arg event_tag "$EVENT_TAG" '. + [{kind: "event", name: $name, execution: $execution, version: $version, event_service: $event_service, event_name: $event_name, event_tag: $event_tag}]')
+          done <<< "$EVENT_MATRIX"
             done <<< "$CHANGED_EVENT"
           fi
 
