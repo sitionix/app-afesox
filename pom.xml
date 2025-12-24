@@ -253,7 +253,7 @@
                         <executions>
                             <execution>
                                 <id>stage-event-avro</id>
-                                <phase>generate-resources</phase>
+                                <phase>initialize</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
@@ -364,7 +364,7 @@
                         <executions>
                             <execution>
                                 <id>stage-event-avro</id>
-                                <phase>generate-resources</phase>
+                                <phase>initialize</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
