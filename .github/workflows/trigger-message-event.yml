@@ -1,4 +1,4 @@
-name: Generate Message on Comment
+name: Generate Event Message on Comment
 
 on:
   issue_comment:
@@ -10,13 +10,17 @@ permissions:
 
 jobs:
   build:
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '/generate') && !contains(github.event.comment.body, 'EVENT ') }}
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '/generate') && contains(github.event.comment.body, 'EVENT ') }}
     runs-on: ubuntu-latest
     outputs:
       name: ${{ steps.read-definition-metadata.outputs.api_name }}
       execution: ${{ steps.find-api-spec.outputs.api_spec_type }}
       ticket: ${{ steps.extract-ticket-num.outputs.ticket_num }}
       version: ${{ steps.read-definition-metadata.outputs.api_version }}
+      event_service: ${{ steps.read-definition-metadata.outputs.event_service }}
+      event_tag: ${{ steps.read-definition-metadata.outputs.event_tag }}
+      event_name: ${{ steps.read-definition-metadata.outputs.event_name }}
+      event_wrapper_package: ${{ steps.read-definition-metadata.outputs.event_wrapper_package }}
       ref: ${{ steps.compute-ref.outputs.sha }}
     steps:
       - name: Checkout repository
@@ -52,7 +56,7 @@ jobs:
             
             const body = [
               '---',
-              '### 🚀 Workflow Execution Started',
+              '### 🚀 Event Workflow Execution Started',
               '',
               '- **Job Status:** In Progress ✅',
               `- **🔗 [View Workflow Run](${workflow_run_url})**`,
@@ -64,7 +68,6 @@ jobs:
               issue_number,
               body
             });
-
 
       - name: Verify GitHub Token Access
         run: |
@@ -94,41 +97,69 @@ jobs:
         id: find-api-spec
         run: |
           api_name="${{ steps.parse-command.outputs.api_name }}"
-          echo "Looking for API name: $api_name"
+          echo "Looking for EVENT name: $api_name"
           api_spec_type=$(yq eval ".apis[] | select(.name == \"$api_name\") | .api-spec-type" ./apis/metadata.yml)
           definition_path=$(yq eval ".apis[] | select(.name == \"$api_name\") | .definition-path" ./apis/metadata.yml)
+          event_tag=$(yq eval ".apis[] | select(.name == \"$api_name\") | .event-tag" ./apis/metadata.yml)
           api_spec_type=$(echo "$api_spec_type" | tr -d '\r' | xargs)
           definition_path=$(echo "$definition_path" | tr -d '\r' | xargs)
           if [ -z "$api_spec_type" ] || [ "$api_spec_type" = "null" ]; then
             echo "ERROR: name not found in apis/metadata.yml"
             exit 1
           fi
-          if echo "$api_spec_type" | grep -q "^event-"; then
-            echo "ERROR: event generation uses trigger-message-event.yml"
+          if ! echo "$api_spec_type" | grep -q "^event-"; then
+            echo "ERROR: event workflow only supports event-* entries."
+            exit 1
+          fi
+          if [ -z "$event_tag" ] || [ "$event_tag" = "null" ]; then
+            echo "ERROR: event-tag is required for event entries in apis/metadata.yml"
             exit 1
           fi
           echo "api_spec_type=$api_spec_type" >> $GITHUB_OUTPUT
           echo "definition_path=$definition_path" >> $GITHUB_OUTPUT
+          echo "event_tag=$event_tag" >> $GITHUB_OUTPUT
 
       - name: Read additional metadata from definition-path
         id: read-definition-metadata
         run: |
           definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
           definition_path="${definition_path#/}"
-          metadata_file="./apis/${definition_path}/metadata.yml"
+          event_service=$(echo "$definition_path" | cut -d'/' -f1)
+          event_tag="${{ steps.find-api-spec.outputs.event_tag }}"
+          event_name=$(echo "$event_tag" | tr '[:upper:]' '[:lower:]')
+          metadata_file="./apis/${event_service}/event/metadata.yml"
           if [ ! -f "$metadata_file" ]; then
-            echo "ERROR: metadata.yml not found at $metadata_file"
+            echo "ERROR: event metadata.yml not found at $metadata_file"
             exit 1
           fi
           version=$(yq eval '.api.version' $metadata_file)
-          name=$(yq eval '.api.name' $metadata_file)
-          if [ -z "$version" ] || [ "$version" = "null" ] || \
-             [ -z "$name" ] || [ "$name" = "null" ]; then
-            echo "ERROR: api metadata is incomplete in $metadata_file"
+          definition=$(yq eval '.api.definition' $metadata_file)
+          if [ -z "$definition" ] || [ "$definition" = "null" ]; then
+            definition="asyncapi.yml"
+          fi
+          asyncapi_file="./apis/${event_service}/event/${definition}"
+          if [ ! -f "$asyncapi_file" ]; then
+            echo "ERROR: asyncapi file not found at $asyncapi_file"
             exit 1
           fi
+          asyncapi_version=$(yq eval '.info.version' "$asyncapi_file")
+          if [ -z "$version" ] || [ "$version" = "null" ] || \
+             [ -z "$asyncapi_version" ] || [ "$asyncapi_version" = "null" ]; then
+            echo "ERROR: api.version or asyncapi.info.version missing"
+            exit 1
+          fi
+          if [ "$version" != "$asyncapi_version" ]; then
+            echo "ERROR: api.version ($version) and asyncapi.info.version ($asyncapi_version) must match"
+            exit 1
+          fi
+          wrapper_package="com.app_afesox.${event_service}.events.${event_name}.kafka"
+          echo "Resolved event metadata: service=$event_service tag=$event_tag version=$version"
           echo "api_version=$version" >> $GITHUB_OUTPUT
-          echo "api_name=$name" >> $GITHUB_OUTPUT
+          echo "api_name=${event_service}-event-${event_name}" >> $GITHUB_OUTPUT
+          echo "event_service=$event_service" >> $GITHUB_OUTPUT
+          echo "event_tag=$event_tag" >> $GITHUB_OUTPUT
+          echo "event_name=$event_name" >> $GITHUB_OUTPUT
+          echo "event_wrapper_package=$wrapper_package" >> $GITHUB_OUTPUT
 
       - name: Compute current ref
         id: compute-ref
@@ -137,9 +168,10 @@ jobs:
 
   delete-unused-version:
     needs: build
-    uses: ./.github/workflows/delete-unstable-workflow.yml
+    uses: ./.github/workflows/delete-unstable-event-workflow.yml
     with:
-      name: ${{ needs.build.outputs.name }}
+      event_service: ${{ needs.build.outputs.event_service }}
+      event_name: ${{ needs.build.outputs.event_name }}
       execution: ${{ needs.build.outputs.execution }}
       ticket: ${{ needs.build.outputs.ticket }}-unstable
       issue_number: ${{ github.event.issue.number }}
@@ -148,11 +180,15 @@ jobs:
 
   deploy:
     needs: [build, delete-unused-version]
-    uses: ./.github/workflows/build-and-deploy.yml
+    uses: ./.github/workflows/build-and-deploy-event.yml
     with:
       name: ${{ needs.build.outputs.name }}
       version: ${{ needs.build.outputs.version }}
       execution: ${{ needs.build.outputs.execution }}
+      event_service: ${{ needs.build.outputs.event_service }}
+      event_tag: ${{ needs.build.outputs.event_tag }}
+      event_name: ${{ needs.build.outputs.event_name }}
+      event_wrapper_package: ${{ needs.build.outputs.event_wrapper_package }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
       issue_number: ${{ github.event.issue.number }}
       ref: ${{ needs.build.outputs.ref }}
