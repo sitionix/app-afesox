@@ -135,13 +135,23 @@ jobs:
         run: |
           echo "::group::🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
           set -euo pipefail
+          EVENT_ARGS=""
+          if [ -n "${{ inputs.event_name }}" ]; then
+            EVENT_ARGS="-DEVENT_SERVICE=${{ inputs.event_service }} \
+              -DEVENT_NAME=${{ inputs.event_name }} \
+              -DEVENT_VERSION=${{ inputs.event_version }} \
+              -DEVENT_PACKAGE=${{ inputs.event_package }} \
+              -DEVENT_CLASS=${{ inputs.event_class }} \
+              -DEVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}"
+          fi
 
           mvn clean deploy -P$EXECUTION \
             -Dproject.version=$VERSION \
             -DARTIFACT_ID=$ARTIFACT_ID \
             -DVERSION=$VERSION \
             -DNAME=$NAME \
-            -DVARIANT=$VARIANT
+            -DVARIANT=$VARIANT \
+            $EVENT_ARGS
           echo "::endgroup::"
 
   notify-failure:

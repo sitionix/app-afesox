@@ -7,11 +7,11 @@ import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import ${event.package}.${event.class};
 
-public class ${event.class}Producer implements AutoCloseable {
+public class EventProducer implements AutoCloseable {
     private final KafkaProducer<String, ${event.class}> producer;
     private final String topic;
 
-    public ${event.class}Producer(Properties properties, Serializer<${event.class}> valueSerializer, String topic) {
+    public EventProducer(Properties properties, Serializer<${event.class}> valueSerializer, String topic) {
         this.producer = new KafkaProducer<>(properties, new StringSerializer(), valueSerializer);
         this.topic = topic;
     }
