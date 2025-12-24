@@ -33,34 +33,75 @@ jobs:
           BASE=$(git rev-parse origin/develop^)
           HEAD=$(git rev-parse origin/develop)
 
-          CHANGED=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'metadata.yml' | grep -v '^.github/' || true)
+          CHANGED_API=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'apis/.*/api-first/metadata.yml' || true)
+          CHANGED_EVENT=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'apis/.*/event/metadata.yml' || true)
 
-          if [ -z "$CHANGED" ]; then
+          if [ -z "$CHANGED_API" ] && [ -z "$CHANGED_EVENT" ]; then
             echo "changed=none" >> $GITHUB_OUTPUT
             echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "$CHANGED" > changed_files.txt
+          printf "%s\n%s\n" "$CHANGED_API" "$CHANGED_EVENT" | sed '/^$/d' > changed_files.txt
           echo "changed=true" >> $GITHUB_OUTPUT
 
           MATRIX_ITEMS="[]"
-          while IFS= read -r FILE; do
-            VERSION=$(yq e '.api.version' "$FILE")
-            NAME=$(yq e '.api.name' "$FILE")
-            EXECUTIONS=$(yq e '.api.executions[].type' "$FILE")
+          if [ -n "$CHANGED_API" ]; then
+            while IFS= read -r FILE; do
+              VERSION=$(yq e '.api.version' "$FILE")
+              NAME=$(yq e '.api.name' "$FILE")
+              EXECUTIONS=$(yq e '.api.executions[].type' "$FILE")
 
-            if [ -z "$VERSION" ] || [ -z "$NAME" ] || [ -z "$EXECUTIONS" ]; then
-              echo "::error:: Invalid metadata file: $FILE"
-              exit 1
-            fi
+              if [ -z "$VERSION" ] || [ -z "$NAME" ] || [ -z "$EXECUTIONS" ]; then
+                echo "::error:: Invalid api-first metadata file: $FILE"
+                exit 1
+              fi
 
-            for EXEC in $EXECUTIONS; do
-              MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '. + [{name: $name, execution: $execution, version: $version}]')
-            done
-          done < changed_files.txt
+              for EXEC in $EXECUTIONS; do
+                MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '. + [{kind: "api", name: $name, execution: $execution, version: $version}]')
+              done
+            done <<< "$CHANGED_API"
+          fi
+
+          if [ -n "$CHANGED_EVENT" ]; then
+            while IFS= read -r FILE; do
+              SERVICE=$(echo "$FILE" | awk -F/ '{print $2}')
+              VERSION=$(yq e '.api.version' "$FILE")
+              DEFINITION=$(yq e '.api.definition' "$FILE")
+              if [ -z "$DEFINITION" ] || [ "$DEFINITION" = "null" ]; then
+                DEFINITION="asyncapi.yml"
+              fi
+              ASYNCAPI_FILE="apis/${SERVICE}/event/${DEFINITION}"
+              ASYNCAPI_VERSION=$(yq e '.info.version' "$ASYNCAPI_FILE")
+
+              if [ -z "$VERSION" ] || [ "$VERSION" = "null" ] || \
+                 [ -z "$ASYNCAPI_VERSION" ] || [ "$ASYNCAPI_VERSION" = "null" ]; then
+                echo "::error:: Invalid event metadata or asyncapi for service ${SERVICE}"
+                exit 1
+              fi
+              if [ "$VERSION" != "$ASYNCAPI_VERSION" ]; then
+                echo "::error:: api.version ($VERSION) and asyncapi.info.version ($ASYNCAPI_VERSION) must match for ${SERVICE}"
+                exit 1
+              fi
+
+              yq -r ".apis[] | select(.definition-path == \"/${SERVICE}/event\") | [.api-spec-type, .event-tag] | @tsv" apis/metadata.yml | while IFS=$'\t' read -r EXEC EVENT_TAG; do
+                if [ -z "$EXEC" ] || [ -z "$EVENT_TAG" ]; then
+                  echo "::error:: Invalid event entry in apis/metadata.yml for ${SERVICE}"
+                  exit 1
+                fi
+                EVENT_NAME=$(echo "$EVENT_TAG" | tr '[:upper:]' '[:lower:]')
+                NAME="${SERVICE}-event-${EVENT_NAME}"
+                MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" --arg event_service "$SERVICE" --arg event_name "$EVENT_NAME" --arg event_tag "$EVENT_TAG" '. + [{kind: "event", name: $name, execution: $execution, version: $version, event_service: $event_service, event_name: $event_name, event_tag: $event_tag}]')
+              done
+            done <<< "$CHANGED_EVENT"
+          fi
 
           COUNT=$(echo "$MATRIX_ITEMS" | jq length)
+          if (( COUNT == 0 )); then
+            echo "changed=none" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           if (( COUNT > 250 )); then
             echo "::error:: Too many matrix items ($COUNT > 250)"
             exit 1
