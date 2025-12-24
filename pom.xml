@@ -228,17 +228,14 @@
                                 <id>generate-avro</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
                                 </goals>
                                 <configuration>
                                     <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
                                     <includes>
-                                        <include>**/*.avsc</include>
+                                        <include>**/*.avpr</include>
                                     </includes>
-                                    <imports>
-                                        <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
-                                    </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
@@ -339,17 +336,14 @@
                                 <id>generate-avro</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>schema</goal>
+                                    <goal>protocol</goal>
                                 </goals>
                                 <configuration>
                                     <sourceDirectory>${project.build.directory}/generated-sources/avro-schemas</sourceDirectory>
                                     <outputDirectory>${project.build.directory}/generated-sources/avro</outputDirectory>
                                     <includes>
-                                        <include>**/*.avsc</include>
+                                        <include>**/*.avpr</include>
                                     </includes>
-                                    <imports>
-                                        <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
-                                    </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
                                 </configuration>
