@@ -4,16 +4,16 @@ on:
   workflow_call:
     outputs:
       matrix:
-        description: "Matrix of changed modules"
+        description: "Matrix of changed modules (strategy.matrix compatible)"
         value: ${{ jobs.detect.outputs.matrix }}
       changed:
         description: "Boolean flag if anything changed"
         value: ${{ jobs.detect.outputs.changed }}
       matrix_api:
-        description: "API matrix rows"
+        description: "API matrix rows (strategy.matrix compatible)"
         value: ${{ jobs.detect.outputs.matrix_api }}
       matrix_event:
-        description: "Event matrix rows"
+        description: "Event matrix rows (strategy.matrix compatible)"
         value: ${{ jobs.detect.outputs.matrix_event }}
 
 jobs:
@@ -26,111 +26,207 @@ jobs:
       matrix_event: ${{ steps.set_outputs.outputs.matrix_event }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install yq and jq
         run: |
+          set -euo pipefail
           sudo apt-get update && sudo apt-get install -y jq
-          wget https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/local/bin/yq
+          wget -q https://github.com/mikefarah/yq/releases/download/v4.43.1/yq_linux_amd64 -O /usr/local/bin/yq
           chmod +x /usr/local/bin/yq
+          yq --version
+          jq --version
 
       - name: Detect changed metadata.yml files
         id: set_outputs
+        shell: bash
         run: |
-          git fetch origin develop --depth=2
-          BASE=$(git rev-parse origin/develop^)
-          HEAD=$(git rev-parse origin/develop)
+          set -euo pipefail
+
+          # ---------- helpers ----------
+          emit_empty() {
+            echo "changed=none" >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+            echo 'matrix_api={"include":[]}' >> "$GITHUB_OUTPUT"
+            echo 'matrix_event={"include":[]}' >> "$GITHUB_OUTPUT"
+          }
+
+          yq_val() {
+            # prints empty on null
+            local expr="$1"
+            local file="$2"
+            local v
+            v="$(yq e "$expr" "$file" 2>/dev/null || true)"
+            if [[ -z "$v" || "$v" == "null" ]]; then
+              echo ""
+            else
+              echo "$v"
+            fi
+          }
+
+          # ---------- determine base/head ----------
+          # Prefer actual triggering commit range if available, otherwise compare with origin/develop.
+          git fetch origin develop --prune
+
+          BASE=""
+          HEAD=""
+
+          if [[ -n "${GITHUB_EVENT_PATH:-}" ]] && command -v jq >/dev/null 2>&1; then
+            # push event: before/after
+            BASE="$(jq -r '.before // empty' "$GITHUB_EVENT_PATH" || true)"
+            HEAD="$(jq -r '.after // empty' "$GITHUB_EVENT_PATH" || true)"
+          fi
+
+          if [[ -z "$HEAD" ]]; then
+            HEAD="$(git rev-parse HEAD)"
+          fi
+
+          if [[ -z "$BASE" || "$BASE" == "0000000000000000000000000000000000000000" ]]; then
+            # fallback: previous commit of origin/develop
+            BASE="$(git rev-parse origin/develop^)"
+          fi
+
           echo "BASE=$BASE"
           echo "HEAD=$HEAD"
 
-          CHANGED_API=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'apis/.*/api-first/metadata.yml' || true)
-          CHANGED_EVENT=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'apis/.*/event/metadata.yml' || true)
+          # ---------- find changed files ----------
+          CHANGED_API="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/api-first/metadata\.yml$' || true)"
+          CHANGED_EVENT="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/event/metadata\.yml$' || true)"
+
           echo "CHANGED_API=$CHANGED_API"
           echo "CHANGED_EVENT=$CHANGED_EVENT"
 
-          if [ -z "$CHANGED_API" ] && [ -z "$CHANGED_EVENT" ]; then
-            echo "changed=none" >> $GITHUB_OUTPUT
-            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
-            echo "matrix_api={\"include\":[]}" >> $GITHUB_OUTPUT
-            echo "matrix_event={\"include\":[]}" >> $GITHUB_OUTPUT
+          if [[ -z "$CHANGED_API" && -z "$CHANGED_EVENT" ]]; then
+            emit_empty
             exit 0
           fi
 
           printf "%s\n%s\n" "$CHANGED_API" "$CHANGED_EVENT" | sed '/^$/d' > changed_files.txt
-          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "changed=true" >> "$GITHUB_OUTPUT"
 
-          MATRIX_ITEMS="[]"
-          if [ -n "$CHANGED_API" ]; then
+          MATRIX_ITEMS='[]'
+
+          # ---------- API-first items ----------
+          if [[ -n "$CHANGED_API" ]]; then
             while IFS= read -r FILE; do
-              VERSION=$(yq e '.api.version' "$FILE")
-              NAME=$(yq e '.api.name' "$FILE")
-              EXECUTIONS=$(yq e '.api.executions[].type' "$FILE")
+              [[ -z "$FILE" ]] && continue
+              [[ -f "$FILE" ]] || { echo "::error:: api-first metadata not found: $FILE"; exit 1; }
 
-              if [ -z "$VERSION" ] || [ -z "$NAME" ] || [ -z "$EXECUTIONS" ]; then
-                echo "::error:: Invalid api-first metadata file: $FILE"
+              VERSION="$(yq_val '.api.version' "$FILE")"
+              NAME="$(yq_val '.api.name' "$FILE")"
+
+              # executions as lines; empty means invalid
+              EXECUTIONS="$(yq e -r '.api.executions[].type // empty' "$FILE" 2>/dev/null || true)"
+
+              if [[ -z "$VERSION" || -z "$NAME" || -z "$EXECUTIONS" ]]; then
+                echo "::error:: Invalid api-first metadata file: $FILE (api.version/api.name/api.executions[].type required)"
                 exit 1
               fi
 
-              for EXEC in $EXECUTIONS; do
-                MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" '. + [{kind: "api", name: $name, execution: $execution, version: $version}]')
-              done
+              while IFS= read -r EXEC; do
+                [[ -z "$EXEC" ]] && continue
+                MATRIX_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c \
+                  --arg name "$NAME" \
+                  --arg execution "$EXEC" \
+                  --arg version "$VERSION" \
+                  '. + [{kind:"api", name:$name, execution:$execution, version:$version}]')"
+              done <<< "$EXECUTIONS"
             done <<< "$CHANGED_API"
           fi
 
-          if [ -n "$CHANGED_EVENT" ]; then
+          # ---------- Event items ----------
+          if [[ -n "$CHANGED_EVENT" ]]; then
             while IFS= read -r FILE; do
-              SERVICE=$(echo "$FILE" | awk -F/ '{print $2}')
-              VERSION=$(yq e '.api.version' "$FILE")
-              DEFINITION=$(yq e '.api.definition' "$FILE")
-              if [ -z "$DEFINITION" ] || [ "$DEFINITION" = "null" ]; then
+              [[ -z "$FILE" ]] && continue
+              [[ -f "$FILE" ]] || { echo "::error:: event metadata not found: $FILE"; exit 1; }
+
+              SERVICE="$(echo "$FILE" | awk -F/ '{print $2}')"
+              VERSION="$(yq_val '.api.version' "$FILE")"
+              DEFINITION="$(yq_val '.api.definition' "$FILE")"
+              WRAPPER_PKG="$(yq_val '.api.wrapperPackage' "$FILE")"
+
+              if [[ -z "$DEFINITION" ]]; then
                 DEFINITION="asyncapi.yml"
               fi
-              ASYNCAPI_FILE="apis/${SERVICE}/event/${DEFINITION}"
-              ASYNCAPI_VERSION=$(yq e '.info.version' "$ASYNCAPI_FILE")
 
-              if [ -z "$VERSION" ] || [ "$VERSION" = "null" ] || \
-                 [ -z "$ASYNCAPI_VERSION" ] || [ "$ASYNCAPI_VERSION" = "null" ]; then
-                echo "::error:: Invalid event metadata or asyncapi for service ${SERVICE}"
+              ASYNCAPI_FILE="apis/${SERVICE}/event/${DEFINITION}"
+              [[ -f "$ASYNCAPI_FILE" ]] || { echo "::error:: AsyncAPI file not found: $ASYNCAPI_FILE"; exit 1; }
+
+              ASYNCAPI_VERSION="$(yq_val '.info.version' "$ASYNCAPI_FILE")"
+
+              if [[ -z "$VERSION" || -z "$ASYNCAPI_VERSION" ]]; then
+                echo "::error:: Invalid event metadata or asyncapi for service ${SERVICE} (api.version and asyncapi.info.version required)"
                 exit 1
               fi
-              if [ "$VERSION" != "$ASYNCAPI_VERSION" ]; then
+
+              if [[ "$VERSION" != "$ASYNCAPI_VERSION" ]]; then
                 echo "::error:: api.version ($VERSION) and asyncapi.info.version ($ASYNCAPI_VERSION) must match for ${SERVICE}"
                 exit 1
               fi
 
-          EVENT_MATRIX=$(yq -r ".apis[] | select(.definition-path == \"/${SERVICE}/event\") | [.api-spec-type, .event-tag] | @tsv" apis/metadata.yml)
-          while IFS=$'\t' read -r EXEC EVENT_TAG; do
-            if [ -z "$EXEC" ] || [ -z "$EVENT_TAG" ]; then
-              echo "::error:: Invalid event entry in apis/metadata.yml for ${SERVICE}"
-              exit 1
-            fi
-            EVENT_NAME=$(echo "$EVENT_TAG" | tr '[:upper:]' '[:lower:]')
-            NAME="${SERVICE}-event-${EVENT_NAME}"
-            MATRIX_ITEMS=$(echo "$MATRIX_ITEMS" | jq --arg name "$NAME" --arg execution "$EXEC" --arg version "$VERSION" --arg event_service "$SERVICE" --arg event_name "$EVENT_NAME" --arg event_tag "$EVENT_TAG" '. + [{kind: "event", name: $name, execution: $execution, version: $version, event_service: $event_service, event_name: $event_name, event_tag: $event_tag}]')
-          done <<< "$EVENT_MATRIX"
+              # Fallback wrapper package from apis/metadata.yml if not present in service event metadata
+              if [[ -z "$WRAPPER_PKG" ]]; then
+                # You can adapt this selector/field to your real structure
+                WRAPPER_PKG="$(yq e -r ".apis[] | select(.definition-path == \"/${SERVICE}/event\") | .event-wrapper-package // empty" apis/metadata.yml 2>/dev/null | head -n1 || true)"
+              fi
+
+              if [[ -z "$WRAPPER_PKG" ]]; then
+                echo "::error:: Missing event_wrapper_package for ${SERVICE}. Provide .api.wrapperPackage in ${FILE} or set it in apis/metadata.yml"
+                exit 1
+              fi
+
+              EVENT_MATRIX="$(yq -r ".apis[] | select(.definition-path == \"/${SERVICE}/event\") | [.api-spec-type, .event-tag] | @tsv" apis/metadata.yml 2>/dev/null || true)"
+
+              if [[ -z "$EVENT_MATRIX" ]]; then
+                echo "::error:: No event entries found in apis/metadata.yml for ${SERVICE} (definition-path=/${SERVICE}/event)"
+                exit 1
+              fi
+
+              while IFS=$'\t' read -r EXEC EVENT_TAG; do
+                [[ -z "$EXEC" || -z "$EVENT_TAG" ]] && { echo "::error:: Invalid event entry in apis/metadata.yml for ${SERVICE}"; exit 1; }
+
+                EVENT_NAME="$(echo "$EVENT_TAG" | tr '[:upper:]' '[:lower:]')"
+                NAME="${SERVICE}-event-${EVENT_NAME}"
+
+                MATRIX_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c \
+                  --arg name "$NAME" \
+                  --arg execution "$EXEC" \
+                  --arg version "$VERSION" \
+                  --arg event_service "$SERVICE" \
+                  --arg event_name "$EVENT_NAME" \
+                  --arg event_tag "$EVENT_TAG" \
+                  --arg event_wrapper_package "$WRAPPER_PKG" \
+                  '. + [{kind:"event", name:$name, execution:$execution, version:$version, event_service:$event_service, event_name:$event_name, event_tag:$event_tag, event_wrapper_package:$event_wrapper_package}]')"
+              done <<< "$EVENT_MATRIX"
+
             done <<< "$CHANGED_EVENT"
           fi
 
-          COUNT=$(echo "$MATRIX_ITEMS" | jq length)
+          COUNT="$(echo "$MATRIX_ITEMS" | jq length)"
           echo "MATRIX_ITEMS=$MATRIX_ITEMS"
+
           if (( COUNT == 0 )); then
-            echo "changed=none" >> $GITHUB_OUTPUT
-            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+            emit_empty
             exit 0
           fi
+
           if (( COUNT > 250 )); then
             echo "::error:: Too many matrix items ($COUNT > 250)"
             exit 1
           fi
 
-          API_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api")]')
-          EVENT_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "event")]')
+          API_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api")]')"
+          EVENT_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "event")]')"
 
           echo "API_ITEMS=$API_ITEMS"
           echo "EVENT_ITEMS=$EVENT_ITEMS"
-          echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
-          echo "matrix_api=$API_ITEMS" >> $GITHUB_OUTPUT
-          echo "matrix_event=$EVENT_ITEMS" >> $GITHUB_OUTPUT
+
+          # IMPORTANT: outputs are strategy.matrix compatible objects
+          echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
+          echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
+          echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
 
       - name: Upload changed files
         if: steps.set_outputs.outputs.changed != 'none'
