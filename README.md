@@ -55,6 +55,8 @@ apis/<service>/event/metadata.yml
 apis/<service>/event/asyncapi.yml
 ```
 
+Each service event metadata file must also set `api.wrapperPackage` to the fully qualified package that should host the generated Kafka wrapper classes (for example `com.app_afesox.athssox.events.dummy.kafka`). The detect workflow uses this field (with an optional fallback to `event-wrapper-package` entries in `apis/metadata.yml`) to drive `-DEVENT_WRAPPER_PACKAGE` during builds.
+
 Common metadata schema:
 
 ```

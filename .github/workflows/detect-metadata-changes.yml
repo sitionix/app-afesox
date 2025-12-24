@@ -51,6 +51,7 @@ jobs:
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
             echo 'matrix_api={"include":[]}' >> "$GITHUB_OUTPUT"
             echo 'matrix_event={"include":[]}' >> "$GITHUB_OUTPUT"
+            echo 'changed_event=false' >> "$GITHUB_OUTPUT"
           }
 
           yq_val() {
@@ -103,6 +104,7 @@ jobs:
             exit 0
           fi
 
+          EVENT_CHANGED_FLAG=false
           printf "%s\n%s\n" "$CHANGED_API" "$CHANGED_EVENT" | sed '/^$/d' > changed_files.txt
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
@@ -138,6 +140,7 @@ jobs:
 
           # ---------- Event items ----------
           if [[ -n "$CHANGED_EVENT" ]]; then
+            EVENT_CHANGED_FLAG=true
             while IFS= read -r FILE; do
               [[ -z "$FILE" ]] && continue
               [[ -f "$FILE" ]] || { echo "::error:: event metadata not found: $FILE"; exit 1; }
@@ -227,6 +230,20 @@ jobs:
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
+          echo "changed_event=$EVENT_CHANGED_FLAG" >> "$GITHUB_OUTPUT"
+
+      - name: Validate event matrix output
+        run: |
+          matrix_event_output='${{ steps.set_outputs.outputs.matrix_event }}'
+          echo "matrix_event=${matrix_event_output}"
+          printf '%s\n' "$matrix_event_output" | jq -e '.' >/dev/null
+          if [[ "${{ steps.set_outputs.outputs.changed_event }}" == "true" ]]; then
+            count=$(printf '%s\n' "$matrix_event_output" | jq '.include | length')
+            if [[ "$count" -eq 0 ]]; then
+              echo "::error:: Event metadata changes were detected but matrix_event.include is empty."
+              exit 1
+            fi
+          fi
 
       - name: Upload changed files
         if: steps.set_outputs.outputs.changed != 'none'

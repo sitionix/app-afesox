@@ -34,7 +34,7 @@ jobs:
       event_service: ${{ matrix.event_service }}
       event_name: ${{ matrix.event_name }}
       event_tag: ${{ matrix.event_tag }}
-      event_wrapper_package: com.app_afesox.${{ matrix.event_service }}.events.${{ matrix.event_name }}.kafka
+      event_wrapper_package: ${{ matrix.event_wrapper_package }}
       variant: stable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
