@@ -104,7 +104,7 @@ jobs:
             exit 0
           fi
 
-          EVENT_CHANGED_FLAG=false
+          EVENT_MATRIX_FLAG=false
           printf "%s\n%s\n" "$CHANGED_API" "$CHANGED_EVENT" | sed '/^$/d' > changed_files.txt
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
@@ -140,7 +140,6 @@ jobs:
 
           # ---------- Event items ----------
           if [[ -n "$CHANGED_EVENT" ]]; then
-            EVENT_CHANGED_FLAG=true
             while IFS= read -r FILE; do
               [[ -z "$FILE" ]] && continue
               [[ -f "$FILE" ]] || { echo "::error:: event metadata not found: $FILE"; exit 1; }
@@ -193,6 +192,22 @@ jobs:
                 EVENT_NAME="$(echo "$EVENT_TAG" | tr '[:upper:]' '[:lower:]')"
                 NAME="${SERVICE}-event-${EVENT_NAME}"
 
+                case "$EXEC" in
+                  event-producer) CHANNEL_DIR=publish ;;
+                  event-consumer) CHANNEL_DIR=subscribe ;;
+                  *)
+                    echo "::error:: Unsupported event execution type '$EXEC' in apis/metadata.yml for ${SERVICE}"
+                    exit 1
+                    ;;
+                esac
+
+                CHANNEL_COUNT="$(yq -r "to_entries | map(select(.value.${CHANNEL_DIR}.tags[]?.name == \"${EVENT_TAG}\")) | length" "$ASYNCAPI_FILE" 2>/dev/null || true)"
+
+                if [[ "$CHANNEL_COUNT" == "" || "$CHANNEL_COUNT" == "0" ]]; then
+                  echo "::warning:: No ${CHANNEL_DIR} channel tagged '${EVENT_TAG}' in ${ASYNCAPI_FILE}; skipping ${EXEC} build for ${SERVICE}."
+                  continue
+                fi
+
                 MATRIX_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c \
                   --arg name "$NAME" \
                   --arg execution "$EXEC" \
@@ -226,11 +241,16 @@ jobs:
           echo "API_ITEMS=$API_ITEMS"
           echo "EVENT_ITEMS=$EVENT_ITEMS"
 
+          EVENT_COUNT="$(echo "$EVENT_ITEMS" | jq 'length')"
+          if (( EVENT_COUNT > 0 )); then
+            EVENT_MATRIX_FLAG=true
+          fi
+
           # IMPORTANT: outputs are strategy.matrix compatible objects
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
-          echo "changed_event=$EVENT_CHANGED_FLAG" >> "$GITHUB_OUTPUT"
+          echo "changed_event=$EVENT_MATRIX_FLAG" >> "$GITHUB_OUTPUT"
 
       - name: Validate event matrix output
         run: |
