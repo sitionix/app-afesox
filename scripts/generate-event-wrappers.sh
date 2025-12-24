@@ -66,6 +66,24 @@ echo "$channels_json" | yq -r "to_entries | map(select(.value.${publish_or_subsc
     class_name="${class_name}Consumer"
   fi
 
+  placeholder_array=$(CHANNEL_TEMPLATE="$channel" python3 - <<'PY'
+import os, re
+
+channel = os.environ["CHANNEL_TEMPLATE"]
+names = sorted(dict.fromkeys(re.findall(r'\$\{([^}]+)\}', channel)))
+if names:
+    print(", ".join(f"\"{name}\"" for name in names))
+else:
+    print("")
+PY
+)
+  placeholder_array=$(printf '%s' "$placeholder_array" | tr -d '\n')
+  if [ -z "$placeholder_array" ]; then
+    placeholder_init="{}"
+  else
+    placeholder_init="{${placeholder_array}}"
+  fi
+
   cat > "${out_dir}/${class_name}.java" <<EOF
 package ${base_package};
 
@@ -82,11 +100,31 @@ import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.core.env.Environment;
 import ${envelope_namespace}.${envelope_name};
 
 public class ${class_name} implements AutoCloseable {
-  private static final String DEFAULT_TOPIC = "${channel}";
+EOF
+  printf '  private static final String DEFAULT_TOPIC = "%s";\n' "$(printf '%s' "$channel" | sed 's/\\/\\\\/g; s/"/\\"/g')" >> "${out_dir}/${class_name}.java"
+  cat >> "${out_dir}/${class_name}.java" <<EOF
+  private static final String[] PLACEHOLDER_KEYS = ${placeholder_init};
   private final String topic;
+
+  private static String resolveTopic(Environment environment) {
+    if (PLACEHOLDER_KEYS.length == 0 || environment == null) {
+      return DEFAULT_TOPIC;
+    }
+    String topic = DEFAULT_TOPIC;
+    for (String key : PLACEHOLDER_KEYS) {
+      String value = environment.getProperty(key);
+      if (value == null) {
+        throw new IllegalStateException(
+            "Missing property '" + key + "' required to resolve topic " + DEFAULT_TOPIC);
+      }
+      topic = topic.replace("\${" + key + "}", value);
+    }
+    return topic;
+  }
 EOF
 
   if [ "$mode" = "producer" ]; then
@@ -95,6 +133,10 @@ EOF
 
   public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer) {
     this(properties, valueSerializer, DEFAULT_TOPIC);
+  }
+
+  public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer, Environment environment) {
+    this(properties, valueSerializer, resolveTopic(environment));
   }
 
   public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer, String topic) {
@@ -112,6 +154,10 @@ EOF
 
   public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer) {
     this(properties, valueDeserializer, DEFAULT_TOPIC);
+  }
+
+  public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer, Environment environment) {
+    this(properties, valueDeserializer, resolveTopic(environment));
   }
 
   public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer, String topic) {
