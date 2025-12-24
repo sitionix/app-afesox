@@ -37,10 +37,13 @@ if [ "$mode" = "consumer" ]; then
   publish_or_subscribe="subscribe"
 fi
 
+export EVENT_TAG="$tag"
+export EVENT_MODE="$publish_or_subscribe"
+
 channels_json=$(yq -o=json '.channels' "$asyncapi")
-channel_count=$(echo "$channels_json" | yq -r --arg tag "$tag" --arg mode "$publish_or_subscribe" '
+channel_count=$(echo "$channels_json" | yq -r '
   to_entries
-  | map(select(.value[$mode].tags[].name == $tag))
+  | map(select(.value[env("EVENT_MODE")].tags[].name == env("EVENT_TAG")))
   | length
 ')
 
@@ -49,9 +52,9 @@ if [ "$channel_count" -eq 0 ]; then
   exit 1
 fi
 
-echo "$channels_json" | yq -r --arg tag "$tag" --arg mode "$publish_or_subscribe" '
+echo "$channels_json" | yq -r '
   to_entries
-  | map(select(.value[$mode].tags[].name == $tag))
+  | map(select(.value[env("EVENT_MODE")].tags[].name == env("EVENT_TAG")))
   | .[]
   | [
       .key,
