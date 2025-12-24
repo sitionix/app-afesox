@@ -38,28 +38,16 @@ if [ "$mode" = "consumer" ]; then
 fi
 
 channels_json=$(yq -o=json '.channels' "$asyncapi")
-channel_count=$(echo "$channels_json" | yq -r '
-  to_entries
-  | map(select(.value['"$publish_or_subscribe"'].tags[].name == "'$tag'"))
-  | length
-')
+escaped_tag=$(printf '%s' "$tag" | sed 's/"/\\"/g')
+count_expr="to_entries | map(select(.value.${publish_or_subscribe}.tags[].name == \"${escaped_tag}\")) | length"
+channel_count=$(echo "$channels_json" | yq -r "$count_expr")
 
 if [ "$channel_count" -eq 0 ]; then
   echo "ERROR: No $publish_or_subscribe channels found with tag $tag in $asyncapi"
   exit 1
 fi
 
-echo "$channels_json" | yq -r '
-  to_entries
-  | map(select(.value['"$publish_or_subscribe"'].tags[].name == "'$tag'"))
-  | .[]
-  | [
-      .key,
-      .value['"$publish_or_subscribe"']["x-itx-metadata-version"],
-      .value['"$publish_or_subscribe"']["x-itx-envelop-namespace"],
-      .value['"$publish_or_subscribe"']["x-itx-envelop-name"]
-    ] | @tsv
-' | while IFS=$'\t' read -r channel meta_version envelope_namespace envelope_name; do
+echo "$channels_json" | yq -r "to_entries | map(select(.value.${publish_or_subscribe}.tags[].name == \"${escaped_tag}\")) | .[] | [ .key, .value.${publish_or_subscribe}[\"x-itx-metadata-version\"], .value.${publish_or_subscribe}[\"x-itx-envelop-namespace\"], .value.${publish_or_subscribe}[\"x-itx-envelop-name\"] ] | @tsv" | while IFS=$'\t' read -r channel meta_version envelope_namespace envelope_name; do
   if [ -z "$meta_version" ] || [ "$meta_version" = "null" ]; then
     echo "ERROR: Missing x-itx-metadata-version for channel $channel"
     exit 1
