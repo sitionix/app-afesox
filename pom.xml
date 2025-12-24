@@ -12,12 +12,12 @@
         <env.project.artifactId>${env.ARTIFACT_ID}</env.project.artifactId>
         <env.project.version>${env.VERSION}</env.project.version>
         <env.artifact.name>${env.NAME}</env.artifact.name>
-        <env.event.name>${env.EVENT_NAME}</env.event.name>
-        <env.event.version>${env.EVENT_VERSION}</env.event.version>
-        <env.event.service>${env.EVENT_SERVICE}</env.event.service>
-        <env.event.package>${env.EVENT_PACKAGE}</env.event.package>
-        <env.event.class>${env.EVENT_CLASS}</env.event.class>
-        <env.event.wrapper.package>${env.EVENT_WRAPPER_PACKAGE}</env.event.wrapper.package>
+        <env.event.name>${EVENT_NAME}</env.event.name>
+        <env.event.version>${EVENT_VERSION}</env.event.version>
+        <env.event.service>${EVENT_SERVICE}</env.event.service>
+        <env.event.package>${EVENT_PACKAGE}</env.event.package>
+        <env.event.class>${EVENT_CLASS}</env.event.class>
+        <env.event.wrapper.package>${EVENT_WRAPPER_PACKAGE}</env.event.wrapper.package>
 
         <event.name>${env.event.name}</event.name>
         <event.version>${env.event.version}</event.version>

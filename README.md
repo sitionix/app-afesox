@@ -80,25 +80,25 @@ apis/common/event/Metadata.avsc
 ### Generate a producer library
 
 ```
-EVENT_SERVICE=athssox \
-EVENT_NAME=dummy \
-EVENT_VERSION=v1 \
-EVENT_PACKAGE=com.app_afesox.athssox.events.dummy \
-EVENT_CLASS=DummyEvent \
-EVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.dummy.kafka \
-mvn clean package -Pevent-producer
+mvn clean package -Pevent-producer \
+  -DEVENT_SERVICE=athssox \
+  -DEVENT_NAME=dummy \
+  -DEVENT_VERSION=v1 \
+  -DEVENT_PACKAGE=com.app_afesox.athssox.events.dummy \
+  -DEVENT_CLASS=DummyEvent \
+  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.dummy.kafka
 ```
 
 ### Generate a consumer library
 
 ```
-EVENT_SERVICE=athssox \
-EVENT_NAME=dummy \
-EVENT_VERSION=v1 \
-EVENT_PACKAGE=com.app_afesox.athssox.events.dummy \
-EVENT_CLASS=DummyEvent \
-EVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.dummy.kafka \
-mvn clean package -Pevent-consumer
+mvn clean package -Pevent-consumer \
+  -DEVENT_SERVICE=athssox \
+  -DEVENT_NAME=dummy \
+  -DEVENT_VERSION=v1 \
+  -DEVENT_PACKAGE=com.app_afesox.athssox.events.dummy \
+  -DEVENT_CLASS=DummyEvent \
+  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.dummy.kafka
 ```
 
 Notes:
