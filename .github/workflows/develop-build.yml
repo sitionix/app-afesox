@@ -12,7 +12,7 @@ jobs:
   build-and-deploy:
     needs: detect
     strategy:
-      matrix: ${{ fromJson(needs.detect.outputs.matrix_api).include }}
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_api) }}
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       name: ${{ matrix.name }}
@@ -25,7 +25,7 @@ jobs:
   build-and-deploy-event:
     needs: detect
     strategy:
-      matrix: ${{ fromJson(needs.detect.outputs.matrix_event).include }}
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_event) }}
     uses: ./.github/workflows/build-and-deploy-event.yml
     with:
       name: ${{ matrix.name }}

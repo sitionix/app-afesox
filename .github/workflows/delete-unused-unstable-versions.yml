@@ -34,7 +34,7 @@ jobs:
     needs: [detect, parse-ticket]
     uses: ./.github/workflows/delete-unstable-workflow.yml
     strategy:
-      matrix: ${{ fromJson(needs.detect.outputs.matrix_api).include }}
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_api) }}
     with:
       name: ${{ matrix.name }}
       execution: ${{ matrix.execution }}
@@ -47,7 +47,7 @@ jobs:
     needs: [detect, parse-ticket]
     uses: ./.github/workflows/delete-unstable-event-workflow.yml
     strategy:
-      matrix: ${{ fromJson(needs.detect.outputs.matrix_event).include }}
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_event) }}
     with:
       event_service: ${{ matrix.event_service }}
       event_name: ${{ matrix.event_name }}

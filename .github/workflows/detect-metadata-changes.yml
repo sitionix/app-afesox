@@ -129,8 +129,8 @@ jobs:
           echo "API_ITEMS=$API_ITEMS"
           echo "EVENT_ITEMS=$EVENT_ITEMS"
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
-          echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
-          echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
+          echo "matrix_api=$API_ITEMS" >> $GITHUB_OUTPUT
+          echo "matrix_event=$EVENT_ITEMS" >> $GITHUB_OUTPUT
 
       - name: Upload changed files
         if: steps.set_outputs.outputs.changed != 'none'
