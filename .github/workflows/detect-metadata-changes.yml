@@ -32,9 +32,13 @@ jobs:
           git fetch origin develop --depth=2
           BASE=$(git rev-parse origin/develop^)
           HEAD=$(git rev-parse origin/develop)
+          echo "BASE=$BASE"
+          echo "HEAD=$HEAD"
 
           CHANGED_API=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'apis/.*/api-first/metadata.yml' || true)
           CHANGED_EVENT=$(git diff --name-only --diff-filter=AM $BASE $HEAD | grep 'apis/.*/event/metadata.yml' || true)
+          echo "CHANGED_API=$CHANGED_API"
+          echo "CHANGED_EVENT=$CHANGED_EVENT"
 
           if [ -z "$CHANGED_API" ] && [ -z "$CHANGED_EVENT" ]; then
             echo "changed=none" >> $GITHUB_OUTPUT
@@ -99,6 +103,7 @@ jobs:
           fi
 
           COUNT=$(echo "$MATRIX_ITEMS" | jq length)
+          echo "MATRIX_ITEMS=$MATRIX_ITEMS"
           if (( COUNT == 0 )); then
             echo "changed=none" >> $GITHUB_OUTPUT
             echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
@@ -112,6 +117,8 @@ jobs:
           API_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api")]')
           EVENT_ITEMS=$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "event")]')
 
+          echo "API_ITEMS=$API_ITEMS"
+          echo "EVENT_ITEMS=$EVENT_ITEMS"
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
           echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
           echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> $GITHUB_OUTPUT
