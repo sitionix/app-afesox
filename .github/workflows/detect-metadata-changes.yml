@@ -9,6 +9,12 @@ on:
       changed:
         description: "Boolean flag if anything changed"
         value: ${{ jobs.detect.outputs.changed }}
+      matrix_api:
+        description: "API matrix rows"
+        value: ${{ jobs.detect.outputs.matrix_api }}
+      matrix_event:
+        description: "Event matrix rows"
+        value: ${{ jobs.detect.outputs.matrix_event }}
 
 jobs:
   detect:
@@ -16,6 +22,8 @@ jobs:
     outputs:
       changed: ${{ steps.set_outputs.outputs.changed }}
       matrix: ${{ steps.set_outputs.outputs.matrix }}
+      matrix_api: ${{ steps.set_outputs.outputs.matrix_api }}
+      matrix_event: ${{ steps.set_outputs.outputs.matrix_event }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
