@@ -85,7 +85,8 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import ${envelope_namespace}.${envelope_name};
 
 public class ${class_name} implements AutoCloseable {
-  private final String topic = "${channel}";
+  private static final String DEFAULT_TOPIC = "${channel}";
+  private final String topic;
 EOF
 
   if [ "$mode" = "producer" ]; then
@@ -93,6 +94,11 @@ EOF
   private final KafkaProducer<String, ${envelope_name}> producer;
 
   public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer) {
+    this(properties, valueSerializer, DEFAULT_TOPIC);
+  }
+
+  public ${class_name}(Properties properties, Serializer<${envelope_name}> valueSerializer, String topic) {
+    this.topic = topic;
     this.producer = new KafkaProducer<>(properties, new StringSerializer(), valueSerializer);
   }
 
@@ -105,8 +111,13 @@ EOF
   private final KafkaConsumer<String, ${envelope_name}> consumer;
 
   public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer) {
+    this(properties, valueDeserializer, DEFAULT_TOPIC);
+  }
+
+  public ${class_name}(Properties properties, Deserializer<${envelope_name}> valueDeserializer, String topic) {
+    this.topic = topic;
     this.consumer = new KafkaConsumer<>(properties, new StringDeserializer(), valueDeserializer);
-    this.consumer.subscribe(Collections.singletonList(topic));
+    this.consumer.subscribe(Collections.singletonList(this.topic));
   }
 
   public void pollOnce(Duration timeout, Consumer<ConsumerRecord<String, ${envelope_name}>> handler) {
