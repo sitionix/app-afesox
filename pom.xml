@@ -239,7 +239,6 @@
                                     </includes>
                                     <imports>
                                         <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
-                                        <import>${project.basedir}/apis/${event.service}/event/${event.name}/**/imports/*.avsc</import>
                                     </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
@@ -335,7 +334,6 @@
                                     </includes>
                                     <imports>
                                         <import>${project.basedir}/apis/common/event/Metadata.avsc</import>
-                                        <import>${project.basedir}/apis/${event.service}/event/${event.name}/**/imports/*.avsc</import>
                                     </imports>
                                     <stringType>String</stringType>
                                     <createSetters>false</createSetters>
