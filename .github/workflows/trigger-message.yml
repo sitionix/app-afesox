@@ -103,6 +103,8 @@ jobs:
           echo "Looking for API name: $api_name"
           api_spec_type=$(yq eval ".apis[] | select(.name == \"$api_name\") | .api-spec-type" ./apis/metadata.yml)
           definition_path=$(yq eval ".apis[] | select(.name == \"$api_name\") | .definition-path" ./apis/metadata.yml)
+          api_spec_type=$(echo "$api_spec_type" | tr -d '\r' | xargs)
+          definition_path=$(echo "$definition_path" | tr -d '\r' | xargs)
           if [ -z "$api_spec_type" ] || [ "$api_spec_type" = "null" ]; then
             echo "ERROR: name not found in apis/metadata.yml"
             exit 1
@@ -167,6 +169,11 @@ jobs:
             fi
             version=$(yq eval '.api.version' $metadata_file)
             name=$(yq eval '.api.name' $metadata_file)
+            if [ -z "$version" ] || [ "$version" = "null" ] || \
+               [ -z "$name" ] || [ "$name" = "null" ]; then
+              echo "ERROR: api metadata is incomplete in $metadata_file"
+              exit 1
+            fi
             echo "api_version=$version" >> $GITHUB_OUTPUT
             echo "api_name=$name" >> $GITHUB_OUTPUT
           fi
