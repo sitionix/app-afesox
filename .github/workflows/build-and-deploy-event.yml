@@ -41,7 +41,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy Event (${{ inputs.event_service }} - ${{ inputs.execution }} - ${{ inputs.version }})
+    name: ${{ format('Event{0} • {1} • {2} • v{3}', inputs.execution == 'event-producer' && 'Producer' || 'Consumer', inputs.event_service, inputs.event_name, inputs.version) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

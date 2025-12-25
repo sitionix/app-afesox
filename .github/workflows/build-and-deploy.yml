@@ -29,7 +29,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy (${{ inputs.name }} - ${{ inputs.execution }} - ${{ inputs.version }})
+    name: ApiFirst • ${{ inputs.name }} • ${{ inputs.execution }} • v${{ inputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
