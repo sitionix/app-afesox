@@ -18,6 +18,9 @@ on:
       matrix_event:
         description: "Event matrix rows (strategy.matrix compatible)"
         value: ${{ jobs.detect.outputs.matrix_event }}
+      changed_event:
+        description: "Boolean flag if any event metadata changed"
+        value: ${{ jobs.detect.outputs.changed_event }}
 
 jobs:
   detect:
@@ -28,6 +31,7 @@ jobs:
       changed_api: ${{ steps.set_outputs.outputs.changed_api }}
       matrix_api: ${{ steps.set_outputs.outputs.matrix_api }}
       matrix_event: ${{ steps.set_outputs.outputs.matrix_event }}
+      changed_event: ${{ steps.set_outputs.outputs.changed_event }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
