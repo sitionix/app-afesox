@@ -11,6 +11,7 @@ jobs:
 
   build-and-deploy:
     needs: detect
+    if: ${{ needs.detect.outputs.changed_api == 'true' }}
     name: ${{ format('ApiFirst • {0} • {1} • v{2}', matrix.name, matrix.execution, matrix.version) }}
     strategy:
       matrix: ${{ fromJson(needs.detect.outputs.matrix_api) }}
@@ -25,6 +26,7 @@ jobs:
 
   build-and-deploy-event:
     needs: detect
+    if: ${{ needs.detect.outputs.changed_event == 'true' }}
     name: ${{ format('{0} • {1} • {2} • v{3}', matrix.execution == 'event-producer' && 'EventProducer' || 'EventConsumer', matrix.event_service, matrix.event_name, matrix.version) }}
     strategy:
       matrix: ${{ fromJson(needs.detect.outputs.matrix_event) }}

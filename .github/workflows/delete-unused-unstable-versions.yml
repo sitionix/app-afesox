@@ -32,6 +32,7 @@ jobs:
 
   delete-unused-version:
     needs: [detect, parse-ticket]
+    if: ${{ needs.detect.outputs.changed_api == 'true' }}
     uses: ./.github/workflows/delete-unstable-workflow.yml
     strategy:
       matrix: ${{ fromJson(needs.detect.outputs.matrix_api) }}
@@ -45,6 +46,7 @@ jobs:
 
   delete-unused-event-version:
     needs: [detect, parse-ticket]
+    if: ${{ needs.detect.outputs.changed_event == 'true' }}
     uses: ./.github/workflows/delete-unstable-event-workflow.yml
     strategy:
       matrix: ${{ fromJson(needs.detect.outputs.matrix_event) }}
