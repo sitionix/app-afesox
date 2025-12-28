@@ -1,9 +1,9 @@
 api:
-  version: 0.0.7
+  version: 0.0.1
   visibility: PUBLIC
   metadata:
     version: "1.0"
-  description: Dummy Event API
+  description: Auth Event API
   definition: asyncapi.yml
   contact:
     name: ATHSSOX

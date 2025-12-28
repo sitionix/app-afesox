@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "EmailVerifyEvent",
+  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string"
+    },
+    {
+      "name": "details",
+      "type": "string"
+    }
+  ]
+}
