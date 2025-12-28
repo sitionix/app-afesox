@@ -14,8 +14,8 @@ apis:
   - name: EVENT ATHSSOX Producer
     api-spec-type: event-producer
     definition-path: /athssox/event
-    event-tag: Dummy
+    event-tag: EmailVerify
   - name: EVENT ATHSSOX Consumer
     api-spec-type: event-consumer
     definition-path: /athssox/event
-    event-tag: Dummy
+    event-tag: EmailVerify
