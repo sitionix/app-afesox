@@ -1,0 +1,13 @@
+{
+  "type": "enum",
+  "name": "VerifyChannel",
+  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "doc": "Delivery channels supported by Notification Service.",
+  "symbols": [
+    "EMAIL",
+    "SMS",
+    "TELEGRAM",
+    "VIBER",
+    "PUSH"
+  ]
+}

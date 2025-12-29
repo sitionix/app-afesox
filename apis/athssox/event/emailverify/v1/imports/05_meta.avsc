@@ -1,0 +1,32 @@
+{
+  "type": "record",
+  "name": "Meta",
+  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "doc": "Correlation and auditing metadata for cross-service debugging.",
+  "fields": [
+    {
+      "name": "userId",
+      "type": "long",
+      "doc": "Authorization Service user identifier (BIGINT)."
+    },
+    {
+      "name": "siteId",
+      "type": "string",
+      "doc": "Site identifier (UUID string) for tenant context."
+    },
+    {
+      "name": "traceId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Distributed trace identifier for log correlation. Null if tracing is not enabled."
+    },
+    {
+      "name": "requestedAt",
+      "type": "string",
+      "doc": "Timestamp when verification was requested (ISO-8601 string)."
+    }
+  ]
+}
