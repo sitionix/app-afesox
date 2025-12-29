@@ -397,14 +397,28 @@ EOF
 package ${base_package};
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 
 @AutoConfiguration
 public class ${config_class} {
 
-  @Bean
-  public ${class_name} ${bean_name}(Environment environment) {
+  @Bean(name = "${bean_name}")
+  @ConditionalOnBean(name = "kafkaContainerManager")
+  @DependsOn("kafkaContainerManager")
+  public ${class_name} forgeIt${class_name}(Environment environment) {
+    return new ${class_name}(
+        KafkaClientProperties.buildProducerProperties(environment),
+        new SpecificRecordSerializer<>(),
+        environment);
+  }
+
+  @Bean(name = "${bean_name}")
+  @ConditionalOnMissingBean(name = "kafkaContainerManager")
+  public ${class_name} default${class_name}(Environment environment) {
     return new ${class_name}(
         KafkaClientProperties.buildProducerProperties(environment),
         new SpecificRecordSerializer<>(),
@@ -417,15 +431,29 @@ EOF
 package ${base_package};
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
 import ${envelope_namespace}.${envelope_name};
 
 @AutoConfiguration
 public class ${config_class} {
 
-  @Bean
-  public ${class_name} ${bean_name}(Environment environment) {
+  @Bean(name = "${bean_name}")
+  @ConditionalOnBean(name = "kafkaContainerManager")
+  @DependsOn("kafkaContainerManager")
+  public ${class_name} forgeIt${class_name}(Environment environment) {
+    return new ${class_name}(
+        KafkaClientProperties.buildConsumerProperties(environment),
+        new SpecificRecordDeserializer<>(${envelope_name}.getClassSchema()),
+        environment);
+  }
+
+  @Bean(name = "${bean_name}")
+  @ConditionalOnMissingBean(name = "kafkaContainerManager")
+  public ${class_name} default${class_name}(Environment environment) {
     return new ${class_name}(
         KafkaClientProperties.buildConsumerProperties(environment),
         new SpecificRecordDeserializer<>(${envelope_name}.getClassSchema()),
