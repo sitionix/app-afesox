@@ -9,7 +9,7 @@
     },
     {
       "name": "payload",
-      "type": "com.app_afesox.athssox.events.emailverify.EmailVerifyPayload"
+      "type": "com.app_afesox.athssox.events.emailverify.EmailVerifyEvent"
     }
   ]
 }
