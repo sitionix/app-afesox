@@ -276,7 +276,10 @@ final class KafkaClientProperties {
 }
 EOF
 
-mapfile -t channels < <(echo "$channels_json" | yq -r "to_entries | map(select(.value.${publish_or_subscribe}.tags[].name == \"${escaped_tag}\")) | .[] | [ .key, .value.${publish_or_subscribe}[\"x-itx-metadata-version\"], .value.${publish_or_subscribe}[\"x-itx-envelop-namespace\"], .value.${publish_or_subscribe}[\"x-itx-envelop-name\"] ] | @tsv")
+channels=()
+while IFS= read -r line; do
+  channels+=("$line")
+done < <(echo "$channels_json" | yq -r "to_entries | map(select(.value.${publish_or_subscribe}.tags[].name == \"${escaped_tag}\")) | .[] | [ .key, .value.${publish_or_subscribe}[\"x-itx-metadata-version\"], .value.${publish_or_subscribe}[\"x-itx-envelop-namespace\"], .value.${publish_or_subscribe}[\"x-itx-envelop-name\"] ] | @tsv")
 
 config_classes=()
 for channel_entry in "${channels[@]}"; do
@@ -449,6 +452,7 @@ public class ${config_class} {
   @ConditionalOnBean(name = "kafkaContainerManager")
   @DependsOn("kafkaContainerManager")
   public ${class_name} forgeIt${class_name}(Environment environment) {
+    KafkaSerdeDefaults.apply(environment);
     return new ${class_name}(
         KafkaClientProperties.buildProducerProperties(environment),
         new AvroRecordSerializer<>(),
