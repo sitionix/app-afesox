@@ -62,7 +62,7 @@ if [ "$channel_count" -eq 0 ]; then
   exit 1
 fi
 
-cat > "${out_dir}/SpecificRecordSerializer.java" <<EOF
+cat > "${out_dir}/AvroRecordSerializer.java" <<EOF
 package ${base_package};
 
 import java.io.ByteArrayOutputStream;
@@ -75,7 +75,7 @@ import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
-public class SpecificRecordSerializer<T extends SpecificRecord> implements Serializer<T> {
+public class AvroRecordSerializer<T extends SpecificRecord> implements Serializer<T> {
 
   @Override
   public byte[] serialize(String topic, T data) {
@@ -95,7 +95,7 @@ public class SpecificRecordSerializer<T extends SpecificRecord> implements Seria
 }
 EOF
 
-cat > "${out_dir}/SpecificRecordDeserializer.java" <<EOF
+cat > "${out_dir}/AvroRecordDeserializer.java" <<EOF
 package ${base_package};
 
 import java.io.IOException;
@@ -108,11 +108,11 @@ import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
-public class SpecificRecordDeserializer<T extends SpecificRecord> implements Deserializer<T> {
+public class AvroRecordDeserializer<T extends SpecificRecord> implements Deserializer<T> {
 
   private final Schema schema;
 
-  public SpecificRecordDeserializer(Schema schema) {
+  public AvroRecordDeserializer(Schema schema) {
     this.schema = schema;
   }
 
@@ -412,7 +412,7 @@ public class ${config_class} {
   public ${class_name} forgeIt${class_name}(Environment environment) {
     return new ${class_name}(
         KafkaClientProperties.buildProducerProperties(environment),
-        new SpecificRecordSerializer<>(),
+        new AvroRecordSerializer<>(),
         environment);
   }
 
@@ -421,7 +421,7 @@ public class ${config_class} {
   public ${class_name} default${class_name}(Environment environment) {
     return new ${class_name}(
         KafkaClientProperties.buildProducerProperties(environment),
-        new SpecificRecordSerializer<>(),
+        new AvroRecordSerializer<>(),
         environment);
   }
 }
@@ -447,7 +447,7 @@ public class ${config_class} {
   public ${class_name} forgeIt${class_name}(Environment environment) {
     return new ${class_name}(
         KafkaClientProperties.buildConsumerProperties(environment),
-        new SpecificRecordDeserializer<>(${envelope_name}.getClassSchema()),
+        new AvroRecordDeserializer<>(${envelope_name}.getClassSchema()),
         environment);
   }
 
@@ -456,7 +456,7 @@ public class ${config_class} {
   public ${class_name} default${class_name}(Environment environment) {
     return new ${class_name}(
         KafkaClientProperties.buildConsumerProperties(environment),
-        new SpecificRecordDeserializer<>(${envelope_name}.getClassSchema()),
+        new AvroRecordDeserializer<>(${envelope_name}.getClassSchema()),
         environment);
   }
 }
