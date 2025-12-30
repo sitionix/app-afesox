@@ -39,6 +39,8 @@ jobs:
       event_name: ${{ matrix.event_name }}
       event_tag: ${{ matrix.event_tag }}
       event_wrapper_package: ${{ matrix.event_wrapper_package }}
+      base_wrapper_package: ${{ matrix.base_wrapper_package }}
+      shared_kafka_package: ${{ matrix.shared_kafka_package }}
       variant: stable
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}

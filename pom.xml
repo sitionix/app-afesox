@@ -16,6 +16,8 @@
         <event.service>${EVENT_SERVICE}</event.service>
         <event.tag>${EVENT_TAG}</event.tag>
         <event.wrapper.package>${EVENT_WRAPPER_PACKAGE}</event.wrapper.package>
+        <event.base.wrapper.package>${EVENT_BASE_WRAPPER_PACKAGE}</event.base.wrapper.package>
+        <event.shared.kafka.package>${EVENT_SHARED_KAFKA_PACKAGE}</event.shared.kafka.package>
     </properties>
 
     <dependencies>
@@ -285,7 +287,10 @@
                                         <argument>${event.tag}</argument>
                                         <argument>${project.basedir}/apis/${event.service}/event/asyncapi.yml</argument>
                                         <argument>${project.build.directory}/generated-sources/events</argument>
+                                        <argument>${event.base.wrapper.package}</argument>
+                                        <argument>${event.name}</argument>
                                         <argument>${event.wrapper.package}</argument>
+                                        <argument>${event.shared.kafka.package}</argument>
                                         <argument>${project.build.directory}/generated-resources/events</argument>
                                     </arguments>
                                 </configuration>
@@ -413,7 +418,10 @@
                                         <argument>${event.tag}</argument>
                                         <argument>${project.basedir}/apis/${event.service}/event/asyncapi.yml</argument>
                                         <argument>${project.build.directory}/generated-sources/events</argument>
+                                        <argument>${event.base.wrapper.package}</argument>
+                                        <argument>${event.name}</argument>
                                         <argument>${event.wrapper.package}</argument>
+                                        <argument>${event.shared.kafka.package}</argument>
                                         <argument>${project.build.directory}/generated-resources/events</argument>
                                     </arguments>
                                 </configuration>

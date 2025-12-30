@@ -21,6 +21,8 @@ jobs:
       event_tag: ${{ steps.read-definition-metadata.outputs.event_tag }}
       event_name: ${{ steps.read-definition-metadata.outputs.event_name }}
       event_wrapper_package: ${{ steps.read-definition-metadata.outputs.event_wrapper_package }}
+      base_wrapper_package: ${{ steps.read-definition-metadata.outputs.base_wrapper_package }}
+      shared_kafka_package: ${{ steps.read-definition-metadata.outputs.shared_kafka_package }}
       ref: ${{ steps.compute-ref.outputs.sha }}
     steps:
       - name: Checkout repository
@@ -134,6 +136,7 @@ jobs:
           fi
           version=$(yq eval '.api.version' $metadata_file)
           definition=$(yq eval '.api.definition' $metadata_file)
+          base_wrapper_package=$(yq eval '.api.wrapperPackage' $metadata_file)
           if [ -z "$definition" ] || [ "$definition" = "null" ]; then
             definition="asyncapi.yml"
           fi
@@ -152,7 +155,20 @@ jobs:
             echo "ERROR: api.version ($version) and asyncapi.info.version ($asyncapi_version) must match"
             exit 1
           fi
-          wrapper_package="com.app_afesox.${event_service}.events.${event_name}.kafka"
+          if [ -z "$base_wrapper_package" ] || [ "$base_wrapper_package" = "null" ]; then
+            echo "ERROR: api.wrapperPackage is required in $metadata_file"
+            exit 1
+          fi
+          if [[ "$base_wrapper_package" == *.kafka ]]; then
+            echo "ERROR: api.wrapperPackage must not end with .kafka"
+            exit 1
+          fi
+          if [[ "$base_wrapper_package" == *".dummy."* ]] || [[ "$base_wrapper_package" == *.dummy ]] || [[ "$base_wrapper_package" == *.dummy.kafka ]]; then
+            echo "ERROR: api.wrapperPackage must not contain dummy"
+            exit 1
+          fi
+          wrapper_package="${base_wrapper_package}.${event_name}.kafka"
+          shared_kafka_package="${base_wrapper_package}.kafka"
           echo "Resolved event metadata: service=$event_service tag=$event_tag version=$version"
           echo "api_version=$version" >> $GITHUB_OUTPUT
           echo "api_name=${event_service}-event-${event_name}" >> $GITHUB_OUTPUT
@@ -160,6 +176,8 @@ jobs:
           echo "event_tag=$event_tag" >> $GITHUB_OUTPUT
           echo "event_name=$event_name" >> $GITHUB_OUTPUT
           echo "event_wrapper_package=$wrapper_package" >> $GITHUB_OUTPUT
+          echo "base_wrapper_package=$base_wrapper_package" >> $GITHUB_OUTPUT
+          echo "shared_kafka_package=$shared_kafka_package" >> $GITHUB_OUTPUT
 
       - name: Compute current ref
         id: compute-ref
@@ -189,6 +207,8 @@ jobs:
       event_tag: ${{ needs.build.outputs.event_tag }}
       event_name: ${{ needs.build.outputs.event_name }}
       event_wrapper_package: ${{ needs.build.outputs.event_wrapper_package }}
+      base_wrapper_package: ${{ needs.build.outputs.base_wrapper_package }}
+      shared_kafka_package: ${{ needs.build.outputs.shared_kafka_package }}
       variant: ${{ needs.build.outputs.ticket }}-unstable
       issue_number: ${{ github.event.issue.number }}
       ref: ${{ needs.build.outputs.ref }}

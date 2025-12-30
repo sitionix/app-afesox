@@ -55,7 +55,7 @@ apis/<service>/event/metadata.yml
 apis/<service>/event/asyncapi.yml
 ```
 
-Each service event metadata file must also set `api.wrapperPackage` to the fully qualified package that should host the generated Kafka wrapper classes (for example `com.app_afesox.athssox.events.dummy.kafka`). The detect workflow uses this field (with an optional fallback to `event-wrapper-package` entries in `apis/metadata.yml`) to drive `-DEVENT_WRAPPER_PACKAGE` during builds.
+Event wrapper packages are derived from a base `api.wrapperPackage` in `apis/<service>/event/metadata.yml` (no event name). Shared Kafka utilities live in `${base}.kafka`, while event wrappers live in `${base}.${event-name}.kafka`.
 
 Common metadata schema:
 
@@ -75,14 +75,14 @@ Event entries use:
 
 The tag must match the `publish`/`subscribe` tag in `asyncapi.yml`. All channels with that tag are included in the generated producer/consumer.
 
-Event generation uses names that start with `EVENT` (for example: `EVENT Dummy ATHSSOX Producer`).
+Event generation uses names that start with `EVENT` (for example: `EVENT EmailVerify ATHSSOX Producer`).
 
 
-Example dummy event:
+Example event:
 
 ```
-apis/athssox/event/dummy/v1/envelope.avsc
-apis/athssox/event/dummy/v1/imports/DummyEvent.avsc
+apis/athssox/event/emailverify/v1/envelope.avsc
+apis/athssox/event/emailverify/v1/imports/email_verify_event.avsc
 apis/common/event/Metadata.avsc
 ```
 
@@ -91,9 +91,11 @@ apis/common/event/Metadata.avsc
 ```
 mvn clean package -Pevent-producer \
   -DEVENT_SERVICE=athssox \
-  -DEVENT_NAME=dummy \
-  -DEVENT_TAG=Dummy \
-  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.dummy.kafka
+  -DEVENT_NAME=emailverify \
+  -DEVENT_TAG=EmailVerify \
+  -DEVENT_BASE_WRAPPER_PACKAGE=com.app_afesox.athssox.events \
+  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.emailverify.kafka \
+  -DEVENT_SHARED_KAFKA_PACKAGE=com.app_afesox.athssox.events.kafka
 ```
 
 ### Generate a consumer library
@@ -101,9 +103,11 @@ mvn clean package -Pevent-producer \
 ```
 mvn clean package -Pevent-consumer \
   -DEVENT_SERVICE=athssox \
-  -DEVENT_NAME=dummy \
-  -DEVENT_TAG=Dummy \
-  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.dummy.kafka
+  -DEVENT_NAME=emailverify \
+  -DEVENT_TAG=EmailVerify \
+  -DEVENT_BASE_WRAPPER_PACKAGE=com.app_afesox.athssox.events \
+  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.emailverify.kafka \
+  -DEVENT_SHARED_KAFKA_PACKAGE=com.app_afesox.athssox.events.kafka
 ```
 
 Notes:

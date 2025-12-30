@@ -24,6 +24,12 @@ on:
       event_wrapper_package:
         required: true
         type: string
+      base_wrapper_package:
+        required: true
+        type: string
+      shared_kafka_package:
+        required: true
+        type: string
       variant:
         required: false
         type: string
@@ -99,7 +105,16 @@ jobs:
       - name: Set dynamic environment variables
         run: |
           event_exec=$(echo "${{ inputs.execution }}" | sed 's/^event-//')
-          echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            if [[ "${{ inputs.version }}" != "$TAG_VERSION" ]]; then
+              echo "::error:: Tag version ($TAG_VERSION) does not match workflow input version (${{ inputs.version }})."
+              exit 1
+            fi
+            echo "VERSION=$TAG_VERSION" >> $GITHUB_ENV
+          else
+            echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          fi
           echo "ARTIFACT_ID=app-afesox-${{ inputs.event_service }}-event-${{ inputs.event_name }}-${event_exec}-${{ inputs.variant }}" >> $GITHUB_ENV
           echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
@@ -108,6 +123,8 @@ jobs:
           echo "EVENT_NAME=${{ inputs.event_name }}" >> $GITHUB_ENV
           echo "EVENT_TAG=${{ inputs.event_tag }}" >> $GITHUB_ENV
           echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}" >> $GITHUB_ENV
+          echo "BASE_WRAPPER_PACKAGE=${{ inputs.base_wrapper_package }}" >> $GITHUB_ENV
+          echo "SHARED_KAFKA_PACKAGE=${{ inputs.shared_kafka_package }}" >> $GITHUB_ENV
 
       - name: Validate event inputs
         run: |
@@ -115,11 +132,37 @@ jobs:
           echo "EVENT_NAME=${{ inputs.event_name }}"
           echo "EVENT_TAG=${{ inputs.event_tag }}"
           echo "EVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}"
+          echo "BASE_WRAPPER_PACKAGE=${{ inputs.base_wrapper_package }}"
+          echo "SHARED_KAFKA_PACKAGE=${{ inputs.shared_kafka_package }}"
           if [ -z "${{ inputs.event_service }}" ] || \
              [ -z "${{ inputs.event_name }}" ] || \
              [ -z "${{ inputs.event_tag }}" ] || \
-             [ -z "${{ inputs.event_wrapper_package }}" ]; then
+             [ -z "${{ inputs.event_wrapper_package }}" ] || \
+             [ -z "${{ inputs.base_wrapper_package }}" ] || \
+             [ -z "${{ inputs.shared_kafka_package }}" ]; then
             echo "ERROR: Missing event inputs for event build."
+            exit 1
+          fi
+          if [[ "${{ inputs.base_wrapper_package }}" == *.kafka ]]; then
+            echo "ERROR: BASE_WRAPPER_PACKAGE must not end with .kafka."
+            exit 1
+          fi
+          if [[ "${{ inputs.base_wrapper_package }}" == *".dummy."* ]] || [[ "${{ inputs.base_wrapper_package }}" == *.dummy ]] || [[ "${{ inputs.base_wrapper_package }}" == *.dummy.kafka ]]; then
+            echo "ERROR: BASE_WRAPPER_PACKAGE must not contain dummy."
+            exit 1
+          fi
+          if [[ "${{ inputs.event_wrapper_package }}" == *".dummy."* ]] || [[ "${{ inputs.event_wrapper_package }}" == *.dummy ]] || [[ "${{ inputs.event_wrapper_package }}" == *.dummy.kafka ]]; then
+            echo "ERROR: EVENT_WRAPPER_PACKAGE must not contain dummy."
+            exit 1
+          fi
+          expected_event_package="${{ inputs.base_wrapper_package }}.${{ inputs.event_name }}.kafka"
+          expected_shared_package="${{ inputs.base_wrapper_package }}.kafka"
+          if [[ "${{ inputs.event_wrapper_package }}" != "$expected_event_package" ]]; then
+            echo "ERROR: EVENT_WRAPPER_PACKAGE must be ${expected_event_package}."
+            exit 1
+          fi
+          if [[ "${{ inputs.shared_kafka_package }}" != "$expected_shared_package" ]]; then
+            echo "ERROR: SHARED_KAFKA_PACKAGE must be ${expected_shared_package}."
             exit 1
           fi
 
@@ -130,7 +173,9 @@ jobs:
           EVENT_ARGS="-DEVENT_SERVICE=${{ inputs.event_service }} \
             -DEVENT_NAME=${{ inputs.event_name }} \
             -DEVENT_TAG=${{ inputs.event_tag }} \
-            -DEVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }}"
+            -DEVENT_WRAPPER_PACKAGE=${{ inputs.event_wrapper_package }} \
+            -DEVENT_BASE_WRAPPER_PACKAGE=${{ inputs.base_wrapper_package }} \
+            -DEVENT_SHARED_KAFKA_PACKAGE=${{ inputs.shared_kafka_package }}"
 
           mvn clean deploy -P$EXECUTION \
             -Dproject.version=$VERSION \

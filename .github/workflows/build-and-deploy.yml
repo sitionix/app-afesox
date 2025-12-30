@@ -80,7 +80,16 @@ jobs:
 
       - name: Set dynamic environment variables
         run: |
-          echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            if [[ "${{ inputs.version }}" != "$TAG_VERSION" ]]; then
+              echo "::error:: Tag version ($TAG_VERSION) does not match workflow input version (${{ inputs.version }})."
+              exit 1
+            fi
+            echo "VERSION=$TAG_VERSION" >> $GITHUB_ENV
+          else
+            echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          fi
           echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
           echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV

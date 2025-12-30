@@ -7,10 +7,14 @@ tag="${3:-}"
 asyncapi="${4:-}"
 out_dir="${5:-}"
 base_package="${6:-}"
-resources_dir="${7:-}"
+event_name="${7:-}"
+event_package="${8:-}"
+shared_package="${9:-}"
+resources_dir="${10:-}"
 
-if [ -z "$mode" ] || [ -z "$service" ] || [ -z "$tag" ] || [ -z "$asyncapi" ] || [ -z "$out_dir" ] || [ -z "$base_package" ]; then
-  echo "Usage: $0 <producer|consumer> <service> <tag> <asyncapi.yml> <out_dir> <base_package> [resources_dir]"
+if [ -z "$mode" ] || [ -z "$service" ] || [ -z "$tag" ] || [ -z "$asyncapi" ] || [ -z "$out_dir" ] || \
+   [ -z "$base_package" ] || [ -z "$event_name" ] || [ -z "$event_package" ] || [ -z "$shared_package" ]; then
+  echo "Usage: $0 <producer|consumer> <service> <tag> <asyncapi.yml> <out_dir> <base_wrapper_package> <event_name> <event_wrapper_package> <shared_kafka_package> [resources_dir]"
   exit 1
 fi
 
@@ -23,10 +27,36 @@ if [ -z "$resources_dir" ]; then
   resources_dir="${out_dir/generated-sources/generated-resources}"
 fi
 
+if [[ "$base_package" == *".dummy."* ]] || [[ "$base_package" == *.dummy ]] || [[ "$base_package" == *.dummy.kafka ]]; then
+  echo "ERROR: BASE_WRAPPER_PACKAGE must not contain dummy."
+  exit 1
+fi
+
+if [[ "$base_package" == *.kafka ]]; then
+  echo "ERROR: BASE_WRAPPER_PACKAGE must not end with .kafka."
+  exit 1
+fi
+
+expected_event_package="${base_package}.${event_name}.kafka"
+expected_shared_package="${base_package}.kafka"
+
+if [[ "$event_package" != "$expected_event_package" ]]; then
+  echo "ERROR: EVENT_WRAPPER_PACKAGE must be ${expected_event_package}."
+  exit 1
+fi
+
+if [[ "$shared_package" != "$expected_shared_package" ]]; then
+  echo "ERROR: SHARED_KAFKA_PACKAGE must be ${expected_shared_package}."
+  exit 1
+fi
+
+if [[ "$event_package" == *".dummy."* ]] || [[ "$event_package" == *.dummy ]] || [[ "$event_package" == *.dummy.kafka ]]; then
+  echo "ERROR: EVENT_WRAPPER_PACKAGE must not contain dummy."
+  exit 1
+fi
+
 mkdir -p "$out_dir"
 mkdir -p "$resources_dir"
-
-tag_lower=$(echo "$tag" | tr '[:upper:]' '[:lower:]')
 
 to_pascal() {
   echo "$1" | sed -E 's/[^a-zA-Z0-9]+/ /g' | awk '{for (i=1;i<=NF;i++){printf toupper(substr($i,1,1)) tolower(substr($i,2))} printf "\n"}'
@@ -63,7 +93,7 @@ if [ "$channel_count" -eq 0 ]; then
 fi
 
 cat > "${out_dir}/AvroRecordSerializer.java" <<EOF
-package ${base_package};
+package ${shared_package};
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -96,7 +126,7 @@ public class AvroRecordSerializer<T extends SpecificRecord> implements Serialize
 EOF
 
 cat > "${out_dir}/AvroRecordDeserializer.java" <<EOF
-package ${base_package};
+package ${shared_package};
 
 import java.io.IOException;
 import org.apache.avro.Schema;
@@ -133,7 +163,7 @@ public class AvroRecordDeserializer<T extends SpecificRecord> implements Deseria
 EOF
 
 cat > "${out_dir}/KafkaSerdeDefaults.java" <<EOF
-package ${base_package};
+package ${shared_package};
 
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -143,14 +173,14 @@ import org.springframework.core.env.MapPropertySource;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-final class KafkaSerdeDefaults {
+public final class KafkaSerdeDefaults {
 
   private static final String PROPERTY_SOURCE_NAME = "afesoxKafkaSerdeDefaults";
 
   private KafkaSerdeDefaults() {
   }
 
-  static void apply(Environment environment) {
+  public static void apply(Environment environment) {
     if (!(environment instanceof ConfigurableEnvironment configurableEnvironment)) {
       return;
     }
@@ -172,7 +202,7 @@ final class KafkaSerdeDefaults {
 EOF
 
 cat > "${out_dir}/KafkaClientProperties.java" <<EOF
-package ${base_package};
+package ${shared_package};
 
 import java.util.Properties;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -183,7 +213,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.PropertySource;
 
-final class KafkaClientProperties {
+public final class KafkaClientProperties {
 
   private static final String BOOTSTRAP_SERVERS_PROPERTY = "spring.kafka.bootstrap-servers";
   private static final String PRODUCER_PROPERTIES_PREFIX = "spring.kafka.producer.properties.";
@@ -192,7 +222,7 @@ final class KafkaClientProperties {
   private KafkaClientProperties() {
   }
 
-  static Properties buildProducerProperties(Environment environment) {
+  public static Properties buildProducerProperties(Environment environment) {
     final Properties properties = new Properties();
     properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, required(environment, BOOTSTRAP_SERVERS_PROPERTY));
     putIfPresent(environment, "spring.kafka.producer.client-id", ProducerConfig.CLIENT_ID_CONFIG, properties);
@@ -210,7 +240,7 @@ final class KafkaClientProperties {
     return properties;
   }
 
-  static Properties buildConsumerProperties(Environment environment) {
+  public static Properties buildConsumerProperties(Environment environment) {
     final Properties properties = new Properties();
     properties.put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, required(environment, BOOTSTRAP_SERVERS_PROPERTY));
     properties.put(ConsumerConfig.GROUP_ID_CONFIG, required(environment, "spring.kafka.consumer.group-id"));
@@ -322,7 +352,7 @@ PY
   fi
 
   cat > "${out_dir}/${class_name}.java" <<EOF
-package ${base_package};
+package ${event_package};
 
 import java.time.Duration;
 import java.util.Collections;
@@ -433,10 +463,10 @@ EOF
   fi
 
   config_class="${class_name}AutoConfiguration"
-  config_classes+=("${base_package}.${config_class}")
+  config_classes+=("${event_package}.${config_class}")
   if [ "$mode" = "producer" ]; then
     cat > "${out_dir}/${config_class}.java" <<EOF
-package ${base_package};
+package ${event_package};
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -444,6 +474,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
+import ${shared_package}.AvroRecordSerializer;
+import ${shared_package}.KafkaClientProperties;
+import ${shared_package}.KafkaSerdeDefaults;
 
 @AutoConfiguration
 public class ${config_class} {
@@ -471,7 +504,7 @@ public class ${config_class} {
 EOF
   else
     cat > "${out_dir}/${config_class}.java" <<EOF
-package ${base_package};
+package ${event_package};
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -479,6 +512,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.Environment;
+import ${shared_package}.AvroRecordDeserializer;
+import ${shared_package}.KafkaClientProperties;
+import ${shared_package}.KafkaSerdeDefaults;
 import ${envelope_namespace}.${envelope_name};
 
 @AutoConfiguration

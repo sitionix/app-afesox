@@ -1,5 +1,5 @@
 api:
-  version: 0.0.1
+  version: 0.0.2
   visibility: PUBLIC
   metadata:
     version: "1.0"
@@ -9,4 +9,4 @@ api:
     name: ATHSSOX
     email: athssox@sitionix.com
   type: application
-  wrapperPackage: com.app_afesox.athssox.events.dummy.kafka
+  wrapperPackage: com.app_afesox.athssox.events
