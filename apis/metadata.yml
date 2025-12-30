@@ -11,11 +11,11 @@ apis:
   - name: CLIENT Backend for Frontend SOX
     api-spec-type: client
     definition-path: /bffssox/api-first
-  - name: EVENT Dummy ATHSSOX Producer
+  - name: EVENT ATHSSOX Producer
     api-spec-type: event-producer
     definition-path: /athssox/event
-    event-tag: Dummy
-  - name: EVENT Dummy ATHSSOX Consumer
+    event-tag: EmailVerify
+  - name: EVENT ATHSSOX Consumer
     api-spec-type: event-consumer
     definition-path: /athssox/event
-    event-tag: Dummy
+    event-tag: EmailVerify

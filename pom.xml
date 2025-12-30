@@ -216,6 +216,11 @@
                     <artifactId>kafka-clients</artifactId>
                     <version>3.7.0</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-autoconfigure</artifactId>
+                    <version>3.3.4</version>
+                </dependency>
             </dependencies>
             <build>
                 <plugins>
@@ -281,6 +286,7 @@
                                         <argument>${project.basedir}/apis/${event.service}/event/asyncapi.yml</argument>
                                         <argument>${project.build.directory}/generated-sources/events</argument>
                                         <argument>${event.wrapper.package}</argument>
+                                        <argument>${project.build.directory}/generated-resources/events</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -305,6 +311,20 @@
                                     </sources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>add-event-generated-resources</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-resources/events</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
@@ -323,6 +343,11 @@
                     <groupId>org.apache.kafka</groupId>
                     <artifactId>kafka-clients</artifactId>
                     <version>3.7.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-autoconfigure</artifactId>
+                    <version>3.3.4</version>
                 </dependency>
             </dependencies>
             <build>
@@ -389,6 +414,7 @@
                                         <argument>${project.basedir}/apis/${event.service}/event/asyncapi.yml</argument>
                                         <argument>${project.build.directory}/generated-sources/events</argument>
                                         <argument>${event.wrapper.package}</argument>
+                                        <argument>${project.build.directory}/generated-resources/events</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -411,6 +437,20 @@
                                         <source>${project.build.directory}/generated-sources/avro</source>
                                         <source>${project.build.directory}/generated-sources/events</source>
                                     </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-event-generated-resources</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-resources/events</directory>
+                                        </resource>
+                                    </resources>
                                 </configuration>
                             </execution>
                         </executions>

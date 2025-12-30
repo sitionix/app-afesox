@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "Params",
+  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "doc": "Template parameters for message rendering.",
+  "fields": [
+    {
+      "name": "verifyUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Verification URL used in email CTA. Optional for MVP until URL generation is implemented."
+    }
+  ]
+}

@@ -1,56 +1,56 @@
 asyncapi: 2.0.0
 info:
-  title: EVENT ATHSSOX Dummy
-  version: 0.0.7
-  description: Dummy event for ATHSSOX
+  title: EVENT ATHSSOX
+  version: 0.0.1
+  description: Events for ATHSSOX
 
 defaultContentType: application/*+avro
 
 channels:
-  athssox.dummy.${environment}.public.v1:
-    description: Dummy event topic
+  athssox.${environment}.email-verify.public.v1:
+    description: Email verification event topic
     parameters:
       environment:
         $ref: '#/components/parameters/environment'
 
     publish:
-      summary: Publish dummy event
-      operationId: publishDummy
+      summary: Publish email verification event
+      operationId: publishEmailVerify
       tags:
-        - name: Dummy
+        - name: EmailVerify
       bindings:
         kafka:
           bindingVersion: 'latest'
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.dummy
-      x-itx-envelop-name: DummyEventEnvelope
+      x-itx-envelop-namespace: com.app_afesox.athssox.events.emailverify
+      x-itx-envelop-name: EmailVerifyEventEnvelope
       message:
-        $ref: '#/components/messages/DummyEvent'
+        $ref: '#/components/messages/EmailVerifyEvent'
 
     subscribe:
-      summary: Subscribe to dummy event
-      operationId: subscribeDummy
+      summary: Subscribe to email verification event
+      operationId: subscribeEmailVerify
       tags:
-        - name: Dummy
+        - name: EmailVerify
       bindings:
         kafka:
           bindingVersion: 'latest'
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.dummy
-      x-itx-envelop-name: DummyEventEnvelope
+      x-itx-envelop-namespace: com.app_afesox.athssox.events.emailverify
+      x-itx-envelop-name: EmailVerifyEventEnvelope
       message:
-        $ref: '#/components/messages/DummyEvent'
+        $ref: '#/components/messages/EmailVerifyEvent'
 
 components:
   messages:
-    DummyEvent:
-      name: DummyEvent
-      title: Dummy event
-      summary: Dummy event payload
+    EmailVerifyEvent:
+      name: EmailVerifyEvent
+      title: Email verification event
+      summary: Email verification event payload
       contentType: application/*+avro
       schemaFormat: application/vnd.apache.avro+json;version=1.0.0
       payload:
-        $ref: "dummy/v1/imports/dummy_event.avsc"
+        $ref: "emailverify/v1/imports/email_verify_event.avsc"
 
   parameters:
     environment:

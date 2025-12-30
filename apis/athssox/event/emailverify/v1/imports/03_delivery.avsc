@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "Delivery",
+  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "doc": "Delivery routing information for outbound notification.",
+  "fields": [
+    {
+      "name": "channel",
+      "type": "VerifyChannel",
+      "doc": "Delivery channel to be used by Notification Service (EMAIL, SMS, TELEGRAM, etc)."
+    },
+    {
+      "name": "to",
+      "type": "string",
+      "doc": "Recipient address for selected channel. For EMAIL it is an email address."
+    }
+  ]
+}
