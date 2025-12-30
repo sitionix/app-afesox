@@ -132,6 +132,45 @@ public class AvroRecordDeserializer<T extends SpecificRecord> implements Deseria
 }
 EOF
 
+cat > "${out_dir}/KafkaSerdeDefaults.java" <<EOF
+package ${base_package};
+
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MapPropertySource;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+final class KafkaSerdeDefaults {
+
+  private static final String PROPERTY_SOURCE_NAME = "afesoxKafkaSerdeDefaults";
+
+  private KafkaSerdeDefaults() {
+  }
+
+  static void apply(Environment environment) {
+    if (!(environment instanceof ConfigurableEnvironment configurableEnvironment)) {
+      return;
+    }
+    final Map<String, Object> properties = new LinkedHashMap<>();
+    if (environment.getProperty("spring.kafka.consumer.value-deserializer") == null) {
+      properties.put("spring.kafka.consumer.value-deserializer", ByteArrayDeserializer.class.getName());
+    }
+    if (properties.isEmpty()) {
+      return;
+    }
+    final MapPropertySource propertySource = new MapPropertySource(PROPERTY_SOURCE_NAME, properties);
+    if (configurableEnvironment.getPropertySources().contains(PROPERTY_SOURCE_NAME)) {
+      configurableEnvironment.getPropertySources().replace(PROPERTY_SOURCE_NAME, propertySource);
+    } else {
+      configurableEnvironment.getPropertySources().addFirst(propertySource);
+    }
+  }
+}
+EOF
+
 cat > "${out_dir}/KafkaClientProperties.java" <<EOF
 package ${base_package};
 
@@ -445,6 +484,7 @@ public class ${config_class} {
   @ConditionalOnBean(name = "kafkaContainerManager")
   @DependsOn("kafkaContainerManager")
   public ${class_name} forgeIt${class_name}(Environment environment) {
+    KafkaSerdeDefaults.apply(environment);
     return new ${class_name}(
         KafkaClientProperties.buildConsumerProperties(environment),
         new AvroRecordDeserializer<>(${envelope_name}.getClassSchema()),
