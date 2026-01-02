@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.13
+  version: 0.0.14
   contact:
     name: APP Sitionix
 servers:
@@ -12,6 +12,31 @@ tags:
   - name: User
   - name: Auth
 paths:
+  /api/v1/auth/email/verify:
+    post:
+      description: Service that verifies user's email
+      summary: API for email verification
+      operationId: verifyEmail
+      tags:
+          - Auth
+      requestBody:
+        description: Email verification payload
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/EmailVerificationDTO'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailVerificationResponseDTO'
+        '400':
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/users:
     post:
       description: Service that registers a new user
@@ -34,9 +59,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseRegisterUserDTO'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
 
   /api/v1/auth/login:
     post:
@@ -60,16 +85,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponseDTO'
         '400':
-          $ref: '#/components/responses/BadRequest'
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          $ref: '../../common/components.yml#/components/responses/Unauthorized'
         '403':
-          $ref: '#/components/responses/Forbidden'
+          $ref: '../../common/components.yml#/components/responses/Forbidden'
         '500':
-          $ref: '#/components/responses/InternalServerError'
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
 
 components:
   schemas:
+    EmailVerificationResponseDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Email verified successfully
+        status:
+          type: string
+          enum:
+            - PENDING_EMAIL_VERIFY
+            - ACTIVE
+            - INACTIVE
+            - BANNED
+    EmailVerificationDTO:
+      type: object
+      required:
+          - token
+          - siteId
+      properties:
+        token:
+          type: string
+          example: verification-token-12345
+        siteId:
+          type: string
+          format: uuid
+          example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
     ResponseRegisterUserDTO:
       type: object
       properties:
@@ -165,44 +216,3 @@ components:
           format: int64
           description: Time in seconds until the token expires
           example: 3600
-    ErrorDTO:
-      type: object
-      required:
-        - code
-        - title
-        - details
-      properties:
-        code:
-          type: integer
-          example: 401
-        title:
-          type: string
-          example: Unauthorized
-        details:
-          type: string
-          example: Invalid email or password
-  responses:
-    BadRequest:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorDTO'
