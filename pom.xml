@@ -156,10 +156,8 @@
                                         <useSpringBoot3>true</useSpringBoot3>
                                         <useLombok>true</useLombok>
                                         <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+                                        <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                                     </configOptions>
-                                    <additionalProperties>
-                                        <generateConstructorWithRequiredArgs>false</generateConstructorWithRequiredArgs>
-                                    </additionalProperties>
                                 </configuration>
                             </execution>
                         </executions>
