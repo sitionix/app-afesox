@@ -131,7 +131,7 @@ jobs:
               NAME="$(yq_val '.api.name' "$FILE")"
 
               # executions as lines; empty means invalid
-              EXECUTIONS="$(yq e -r '.api.executions[].type // empty' "$FILE" 2>/dev/null || true)"
+              EXECUTIONS="$(yq e -r '.api.executions[].type // ""' "$FILE" 2>/dev/null || true)"
 
               if [[ -z "$VERSION" || -z "$NAME" || -z "$EXECUTIONS" ]]; then
                 echo "::error:: Invalid api-first metadata file: $FILE (api.version/api.name/api.executions[].type required)"
