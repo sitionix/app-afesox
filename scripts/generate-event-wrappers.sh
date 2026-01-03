@@ -637,6 +637,7 @@ EOF
     cat > "${out_dir}/${config_class}.java" <<EOF
 package ${event_package};
 
+import java.util.List;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
