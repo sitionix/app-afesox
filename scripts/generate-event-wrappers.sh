@@ -62,11 +62,16 @@ to_pascal() {
   echo "$1" | sed -E 's/[^a-zA-Z0-9]+/ /g' | awk '{for (i=1;i<=NF;i++){printf toupper(substr($i,1,1)) tolower(substr($i,2))} printf "\n"}'
 }
 
+to_pascal_preserve() {
+  echo "$1" | sed -E 's/[^a-zA-Z0-9]+/ /g' | awk '{for (i=1;i<=NF;i++){printf toupper(substr($i,1,1)) substr($i,2)} printf "\n"}'
+}
+
 to_version_suffix() {
   echo "$1" | sed -E 's/[^a-zA-Z0-9]+//g' | awk '{printf toupper($0)}'
 }
 
 tag_pascal=$(to_pascal "$tag")
+tag_method=$(to_pascal_preserve "$tag")
 
 lower_first() {
   local text="$1"
@@ -462,12 +467,138 @@ EOF
 EOF
   fi
 
+  if [ "$mode" = "consumer" ]; then
+    handler_name="${class_name}Handler"
+    runner_name="${class_name}Runner"
+    cat > "${out_dir}/${handler_name}.java" <<EOF
+package ${event_package};
+
+import ${envelope_namespace}.${envelope_name};
+
+@FunctionalInterface
+public interface ${handler_name} {
+  void consume${tag_method}(${envelope_name} event);
+}
+EOF
+
+    cat > "${out_dir}/${runner_name}.java" <<EOF
+package ${event_package};
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.SmartLifecycle;
+import ${envelope_namespace}.${envelope_name};
+
+public class ${runner_name} implements SmartLifecycle {
+  private static final Duration DEFAULT_POLL_TIMEOUT = Duration.ofSeconds(1);
+  private static final Duration DEFAULT_SHUTDOWN_TIMEOUT = Duration.ofSeconds(5);
+
+  private final ${class_name} consumer;
+  private final List<${handler_name}> handlers;
+  private final Duration pollTimeout;
+  private final Duration shutdownTimeout;
+  private final ExecutorService executor;
+  private final AtomicBoolean running = new AtomicBoolean(false);
+
+  public ${runner_name}(${class_name} consumer, List<${handler_name}> handlers) {
+    this(consumer, handlers, DEFAULT_POLL_TIMEOUT, DEFAULT_SHUTDOWN_TIMEOUT, newSingleThreadExecutor());
+  }
+
+  public ${runner_name}(${class_name} consumer, List<${handler_name}> handlers, Duration pollTimeout,
+      Duration shutdownTimeout, ExecutorService executor) {
+    this.consumer = consumer;
+    this.handlers = handlers;
+    this.pollTimeout = pollTimeout == null ? DEFAULT_POLL_TIMEOUT : pollTimeout;
+    this.shutdownTimeout = shutdownTimeout == null ? DEFAULT_SHUTDOWN_TIMEOUT : shutdownTimeout;
+    this.executor = executor;
+  }
+
+  @Override
+  public void start() {
+    if (!running.compareAndSet(false, true)) {
+      return;
+    }
+    executor.submit(this::runLoop);
+  }
+
+  private void runLoop() {
+    try {
+      while (running.get()) {
+        consumer.pollOnce(pollTimeout, this::dispatch);
+      }
+    } finally {
+      consumer.close();
+    }
+  }
+
+  private void dispatch(ConsumerRecord<String, ${envelope_name}> record) {
+    for (${handler_name} handler : handlers) {
+      handler.consume${tag_method}(record.value());
+    }
+  }
+
+  @Override
+  public void stop() {
+    if (!running.compareAndSet(true, false)) {
+      return;
+    }
+    shutdownExecutor();
+  }
+
+  @Override
+  public void stop(Runnable callback) {
+    stop();
+    callback.run();
+  }
+
+  @Override
+  public boolean isRunning() {
+    return running.get();
+  }
+
+  @Override
+  public boolean isAutoStartup() {
+    return true;
+  }
+
+  private void shutdownExecutor() {
+    executor.shutdown();
+    try {
+      if (!executor.awaitTermination(shutdownTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+        executor.shutdownNow();
+      }
+    } catch (InterruptedException ex) {
+      Thread.currentThread().interrupt();
+      executor.shutdownNow();
+    }
+  }
+
+  private static ExecutorService newSingleThreadExecutor() {
+    ThreadFactory threadFactory = runnable -> {
+      Thread thread = new Thread(runnable);
+      thread.setName("${bean_name}-runner");
+      thread.setDaemon(true);
+      return thread;
+    };
+    return Executors.newSingleThreadExecutor(threadFactory);
+  }
+}
+EOF
+  fi
+
   config_class="${class_name}AutoConfiguration"
   config_classes+=("${event_package}.${config_class}")
   if [ "$mode" = "producer" ]; then
     cat > "${out_dir}/${config_class}.java" <<EOF
 package ${event_package};
 
+import java.util.List;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -506,6 +637,7 @@ EOF
     cat > "${out_dir}/${config_class}.java" <<EOF
 package ${event_package};
 
+import java.util.List;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -538,6 +670,13 @@ public class ${config_class} {
         KafkaClientProperties.buildConsumerProperties(environment),
         new AvroRecordDeserializer<>(${envelope_name}.getClassSchema()),
         environment);
+  }
+
+  @Bean(name = "${bean_name}Runner")
+  @ConditionalOnBean(${class_name}Handler.class)
+  @ConditionalOnMissingBean(${class_name}Runner.class)
+  public ${class_name}Runner ${bean_name}Runner(${class_name} consumer, List<${class_name}Handler> handlers) {
+    return new ${class_name}Runner(consumer, handlers);
   }
 }
 EOF
