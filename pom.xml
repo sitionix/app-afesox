@@ -194,6 +194,7 @@
                                         <useTags>true</useTags>
                                         <modelNameSuffix>DTO</modelNameSuffix>
                                         <dateLibrary>java8</dateLibrary>
+                                        <serializationLibrary>jackson</serializationLibrary>
                                         <useSpringBoot3>true</useSpringBoot3>
                                         <useLombok>true</useLombok>
                                         <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
