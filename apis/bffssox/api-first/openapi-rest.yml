@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.4
+  version: 0.0.5
   contact:
     name: APP Sitionix
 servers:
@@ -12,6 +12,31 @@ tags:
   - name: Auth
   - name: User
 paths:
+  /api/v1/auth/email/verify:
+    post:
+      description: Service that verifies user's email
+      summary: API for email verification
+      operationId: verifyEmail
+      tags:
+        - Auth
+      requestBody:
+        description: Email verification payload
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailVerificationDTO'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailVerificationResponseDTO'
+        '400':
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/users:
     post:
       description: Service that registers a new user
@@ -68,6 +93,31 @@ paths:
 
 components:
   schemas:
+    EmailVerificationResponseDTO:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Email verified successfully
+        status:
+          type: string
+          enum:
+            - PENDING_EMAIL_VERIFY
+            - ACTIVE
+            - INACTIVE
+            - BANNED
+    EmailVerificationDTO:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          example: verification-token-12345
+        siteId:
+          type: string
+          format: uuid
+          example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
     ResponseRegisterUserDTO:
       type: object
       properties:
