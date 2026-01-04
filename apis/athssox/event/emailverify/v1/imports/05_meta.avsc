@@ -11,7 +11,11 @@
     },
     {
       "name": "siteId",
-      "type": "string",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
       "doc": "Site identifier (UUID string) for tenant context."
     },
     {
