@@ -39,7 +39,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefreshAccessTokenRequest'
+              $ref: '#/components/schemas/RefreshAccessTokenRequestDTO'
             examples:
               default:
                 summary: Refresh request
@@ -52,7 +52,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RefreshAccessTokenResponse'
+                $ref: '#/components/schemas/RefreshAccessTokenResponseDTO'
         '400':
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '401':
