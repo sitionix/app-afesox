@@ -26,14 +26,6 @@ paths:
         The request must include `sessionSourceId` to bind refresh to an existing device session.
         `User-Agent` is read from HTTP headers only.
       security: []  # public endpoint (no bearer auth)
-      parameters:
-        - name: User-Agent
-          in: header
-          required: true
-          description: Raw User-Agent string. Must be provided via HTTP header only.
-          schema:
-            type: string
-            minLength: 1
       requestBody:
         required: true
         content:
