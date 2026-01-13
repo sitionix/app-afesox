@@ -182,7 +182,7 @@ components:
           description: Rotated refresh token (single-use).
         expiresIn:
           type: integer
-          format: int32
+          format: int64
           minimum: 1
           description: Access token TTL in seconds.
         tokenType:
