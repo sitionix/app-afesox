@@ -11,7 +11,7 @@
         "string"
       ],
       "default": null,
-      "doc": "Verification URL used in email CTA. Optional for MVP until URL generation is implemented."
+      "doc": "Verification token identifier."
     }
   ]
 }
