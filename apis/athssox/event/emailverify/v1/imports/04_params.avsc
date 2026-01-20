@@ -5,13 +5,13 @@
   "doc": "Template parameters for message rendering.",
   "fields": [
     {
-      "name": "verifyUrl",
+      "name": "verificationTokenId",
       "type": [
         "null",
         "string"
       ],
       "default": null,
-      "doc": "Verification URL used in email CTA. Optional for MVP until URL generation is implemented."
+      "doc": "Verification token identifier."
     }
   ]
 }
