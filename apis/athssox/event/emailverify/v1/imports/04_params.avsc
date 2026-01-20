@@ -5,7 +5,7 @@
   "doc": "Template parameters for message rendering.",
   "fields": [
     {
-      "name": "verifyUrl",
+      "name": "verificationTokenId",
       "type": [
         "null",
         "string"
