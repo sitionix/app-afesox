@@ -10,8 +10,15 @@
         "null",
         "string"
       ],
-      "default": null,
       "doc": "Verification token identifier."
+    },
+    {
+      "name": "pepperId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "Pepper identifier. Used for additional security in the verification process."
     }
   ]
 }

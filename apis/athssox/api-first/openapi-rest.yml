@@ -78,7 +78,7 @@ paths:
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
-  /api/v1/auth/emailVerificationTokens/{id}:issueLink:
+  /api/v1/auth/emailVerificationTokens/{id}:issueLink?pepper={pepper}:
     get:
       description: Issues a verification link for the provided email verification token id.
       summary: Issue email verification link
@@ -96,6 +96,14 @@ paths:
             type: string
             format: uuid
           example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
+        - name: pepper
+          in: query
+          required: true
+          description: Pepper UUID associated with the email verification token.
+          schema:
+              type: string
+              format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
       responses:
         '200':
           description: Verification link issued
@@ -103,13 +111,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IssueEmailVerificationLinkResponse'
-              examples:
-                default:
-                  summary: Link issued
-                  value:
-                    verifyUrl: https://app.sitionix.com/verify-email?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-                    expiresAt: 2024-07-18T12:34:56Z
-                    tokenId: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
         '400':
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '404':
