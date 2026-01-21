@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.21
+  version: 0.0.22
   contact:
     name: APP Sitionix
 servers:
@@ -78,6 +78,48 @@ paths:
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
+  /api/v1/auth/emailVerificationTokens/{id}:issueLink:
+    get:
+      description: Issues a verification link for the provided email verification token id.
+      summary: Issue email verification link
+      operationId: issueEmailVerificationLink
+      tags:
+        - Auth
+      security:
+        - internalBearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Email verification token identifier.
+          schema:
+            type: string
+            format: uuid
+          example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
+      responses:
+        '200':
+          description: Verification link issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueEmailVerificationLinkResponse'
+              examples:
+                default:
+                  summary: Link issued
+                  value:
+                    verifyUrl: https://app.sitionix.com/verify-email?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                    expiresAt: 2024-07-18T12:34:56Z
+                    tokenId: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
+        '400':
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '404':
+          $ref: '../../common/components.yml#/components/responses/NotFound'
+        '409':
+          $ref: '../../common/components.yml#/components/responses/Conflict'
+        '410':
+          $ref: '../../common/components.yml#/components/responses/Gone'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/users:
     post:
       description: Service that registers a new user
@@ -135,6 +177,12 @@ paths:
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
 
 components:
+  securitySchemes:
+    internalBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Internal service-to-service JWT.
   schemas:
     RefreshAccessTokenRequestDTO:
       type: object
@@ -208,6 +256,23 @@ components:
           type: string
           format: uuid
           example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+    IssueEmailVerificationLinkResponse:
+      type: object
+      required:
+        - verifyUrl
+      properties:
+        verifyUrl:
+          type: string
+          format: uri
+          example: https://app.sitionix.com/verify-email?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        expiresAt:
+          type: string
+          format: date-time
+          example: 2024-07-18T12:34:56Z
+        tokenId:
+          type: string
+          format: uuid
+          example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
     ResponseRegisterUserDTO:
       type: object
       properties:
