@@ -78,7 +78,7 @@ paths:
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
-  /api/v1/auth/emailVerificationTokens/{id}:issueLink?pepper={pepper}:
+  /api/v1/auth/emailVerificationTokens/{id}:issueLink:
     get:
       description: Issues a verification link for the provided email verification token id.
       summary: Issue email verification link
