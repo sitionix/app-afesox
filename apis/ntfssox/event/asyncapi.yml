@@ -14,7 +14,7 @@ channels:
       summary: Publish notification event
       operationId: publishNotificationEvent
       tags:
-        - name: NotificationEvent
+        - name: Notifications
       bindings:
         kafka:
           bindingVersion: 'latest'
@@ -28,7 +28,7 @@ channels:
       summary: Subscribe to notification event
       operationId: subscribeNotificationEvent
       tags:
-        - name: NotificationEvent
+        - name: Notifications
       bindings:
         kafka:
           bindingVersion: 'latest'
