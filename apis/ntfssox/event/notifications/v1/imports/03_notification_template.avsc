@@ -1,0 +1,10 @@
+{
+  "type": "enum",
+  "name": "NotificationTemplate",
+  "namespace": "com.app_afesox.ntfssox.events.notifications",
+  "doc": "Template/event type identifier.",
+  "symbols": [
+    "EMAIL_VERIFY",
+    "PASSWORD_RESET"
+  ]
+}

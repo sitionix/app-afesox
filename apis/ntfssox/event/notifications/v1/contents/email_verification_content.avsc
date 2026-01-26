@@ -1,8 +1,8 @@
 {
   "type": "record",
-  "name": "Params",
-  "namespace": "com.app_afesox.ntfssox.events.emailverify",
-  "doc": "Template parameters for message rendering.",
+  "name": "EmailVerificationContent",
+  "namespace": "com.app_afesox.ntfssox.events.notifications.contents",
+  "doc": "Content payload for email verification notification.",
   "fields": [
     {
       "name": "verificationTokenId",
@@ -10,6 +10,7 @@
         "null",
         "string"
       ],
+      "default": null,
       "doc": "Verification token identifier."
     },
     {
@@ -18,6 +19,7 @@
         "null",
         "string"
       ],
+      "default": null,
       "doc": "Pepper identifier. Used for additional security in the verification process."
     }
   ]

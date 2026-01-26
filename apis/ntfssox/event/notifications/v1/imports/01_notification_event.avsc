@@ -1,0 +1,33 @@
+{
+  "type": "record",
+  "name": "NotificationEvent",
+  "namespace": "com.app_afesox.ntfssox.events.notifications",
+  "doc": "Universal notification event.",
+  "fields": [
+    {
+      "name": "delivery",
+      "type": "Delivery",
+      "doc": "Delivery routing information (channel + recipient)."
+    },
+    {
+      "name": "template",
+      "type": "NotificationTemplate",
+      "doc": "Template/event type identifier."
+    },
+    {
+      "name": "content",
+      "type": [
+        "null",
+        "com.app_afesox.ntfssox.events.notifications.contents.EmailVerificationContent",
+        "com.app_afesox.ntfssox.events.notifications.contents.PasswordResetContent"
+      ],
+      "default": null,
+      "doc": "Domain-specific notification content payload."
+    },
+    {
+      "name": "meta",
+      "type": "Meta",
+      "doc": "Correlation and auditing metadata for cross-service debugging."
+    }
+  ]
+}

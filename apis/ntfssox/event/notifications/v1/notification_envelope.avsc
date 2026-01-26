@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "NotificationEnvelope",
+  "namespace": "com.app_afesox.ntfssox.events.notifications",
+  "fields": [
+    {
+      "name": "metadata",
+      "type": "com.app_afesox.events.Metadata"
+    },
+    {
+      "name": "payload",
+      "type": "com.app_afesox.ntfssox.events.notifications.NotificationEvent"
+    }
+  ]
+}
