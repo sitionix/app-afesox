@@ -19,7 +19,6 @@
       "type": [
         "null",
         "com.app_afesox.ntfssox.events.notifications.contents.EmailVerificationContent",
-        "com.app_afesox.ntfssox.events.notifications.contents.PasswordResetContent"
       ],
       "default": null,
       "doc": "Domain-specific notification content payload."

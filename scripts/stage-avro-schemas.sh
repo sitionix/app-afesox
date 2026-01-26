@@ -35,7 +35,13 @@ while IFS= read -r file; do
     */imports/*.avsc)
       copy_with_prefix "$file" "10"
       ;;
-    */envelope.avsc)
+    */contents/*.avsc)
+      copy_with_prefix "$file" "60"
+      ;;
+    */events/*.avsc)
+      copy_with_prefix "$file" "70"
+      ;;
+    */*_envelope.avsc|*/envelope.avsc)
       copy_with_prefix "$file" "90"
       ;;
     *.avsc)
