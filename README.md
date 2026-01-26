@@ -75,14 +75,14 @@ Event entries use:
 
 The tag must match the `publish`/`subscribe` tag in `asyncapi.yml`. All channels with that tag are included in the generated producer/consumer.
 
-Event generation uses names that start with `EVENT` (for example: `EVENT EmailVerify ATHSSOX Producer`).
+Event generation uses names that start with `EVENT` (for example: `EVENT EmailVerify NTFSSOX Producer`).
 
 
 Example event:
 
 ```
-apis/athssox/event/emailverify/v1/envelope.avsc
-apis/athssox/event/emailverify/v1/imports/email_verify_event.avsc
+apis/ntfssox/event/emailverify/v1/envelope.avsc
+apis/ntfssox/event/emailverify/v1/imports/email_verify_event.avsc
 apis/common/event/Metadata.avsc
 ```
 
@@ -90,24 +90,24 @@ apis/common/event/Metadata.avsc
 
 ```
 mvn clean package -Pevent-producer \
-  -DEVENT_SERVICE=athssox \
+  -DEVENT_SERVICE=ntfssox \
   -DEVENT_NAME=emailverify \
   -DEVENT_TAG=EmailVerify \
-  -DEVENT_BASE_WRAPPER_PACKAGE=com.app_afesox.athssox.events \
-  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.emailverify.kafka \
-  -DEVENT_SHARED_KAFKA_PACKAGE=com.app_afesox.athssox.events.kafka
+  -DEVENT_BASE_WRAPPER_PACKAGE=com.app_afesox.ntfssox.events \
+  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.ntfssox.events.emailverify.kafka \
+  -DEVENT_SHARED_KAFKA_PACKAGE=com.app_afesox.ntfssox.events.kafka
 ```
 
 ### Generate a consumer library
 
 ```
 mvn clean package -Pevent-consumer \
-  -DEVENT_SERVICE=athssox \
+  -DEVENT_SERVICE=ntfssox \
   -DEVENT_NAME=emailverify \
   -DEVENT_TAG=EmailVerify \
-  -DEVENT_BASE_WRAPPER_PACKAGE=com.app_afesox.athssox.events \
-  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.athssox.events.emailverify.kafka \
-  -DEVENT_SHARED_KAFKA_PACKAGE=com.app_afesox.athssox.events.kafka
+  -DEVENT_BASE_WRAPPER_PACKAGE=com.app_afesox.ntfssox.events \
+  -DEVENT_WRAPPER_PACKAGE=com.app_afesox.ntfssox.events.emailverify.kafka \
+  -DEVENT_SHARED_KAFKA_PACKAGE=com.app_afesox.ntfssox.events.kafka
 ```
 
 ### Consumer usage (Spring Boot)

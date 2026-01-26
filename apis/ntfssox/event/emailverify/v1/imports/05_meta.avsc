@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Meta",
-  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "namespace": "com.app_afesox.ntfssox.events.emailverify",
   "doc": "Correlation and auditing metadata for cross-service debugging.",
   "fields": [
     {

@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Delivery",
-  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "namespace": "com.app_afesox.ntfssox.events.emailverify",
   "doc": "Delivery routing information for outbound notification.",
   "fields": [
     {

@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Params",
-  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "namespace": "com.app_afesox.ntfssox.events.emailverify",
   "doc": "Template parameters for message rendering.",
   "fields": [
     {

@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "EmailVerifyEventEnvelope",
-  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "namespace": "com.app_afesox.ntfssox.events.emailverify",
   "fields": [
     {
       "name": "metadata",
@@ -9,7 +9,7 @@
     },
     {
       "name": "payload",
-      "type": "com.app_afesox.athssox.events.emailverify.EmailVerifyEvent"
+      "type": "com.app_afesox.ntfssox.events.emailverify.EmailVerifyEvent"
     }
   ]
 }
