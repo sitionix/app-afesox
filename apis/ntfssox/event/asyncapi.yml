@@ -7,7 +7,7 @@ info:
 defaultContentType: application/*+avro
 
 channels:
-  notifications:
+  ntfssox.${environment}.notification.public.unified.v1:
     description: Notification event topic
 
     publish:
