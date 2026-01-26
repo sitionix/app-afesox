@@ -19,7 +19,6 @@
       "type": [
         "com.app_afesox.ntfssox.events.notifications.contents.EmailVerificationContent"
       ],
-      "default": null,
       "doc": "Domain-specific notification content payload."
     },
     {
