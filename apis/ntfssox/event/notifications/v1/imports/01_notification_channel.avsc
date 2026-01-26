@@ -1,6 +1,6 @@
 {
   "type": "enum",
-  "name": "NotificationChannel",
+  "name": "NotificationChannelDTO",
   "namespace": "com.app_afesox.ntfssox.events.notifications",
   "doc": "Delivery channels supported by Notification Service.",
   "symbols": [

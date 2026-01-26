@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "Meta",
+  "name": "MetaDTO",
   "namespace": "com.app_afesox.ntfssox.events.notifications",
   "doc": "Correlation and auditing metadata for cross-service debugging.",
   "fields": [

@@ -1,6 +1,6 @@
 {
   "type": "enum",
-  "name": "NotificationTemplate",
+  "name": "NotificationTemplateDTO",
   "namespace": "com.app_afesox.ntfssox.events.notifications",
   "doc": "Template/event type identifier.",
   "symbols": [

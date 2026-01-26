@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "EmailVerificationContent",
+  "name": "EmailVerificationContentDTO",
   "namespace": "com.app_afesox.ntfssox.events.notifications.contents",
   "doc": "Content payload for email verification notification.",
   "fields": [
