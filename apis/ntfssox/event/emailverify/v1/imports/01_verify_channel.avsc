@@ -1,7 +1,7 @@
 {
   "type": "enum",
   "name": "VerifyChannel",
-  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "namespace": "com.app_afesox.ntfssox.events.emailverify",
   "doc": "Delivery channels supported by Notification Service.",
   "symbols": [
     "EMAIL",

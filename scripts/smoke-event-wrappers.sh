@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-base_package="com.app_afesox.athssox.events"
+base_package="com.app_afesox.ntfssox.events"
 event_one="emailverify"
 event_two="smoke2"
 shared_package="${base_package}.kafka"
@@ -22,31 +22,31 @@ info:
   title: Smoke Events
   version: 0.0.1
 channels:
-  athssox.${environment}.email-verify.public.v1:
+  ntfssox.${environment}.email-verify.public.v1:
     publish:
       tags:
         - name: EmailVerify
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.emailverify
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.emailverify
       x-itx-envelop-name: EmailVerifyEventEnvelope
     subscribe:
       tags:
         - name: EmailVerify
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.emailverify
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.emailverify
       x-itx-envelop-name: EmailVerifyEventEnvelope
-  athssox.${environment}.smoke2.public.v1:
+  ntfssox.${environment}.smoke2.public.v1:
     publish:
       tags:
         - name: Smoke2
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.smoke2
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.smoke2
       x-itx-envelop-name: Smoke2EventEnvelope
     subscribe:
       tags:
         - name: Smoke2
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.smoke2
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.smoke2
       x-itx-envelop-name: Smoke2EventEnvelope
 YAML
 
@@ -57,10 +57,10 @@ resources_two="${tmp_dir}/resources-smoke2"
 
 mkdir -p "$out_one" "$out_two" "$resources_one" "$resources_two"
 
-bash "${repo_root}/scripts/generate-event-wrappers.sh" producer athssox EmailVerify "$asyncapi_file" "$out_one" \
+bash "${repo_root}/scripts/generate-event-wrappers.sh" producer ntfssox EmailVerify "$asyncapi_file" "$out_one" \
   "$base_package" "$event_one" "${base_package}.${event_one}.kafka" "$shared_package" "$resources_one"
 
-bash "${repo_root}/scripts/generate-event-wrappers.sh" producer athssox Smoke2 "$asyncapi_file" "$out_two" \
+bash "${repo_root}/scripts/generate-event-wrappers.sh" producer ntfssox Smoke2 "$asyncapi_file" "$out_two" \
   "$base_package" "$event_two" "${base_package}.${event_two}.kafka" "$shared_package" "$resources_two"
 
 if command -v rg >/dev/null 2>&1; then
@@ -94,13 +94,13 @@ if ! "${search[@]}" "package ${base_package}.${event_two}.kafka;" "$out_two" >/d
   exit 1
 fi
 
-if ! "${search[@]}" "com.app_afesox.athssox.events.emailverify.kafka.EmailverifyV1ProducerAutoConfiguration" \
+if ! "${search[@]}" "com.app_afesox.ntfssox.events.emailverify.kafka.EmailverifyV1ProducerAutoConfiguration" \
   "$resources_one/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports" >/dev/null 2>&1; then
   echo "ERROR: AutoConfiguration import missing for ${event_one}."
   exit 1
 fi
 
-if ! "${search[@]}" "com.app_afesox.athssox.events.smoke2.kafka.Smoke2V1ProducerAutoConfiguration" \
+if ! "${search[@]}" "com.app_afesox.ntfssox.events.smoke2.kafka.Smoke2V1ProducerAutoConfiguration" \
   "$resources_two/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports" >/dev/null 2>&1; then
   echo "ERROR: AutoConfiguration import missing for ${event_two}."
   exit 1

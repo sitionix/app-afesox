@@ -1,13 +1,13 @@
 asyncapi: 2.0.0
 info:
-  title: EVENT ATHSSOX
-  version: 0.0.6
-  description: Events for ATHSSOX
+  title: EVENT NTFSSOX
+  version: 0.0.й
+  description: Events for NTFSSOX
 
 defaultContentType: application/*+avro
 
 channels:
-  athssox.${environment}.email-verify.public.v1:
+  ntfssox.${environment}.email-verify.public.v1:
     description: Email verification event topic
     parameters:
       environment:
@@ -22,7 +22,7 @@ channels:
         kafka:
           bindingVersion: 'latest'
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.emailverify
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.emailverify
       x-itx-envelop-name: EmailVerifyEventEnvelope
       message:
         $ref: '#/components/messages/EmailVerifyEvent'
@@ -36,7 +36,7 @@ channels:
         kafka:
           bindingVersion: 'latest'
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.athssox.events.emailverify
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.emailverify
       x-itx-envelop-name: EmailVerifyEventEnvelope
       message:
         $ref: '#/components/messages/EmailVerifyEvent'

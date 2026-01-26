@@ -1,7 +1,7 @@
 {
   "type": "enum",
   "name": "OutboxEventType",
-  "namespace": "com.app_afesox.athssox.events.emailverify",
+  "namespace": "com.app_afesox.ntfssox.events.emailverify",
   "doc": "Template/event type identifier.",
   "symbols": [
     "EMAIL_VERIFY"
