@@ -35,7 +35,13 @@ while IFS= read -r file; do
     */imports/*.avsc)
       copy_with_prefix "$file" "10"
       ;;
-    */envelope.avsc)
+    */contents/*.avsc)
+      copy_with_prefix "$file" "60"
+      ;;
+    */events/*.avsc)
+      copy_with_prefix "$file" "70"
+      ;;
+    */*_envelope.avsc|*/envelope.avsc)
       copy_with_prefix "$file" "90"
       ;;
     *.avsc)
@@ -60,7 +66,10 @@ files = sorted(glob.glob(os.path.join(output_dir, "*.avsc")))
 types = []
 for path in files:
     with open(path, "r", encoding="utf-8") as fh:
-        types.append(json.load(fh))
+        schema = json.load(fh)
+    if isinstance(schema, list):
+        continue
+    types.append(schema)
 
 protocol = {
     "protocol": f"{event_name.capitalize()}EventProtocol",

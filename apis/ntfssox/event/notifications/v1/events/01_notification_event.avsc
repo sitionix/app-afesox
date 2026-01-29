@@ -1,0 +1,30 @@
+{
+  "type": "record",
+  "name": "NotificationEvent",
+  "namespace": "com.app_afesox.ntfssox.events.notifications",
+  "doc": "Universal notification event.",
+  "fields": [
+    {
+      "name": "delivery",
+      "type": "DeliveryDTO",
+      "doc": "Delivery routing information (channel + recipient)."
+    },
+    {
+      "name": "template",
+      "type": "NotificationTemplateDTO",
+      "doc": "Template/event type identifier."
+    },
+    {
+      "name": "content",
+      "type": [
+        "com.app_afesox.ntfssox.events.notifications.contents.EmailVerificationContentDTO"
+      ],
+      "doc": "Domain-specific notification content payload."
+    },
+    {
+      "name": "meta",
+      "type": "MetaDTO",
+      "doc": "Correlation and auditing metadata for cross-service debugging."
+    }
+  ]
+}

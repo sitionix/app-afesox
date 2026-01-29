@@ -14,8 +14,8 @@ apis:
   - name: EVENT NTFSSOX Producer
     api-spec-type: event-producer
     definition-path: /ntfssox/event
-    event-tag: EmailVerify
+    event-tag: Notifications
   - name: EVENT NTFSSOX Consumer
     api-spec-type: event-consumer
     definition-path: /ntfssox/event
-    event-tag: EmailVerify
+    event-tag: Notifications

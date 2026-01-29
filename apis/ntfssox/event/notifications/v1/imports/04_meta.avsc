@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "Meta",
-  "namespace": "com.app_afesox.ntfssox.events.emailverify",
+  "name": "MetaDTO",
+  "namespace": "com.app_afesox.ntfssox.events.notifications",
   "doc": "Correlation and auditing metadata for cross-service debugging.",
   "fields": [
     {
@@ -30,7 +30,7 @@
     {
       "name": "requestedAt",
       "type": "string",
-      "doc": "Timestamp when verification was requested (ISO-8601 string)."
+      "doc": "Timestamp when notification was requested (ISO-8601 string)."
     }
   ]
 }

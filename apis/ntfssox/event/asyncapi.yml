@@ -1,59 +1,50 @@
 asyncapi: 2.0.0
 info:
   title: EVENT NTFSSOX
-  version: 0.0.й
+  version: 0.0.1
   description: Events for NTFSSOX
 
 defaultContentType: application/*+avro
 
 channels:
-  ntfssox.${environment}.email-verify.public.v1:
-    description: Email verification event topic
-    parameters:
-      environment:
-        $ref: '#/components/parameters/environment'
+  ntfssox.${environment}.notification.public.unified.v1:
+    description: Notification event topic
 
     publish:
-      summary: Publish email verification event
-      operationId: publishEmailVerify
+      summary: Publish notification event
+      operationId: publishNotificationEvent
       tags:
-        - name: EmailVerify
+        - name: Notifications
       bindings:
         kafka:
           bindingVersion: 'latest'
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.emailverify
-      x-itx-envelop-name: EmailVerifyEventEnvelope
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.notifications
+      x-itx-envelop-name: NotificationEnvelope
       message:
-        $ref: '#/components/messages/EmailVerifyEvent'
+        $ref: '#/components/messages/NotificationEnvelope'
 
     subscribe:
-      summary: Subscribe to email verification event
-      operationId: subscribeEmailVerify
+      summary: Subscribe to notification event
+      operationId: subscribeNotificationEvent
       tags:
-        - name: EmailVerify
+        - name: Notifications
       bindings:
         kafka:
           bindingVersion: 'latest'
       x-itx-metadata-version: v1
-      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.emailverify
-      x-itx-envelop-name: EmailVerifyEventEnvelope
+      x-itx-envelop-namespace: com.app_afesox.ntfssox.events.notifications
+      x-itx-envelop-name: NotificationEnvelope
       message:
-        $ref: '#/components/messages/EmailVerifyEvent'
+        $ref: '#/components/messages/NotificationEnvelope'
 
 components:
   messages:
-    EmailVerifyEvent:
-      name: EmailVerifyEvent
-      title: Email verification event
-      summary: Email verification event payload
+    NotificationEnvelope:
+      name: NotificationEnvelope
+      title: Notification envelope
+      summary: Universal notification envelope payload
       contentType: application/*+avro
       schemaFormat: application/vnd.apache.avro+json;version=1.0.0
       payload:
-        $ref: "emailverify/v1/imports/email_verify_event.avsc"
-
-  parameters:
-    environment:
-      description: The environment identifier
-      schema:
-        type: string
+        $ref: "notifications/v1/notification_envelope.avsc"

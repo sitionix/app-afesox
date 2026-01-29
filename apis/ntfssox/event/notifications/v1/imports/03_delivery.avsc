@@ -1,12 +1,12 @@
 {
   "type": "record",
-  "name": "Delivery",
-  "namespace": "com.app_afesox.ntfssox.events.emailverify",
+  "name": "DeliveryDTO",
+  "namespace": "com.app_afesox.ntfssox.events.notifications",
   "doc": "Delivery routing information for outbound notification.",
   "fields": [
     {
       "name": "channel",
-      "type": "VerifyChannel",
+      "type": "NotificationChannelDTO",
       "doc": "Delivery channel to be used by Notification Service (EMAIL, SMS, TELEGRAM, etc)."
     },
     {
