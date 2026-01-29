@@ -1,7 +1,7 @@
 asyncapi: 2.0.0
 info:
   title: EVENT NTFSSOX
-  version: 0.0.1
+  version: 0.0.2
   description: Events for NTFSSOX
 
 defaultContentType: application/*+avro
