@@ -470,6 +470,8 @@ EOF
   if [ "$mode" = "consumer" ]; then
     handler_name="${class_name}Handler"
     runner_name="${class_name}Runner"
+    error_handler_name="${class_name}ErrorHandler"
+    logging_error_handler_name="${class_name}LoggingErrorHandler"
     cat > "${out_dir}/${handler_name}.java" <<EOF
 package ${event_package};
 
@@ -478,6 +480,41 @@ import ${envelope_namespace}.${envelope_name};
 @FunctionalInterface
 public interface ${handler_name} {
   void consume${tag_method}(${envelope_name} event);
+}
+EOF
+
+    cat > "${out_dir}/${error_handler_name}.java" <<EOF
+package ${event_package};
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import ${envelope_namespace}.${envelope_name};
+
+public interface ${error_handler_name} {
+  void handle(Exception exception, ConsumerRecord<String, ${envelope_name}> record, ${handler_name} handler);
+}
+EOF
+
+    cat > "${out_dir}/${logging_error_handler_name}.java" <<EOF
+package ${event_package};
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ${envelope_namespace}.${envelope_name};
+
+public class ${logging_error_handler_name} implements ${error_handler_name} {
+  private static final Logger log = LoggerFactory.getLogger(${logging_error_handler_name}.class);
+
+  @Override
+  public void handle(Exception exception, ConsumerRecord<String, ${envelope_name}> record, ${handler_name} handler) {
+    if (record == null) {
+      log.error("Kafka consumer poll failed", exception);
+      return;
+    }
+    final String handlerName = handler == null ? "unknown" : handler.getClass().getName();
+    log.error("Failed to process Kafka record topic={} partition={} offset={} handler={}",
+        record.topic(), record.partition(), record.offset(), handlerName, exception);
+  }
 }
 EOF
 
@@ -492,28 +529,33 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.SmartLifecycle;
 import ${envelope_namespace}.${envelope_name};
 
 public class ${runner_name} implements SmartLifecycle {
   private static final Duration DEFAULT_POLL_TIMEOUT = Duration.ofSeconds(1);
   private static final Duration DEFAULT_SHUTDOWN_TIMEOUT = Duration.ofSeconds(5);
+  private static final Logger log = LoggerFactory.getLogger(${runner_name}.class);
 
   private final ${class_name} consumer;
   private final List<${handler_name}> handlers;
+  private final ${error_handler_name} errorHandler;
   private final Duration pollTimeout;
   private final Duration shutdownTimeout;
   private final ExecutorService executor;
   private final AtomicBoolean running = new AtomicBoolean(false);
 
-  public ${runner_name}(${class_name} consumer, List<${handler_name}> handlers) {
-    this(consumer, handlers, DEFAULT_POLL_TIMEOUT, DEFAULT_SHUTDOWN_TIMEOUT, newSingleThreadExecutor());
+  public ${runner_name}(${class_name} consumer, List<${handler_name}> handlers, ${error_handler_name} errorHandler) {
+    this(consumer, handlers, errorHandler, DEFAULT_POLL_TIMEOUT, DEFAULT_SHUTDOWN_TIMEOUT, newSingleThreadExecutor());
   }
 
-  public ${runner_name}(${class_name} consumer, List<${handler_name}> handlers, Duration pollTimeout,
+  public ${runner_name}(${class_name} consumer, List<${handler_name}> handlers, ${error_handler_name} errorHandler, Duration pollTimeout,
       Duration shutdownTimeout, ExecutorService executor) {
     this.consumer = consumer;
     this.handlers = handlers;
+    this.errorHandler = errorHandler == null ? new ${logging_error_handler_name}() : errorHandler;
     this.pollTimeout = pollTimeout == null ? DEFAULT_POLL_TIMEOUT : pollTimeout;
     this.shutdownTimeout = shutdownTimeout == null ? DEFAULT_SHUTDOWN_TIMEOUT : shutdownTimeout;
     this.executor = executor;
@@ -530,7 +572,11 @@ public class ${runner_name} implements SmartLifecycle {
   private void runLoop() {
     try {
       while (running.get()) {
-        consumer.pollOnce(pollTimeout, this::dispatch);
+        try {
+          consumer.pollOnce(pollTimeout, this::dispatch);
+        } catch (Exception ex) {
+          handleException(ex, null, null);
+        }
       }
     } finally {
       consumer.close();
@@ -539,7 +585,19 @@ public class ${runner_name} implements SmartLifecycle {
 
   private void dispatch(ConsumerRecord<String, ${envelope_name}> record) {
     for (${handler_name} handler : handlers) {
-      handler.consume${tag_method}(record.value());
+      try {
+        handler.consume${tag_method}(record.value());
+      } catch (Exception ex) {
+        handleException(ex, record, handler);
+      }
+    }
+  }
+
+  private void handleException(Exception ex, ConsumerRecord<String, ${envelope_name}> record, ${handler_name} handler) {
+    try {
+      this.errorHandler.handle(ex, record, handler);
+    } catch (Exception handlerException) {
+      log.error("Consumer error handler failed", handlerException);
     }
   }
 
@@ -675,8 +733,15 @@ public class ${config_class} {
   @Bean(name = "${bean_name}Runner")
   @ConditionalOnBean(${class_name}Handler.class)
   @ConditionalOnMissingBean(${class_name}Runner.class)
-  public ${class_name}Runner ${bean_name}Runner(${class_name} consumer, List<${class_name}Handler> handlers) {
-    return new ${class_name}Runner(consumer, handlers);
+  public ${class_name}Runner ${bean_name}Runner(${class_name} consumer, List<${class_name}Handler> handlers,
+      ${class_name}ErrorHandler errorHandler) {
+    return new ${class_name}Runner(consumer, handlers, errorHandler);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(${class_name}ErrorHandler.class)
+  public ${class_name}LoggingErrorHandler ${bean_name}ErrorHandler() {
+    return new ${class_name}LoggingErrorHandler();
   }
 }
 EOF
