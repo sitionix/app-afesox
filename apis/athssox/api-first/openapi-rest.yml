@@ -17,8 +17,8 @@ paths:
     get:
       tags:
         - Security
-      operationId: getJwks
-      summary: Public JSON Web Key Set (JWKS)
+      operationId: getJwksCanonical
+      summary: Public JSON Web Key Set (canonical)
       description: >
         Returns a JSON Web Key Set containing public keys used to verify JWT signatures.
         Used by OAuth2/OIDC resource servers.
@@ -46,14 +46,15 @@ paths:
     get:
       tags:
         - Security
-      operationId: getJwks
-      summary: Public JSON Web Key Set (JWKS)
+      operationId: getJwksAlias
+      summary: Public JSON Web Key Set (enterprise alias)
       description: >
+        Enterprise alias for /.well-known/jwks.json.
+        Payload is identical.
         Returns a JSON Web Key Set containing public keys used to verify JWT signatures.
         Used by OAuth2/OIDC resource servers.
         Keys are selected via JWT header `kid` value.
 
-        This is an enterprise alias for /.well-known/jwks.json. Payload is identical.
         This endpoint is public; no authentication is required and it does not return 401/403.
 
         Clients may cache JWKS for up to 300 seconds to reduce load.
@@ -266,7 +267,7 @@ components:
       properties:
         kty:
           type: string
-          description: Key Type. Example: "RSA" or "EC".
+          description: Key Type, for example "RSA" or "EC".
         kid:
           type: string
           description: Key ID. Used to match JWT header "kid" to the correct public key.
