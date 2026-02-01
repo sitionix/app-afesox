@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JwksResponse'
+                $ref: '#/components/schemas/JwksResponseDTO'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /oauth2/v1/keys:
@@ -71,7 +71,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JwksResponse'
+                $ref: '#/components/schemas/JwksResponseDTO'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/auth/refresh:
@@ -247,7 +247,7 @@ components:
       bearerFormat: JWT
       description: Internal service-to-service JWT.
   schemas:
-    JwksResponse:
+    JwksResponseDTO:
       type: object
       required:
         - keys
@@ -256,8 +256,8 @@ components:
           type: array
           description: List of public JSON Web Keys (JWK).
           items:
-            $ref: '#/components/schemas/Jwk'
-    Jwk:
+            $ref: '#/components/schemas/JwkDTO'
+    JwkDTO:
       type: object
       required:
         - kty
