@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.24
+  version: 0.0.25
   contact:
     name: APP Sitionix
 servers:
@@ -138,6 +138,41 @@ paths:
                 $ref: '#/components/schemas/EmailVerificationResponseDTO'
         '400':
           $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
+  /api/v1/auth/email/verify/resend:
+    post:
+      description: Service that re-initiates email verification for the authenticated user.
+      summary: API for resend email verification
+      operationId: resendEmailVerification
+      tags:
+        - Auth
+      security:
+        - internalBearerAuth: []
+      requestBody:
+        description: Empty request body; user is resolved from the internal authentication context.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerificationRequestDTO'
+            examples:
+              default:
+                summary: Empty request
+                value: {}
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendEmailVerificationResponseDTO'
+        '401':
+          $ref: '../../common/components.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../../common/components.yml#/components/responses/Forbidden'
+        '429':
+          $ref: '../../common/components.yml#/components/responses/TooManyRequests'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/auth/emailVerificationTokens/{id}:issueLink:
@@ -355,6 +390,19 @@ components:
           type: string
           format: uuid
           example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+    ResendEmailVerificationRequestDTO:
+      type: object
+      additionalProperties: false
+      description: Empty request body.
+    ResendEmailVerificationResponseDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: If your account requires verification, an email will be sent shortly.
     IssueEmailVerificationLinkResponseDTO:
       type: object
       required:
