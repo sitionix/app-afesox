@@ -177,7 +177,7 @@ paths:
         '403':
           $ref: '../../common/components.yml#/components/responses/Forbidden'
         '429':
-          $ref: '#/components/responses/TooManyRequests'
+          $ref: '../../common/components.yml#/components/responses/TooManyRequests'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/auth/emailVerificationTokens/{id}:issueLink:
@@ -295,20 +295,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Internal service-to-service JWT.
-  responses:
-    TooManyRequests:
-      description: Too Many Requests
-      content:
-        application/json:
-          schema:
-            $ref: '../../common/components.yml#/components/schemas/ErrorDTO'
-          examples:
-            default:
-              summary: Too Many Requests
-              value:
-                code: 429
-                title: Too Many Requests
-                details: Please wait before requesting another verification email.
   schemas:
     JwksResponseDTO:
       type: object
