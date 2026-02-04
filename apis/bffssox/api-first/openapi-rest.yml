@@ -142,8 +142,6 @@ paths:
       operationId: login
       tags:
         - Auth
-      security:
-        - bearerAuth: []
       requestBody:
         description: Login payload
         required: true
