@@ -87,3 +87,16 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDTO'
+    TooManyRequests:
+      description: Too Many Requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+          examples:
+            default:
+              summary: Too Many Requests
+              value:
+                code: 429
+                title: Too Many Requests
+                details: Please wait before requesting another verification email.

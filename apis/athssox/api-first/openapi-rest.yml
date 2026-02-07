@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.24
+  version: 0.0.25
   contact:
     name: APP Sitionix
 servers:
@@ -27,7 +27,8 @@ paths:
 
         Clients may cache JWKS for up to 300 seconds to reduce load.
         Rotation strategy relies on `kid` plus the cache TTL.
-      security: []  # public endpoint (no bearer auth)
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: JWKS returned
@@ -59,7 +60,8 @@ paths:
 
         Clients may cache JWKS for up to 300 seconds to reduce load.
         Rotation strategy relies on `kid` plus the cache TTL.
-      security: []  # public endpoint (no bearer auth)
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: JWKS returned
@@ -87,7 +89,8 @@ paths:
         
         The request must include `sessionSourceId` to bind refresh to an existing device session.
         `User-Agent` is read from HTTP headers only.
-      security: []  # public endpoint (no bearer auth)
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -122,6 +125,8 @@ paths:
       operationId: verifyEmail
       tags:
           - Auth
+      security:
+        - bearerAuth: []
       requestBody:
         description: Email verification payload
         required: true
@@ -140,6 +145,41 @@ paths:
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
+  /api/v1/auth/email/verify/resend:
+    post:
+      description: Service that re-initiates email verification for the authenticated user.
+      summary: API for resend email verification
+      operationId: resendEmailVerification
+      tags:
+        - Auth
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Empty request body; user is resolved from the authentication context.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerificationRequestDTO'
+            examples:
+              default:
+                summary: Empty request
+                value: {}
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendEmailVerificationResponseDTO'
+        '401':
+          $ref: '../../common/components.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../../common/components.yml#/components/responses/Forbidden'
+        '429':
+          $ref: '../../common/components.yml#/components/responses/TooManyRequests'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/auth/emailVerificationTokens/{id}:issueLink:
     get:
       description: Issues a verification link for the provided email verification token id.
@@ -148,7 +188,7 @@ paths:
       tags:
         - Auth
       security:
-        - internalBearerAuth: []
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -190,6 +230,8 @@ paths:
       operationId: registerUser
       tags:
         - User
+      security:
+        - bearerAuth: []
       requestBody:
         description: User registration payload
         required: true
@@ -216,6 +258,8 @@ paths:
       operationId: login
       tags:
         - Auth
+      security:
+        - bearerAuth: []
       requestBody:
         description: Login payload
         required: true
@@ -241,6 +285,11 @@ paths:
 
 components:
   securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: User access token (Bearer).
     internalBearerAuth:
       type: http
       scheme: bearer
@@ -355,6 +404,19 @@ components:
           type: string
           format: uuid
           example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+    ResendEmailVerificationRequestDTO:
+      type: object
+      additionalProperties: false
+      description: Empty request body.
+    ResendEmailVerificationResponseDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: If your account requires verification, an email will be sent shortly.
     IssueEmailVerificationLinkResponseDTO:
       type: object
       required:
