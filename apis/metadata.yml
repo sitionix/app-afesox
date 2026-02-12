@@ -11,6 +11,12 @@ apis:
   - name: CLIENT Backend for Frontend SOX
     api-spec-type: client
     definition-path: /bffssox/api-first
+  - name: API Site Service SOX
+    api-spec-type: api-first
+    definition-path: /stsssox/api-first
+  - name: CLIENT Site Service SOX
+    api-spec-type: client
+    definition-path: /stsssox/api-first
   - name: EVENT NTFSSOX Producer
     api-spec-type: event-producer
     definition-path: /ntfssox/event
