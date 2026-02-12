@@ -28,14 +28,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateSiteRequestDTO'
-            examples:
-              default:
-                summary: Create site request
-                value:
-                  name: Portfolio agency
-                  type: PORTFOLIO
-                  description: Agency website
-                  template: BLANK
       responses:
         '201':
           description: Site created
@@ -43,15 +35,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateSiteResponseDTO'
-              examples:
-                default:
-                  summary: Created site
-                  value:
-                    siteId: c9b1f3f4-12c7-11ec-82a8-0242ac130003
-                    name: Portfolio agency
-                    status: DRAFT
-                    createdAt: '2026-02-11T06:10:00Z'
-                    updatedAt: '2026-02-11T06:10:00Z'
         '400':
           $ref: '../../common/components.yml#/components/responses/BadRequest'
         '401':
@@ -86,7 +69,6 @@ components:
           example: Portfolio
         type:
           type: string
-          nullable: true
           enum:
             - PORTFOLIO
             - BUSINESS
@@ -98,7 +80,6 @@ components:
         description:
           type: string
           maxLength: 160
-          nullable: true
           description: Short site description.
         template:
           type: string
