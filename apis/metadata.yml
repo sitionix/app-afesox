@@ -20,11 +20,11 @@ apis:
   - name: EVENT SiteMeta STSSSOX Producer
     api-spec-type: event-producer
     definition-path: /stsssox/event
-    event-tag: Site Meta
+    event-tag: SiteMeta
   - name: EVENT SiteMeta STSSSOX Consumer
     api-spec-type: event-consumer
     definition-path: /stsssox/event
-    event-tag: Site Meta
+    event-tag: SiteMeta
   - name: EVENT NTFSSOX Producer
     api-spec-type: event-producer
     definition-path: /ntfssox/event
