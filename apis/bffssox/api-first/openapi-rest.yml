@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.9
+  version: 0.0.10
   contact:
     name: APP Sitionix
 servers:
@@ -11,6 +11,7 @@ servers:
 tags:
   - name: Auth
   - name: User
+  - name: Site
 paths:
   /api/v1/auth/refresh:
     post:
@@ -132,6 +133,38 @@ paths:
                 $ref: '#/components/schemas/ResponseRegisterUserDTO'
         '400':
           $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
+  /api/v1/sites:
+    post:
+      tags:
+        - Site
+      operationId: createSite
+      summary: Create site
+      description: >
+        Creates a new site owned by the currently authenticated user.
+        The site is created with `DRAFT` status and must be opened by the client in builder using returned `siteId`.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSiteRequestDTO'
+      responses:
+        '201':
+          description: Site created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSiteResponseDTO'
+        '400':
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '401':
+          $ref: '../../common/components.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../../common/components.yml#/components/responses/Forbidden'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
 
@@ -305,6 +338,74 @@ components:
               - ECOSYSTEM_OWNER
               - SITE_ADMIN
               - SITE_USER
+    CreateSiteRequestDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 60
+          pattern: ".*\\S.*"
+          description: >
+            Human-readable site name. Value is trimmed before validation.
+            Duplicate names are allowed.
+          example: Portfolio
+        type:
+          type: string
+          enum:
+            - PORTFOLIO
+            - BUSINESS
+            - BLOG
+            - STORE
+            - LANDING
+            - OTHER
+          description: Logical site category used for onboarding and analytics.
+        description:
+          type: string
+          maxLength: 160
+          description: Short site description.
+        template:
+          type: string
+          default: BLANK
+          enum:
+            - BLANK
+          description: Initial template identifier used during site creation.
+    CreateSiteResponseDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - siteId
+        - name
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        siteId:
+          type: string
+          format: uuid
+          description: Globally unique site identifier.
+        name:
+          type: string
+          description: Site name.
+        status:
+          type: string
+          description: Current site status.
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+          example: DRAFT
+        createdAt:
+          type: string
+          format: date-time
+          description: Site creation timestamp (UTC).
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last site update timestamp (UTC).
     LoginRequestDTO:
       type: object
       required:
