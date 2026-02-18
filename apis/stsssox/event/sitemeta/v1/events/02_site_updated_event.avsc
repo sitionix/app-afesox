@@ -1,8 +1,8 @@
 {
   "type": "record",
-  "name": "SiteMetaEvent",
+  "name": "SiteUpdatedEvent",
   "namespace": "com.app_afesox.stsssox.events.sitemeta",
-  "doc": "Site metadata snapshot event used by workspace read-model projection.",
+  "doc": "Site updated payload for workspace read-model projection.",
   "fields": [
     {
       "name": "siteId",
@@ -16,13 +16,21 @@
     },
     {
       "name": "name",
-      "type": "string",
-      "doc": "Human-readable site name."
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Updated site name."
     },
     {
       "name": "status",
-      "type": "SiteStatusDTO",
-      "doc": "Current site lifecycle status."
+      "type": [
+        "null",
+        "SiteStatusDTO"
+      ],
+      "default": null,
+      "doc": "Updated site status."
     },
     {
       "name": "type",
@@ -31,7 +39,7 @@
         "SiteTypeDTO"
       ],
       "default": null,
-      "doc": "Optional site category."
+      "doc": "Updated site category."
     },
     {
       "name": "description",
@@ -40,17 +48,12 @@
         "string"
       ],
       "default": null,
-      "doc": "Optional site description."
-    },
-    {
-      "name": "createdAt",
-      "type": "string",
-      "doc": "Creation timestamp in UTC ISO-8601 format."
+      "doc": "Updated site description."
     },
     {
       "name": "updatedAt",
       "type": "string",
-      "doc": "Last update timestamp in UTC ISO-8601 format."
+      "doc": "Update timestamp in UTC ISO-8601 format."
     }
   ]
 }

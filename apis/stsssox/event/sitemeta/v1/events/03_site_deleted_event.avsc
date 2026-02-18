@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "SiteDeletedEvent",
+  "namespace": "com.app_afesox.stsssox.events.sitemeta",
+  "doc": "Site deleted payload for workspace read-model projection.",
+  "fields": [
+    {
+      "name": "siteId",
+      "type": "string",
+      "doc": "Site identifier (UUID)."
+    },
+    {
+      "name": "ownerUserId",
+      "type": "long",
+      "doc": "Owner user identifier from authentication context."
+    },
+    {
+      "name": "deletedAt",
+      "type": "string",
+      "doc": "Deletion timestamp in UTC ISO-8601 format."
+    }
+  ]
+}

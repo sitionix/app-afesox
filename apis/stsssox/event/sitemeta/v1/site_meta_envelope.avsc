@@ -9,7 +9,11 @@
     },
     {
       "name": "payload",
-      "type": "com.app_afesox.stsssox.events.sitemeta.SiteMetaEvent"
+      "type": [
+        "com.app_afesox.stsssox.events.sitemeta.SiteCreatedEvent",
+        "com.app_afesox.stsssox.events.sitemeta.SiteUpdatedEvent",
+        "com.app_afesox.stsssox.events.sitemeta.SiteDeletedEvent"
+      ]
     }
   ]
 }

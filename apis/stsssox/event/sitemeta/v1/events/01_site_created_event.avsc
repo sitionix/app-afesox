@@ -1,0 +1,56 @@
+{
+  "type": "record",
+  "name": "SiteCreatedEvent",
+  "namespace": "com.app_afesox.stsssox.events.sitemeta",
+  "doc": "Site created payload for workspace read-model projection.",
+  "fields": [
+    {
+      "name": "siteId",
+      "type": "string",
+      "doc": "Site identifier (UUID)."
+    },
+    {
+      "name": "ownerUserId",
+      "type": "long",
+      "doc": "Owner user identifier from authentication context."
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Human-readable site name."
+    },
+    {
+      "name": "status",
+      "type": "SiteStatusDTO",
+      "doc": "Current site lifecycle status."
+    },
+    {
+      "name": "type",
+      "type": [
+        "null",
+        "SiteTypeDTO"
+      ],
+      "default": null,
+      "doc": "Optional site category."
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Optional site description."
+    },
+    {
+      "name": "createdAt",
+      "type": "string",
+      "doc": "Creation timestamp in UTC ISO-8601 format."
+    },
+    {
+      "name": "updatedAt",
+      "type": "string",
+      "doc": "Last update timestamp in UTC ISO-8601 format."
+    }
+  ]
+}
