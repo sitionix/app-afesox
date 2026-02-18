@@ -1,0 +1,11 @@
+{
+  "type": "enum",
+  "name": "SiteStatusDTO",
+  "namespace": "com.app_afesox.stsssox.events.sitemeta",
+  "doc": "Site lifecycle status values.",
+  "symbols": [
+    "DRAFT",
+    "PUBLISHED",
+    "ARCHIVED"
+  ]
+}

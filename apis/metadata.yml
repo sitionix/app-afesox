@@ -17,6 +17,14 @@ apis:
   - name: CLIENT Site Service SOX
     api-spec-type: client
     definition-path: /stsssox/api-first
+  - name: EVENT SiteMeta STSSSOX Producer
+    api-spec-type: event-producer
+    definition-path: /stsssox/event
+    event-tag: Site Meta
+  - name: EVENT SiteMeta STSSSOX Consumer
+    api-spec-type: event-consumer
+    definition-path: /stsssox/event
+    event-tag: Site Meta
   - name: EVENT NTFSSOX Producer
     api-spec-type: event-producer
     definition-path: /ntfssox/event

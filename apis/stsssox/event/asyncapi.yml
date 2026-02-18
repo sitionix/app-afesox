@@ -1,0 +1,50 @@
+asyncapi: 2.0.0
+info:
+  title: EVENT STSSSOX
+  version: 0.0.1
+  description: Events for STSSSOX
+
+defaultContentType: application/*+avro
+
+channels:
+  stsssox.${environment}.site-meta.public.unified.v1:
+    description: Site metadata topic for workspace read-model projection
+
+    publish:
+      summary: Publish site metadata event
+      operationId: publishSiteMetaEvent
+      tags:
+        - name: Site Meta
+      bindings:
+        kafka:
+          bindingVersion: 'latest'
+      x-itx-metadata-version: v1
+      x-itx-envelop-namespace: com.app_afesox.stsssox.events.sitemeta
+      x-itx-envelop-name: SiteMetaEnvelope
+      message:
+        $ref: '#/components/messages/SiteMetaEnvelope'
+
+    subscribe:
+      summary: Subscribe site metadata event
+      operationId: subscribeSiteMetaEvent
+      tags:
+        - name: Site Meta
+      bindings:
+        kafka:
+          bindingVersion: 'latest'
+      x-itx-metadata-version: v1
+      x-itx-envelop-namespace: com.app_afesox.stsssox.events.sitemeta
+      x-itx-envelop-name: SiteMetaEnvelope
+      message:
+        $ref: '#/components/messages/SiteMetaEnvelope'
+
+components:
+  messages:
+    SiteMetaEnvelope:
+      name: SiteMetaEnvelope
+      title: Site metadata envelope
+      summary: Site metadata envelope payload
+      contentType: application/*+avro
+      schemaFormat: application/vnd.apache.avro+json;version=1.0.0
+      payload:
+        $ref: "sitemeta/v1/site_meta_envelope.avsc"

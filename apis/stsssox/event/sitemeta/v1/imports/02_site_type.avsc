@@ -1,0 +1,14 @@
+{
+  "type": "enum",
+  "name": "SiteTypeDTO",
+  "namespace": "com.app_afesox.stsssox.events.sitemeta",
+  "doc": "Site category values.",
+  "symbols": [
+    "PORTFOLIO",
+    "BUSINESS",
+    "BLOG",
+    "STORE",
+    "LANDING",
+    "OTHER"
+  ]
+}
