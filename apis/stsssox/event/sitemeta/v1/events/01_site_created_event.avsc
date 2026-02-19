@@ -10,9 +10,9 @@
       "doc": "Site identifier (UUID)."
     },
     {
-      "name": "ownerUserId",
+      "name": "userId",
       "type": "long",
-      "doc": "Owner user identifier from authentication context."
+      "doc": "User identifier from authentication context."
     },
     {
       "name": "name",
