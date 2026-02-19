@@ -7,7 +7,7 @@ info:
 defaultContentType: application/*+avro
 
 channels:
-  stsssox.${environment}.site-meta.public.unified.v1:
+  stsssox.${environment}.site-meta.public.v1:
     description: Site metadata topic for workspace read-model projection
 
     publish:
