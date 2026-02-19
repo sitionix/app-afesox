@@ -17,6 +17,12 @@ apis:
   - name: CLIENT Site Service SOX
     api-spec-type: client
     definition-path: /stsssox/api-first
+  - name: API Workspace Aggregation SOX
+    api-spec-type: api-first
+    definition-path: /wagssox/api-first
+  - name: CLIENT Workspace Aggregation SOX
+    api-spec-type: client
+    definition-path: /wagssox/api-first
   - name: EVENT SiteMeta STSSSOX Producer
     api-spec-type: event-producer
     definition-path: /stsssox/event
