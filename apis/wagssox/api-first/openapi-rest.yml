@@ -1,0 +1,124 @@
+openapi: "3.0.0"
+info:
+  title: API Workspace Aggregation Service Sitionix
+  description: API specification for workspace projection service
+  version: 0.0.1
+  contact:
+    name: APP Sitionix
+servers:
+  - description: Localhost (dev only)
+    url: "http://localhost:8080/wagssox"
+tags:
+  - name: Site
+paths:
+  /api/v1/sites:
+    get:
+      tags:
+        - Site
+      operationId: getSites
+      summary: Get sites page
+      description: >
+        Returns a paginated list of site cards for the currently authenticated user.
+        Endpoint is intended for internal S2S callers (for example BFF).
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          description: Zero-based page index.
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: size
+          description: Requested page size. Defaults to 20 when omitted.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+      responses:
+        "200":
+          description: Sites page.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSitesPageDTO"
+        "400":
+          $ref: "../../common/components.yml#/components/responses/BadRequest"
+        "401":
+          $ref: "../../common/components.yml#/components/responses/Unauthorized"
+        "403":
+          $ref: "../../common/components.yml#/components/responses/Forbidden"
+        "500":
+          $ref: "../../common/components.yml#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service access token (Bearer).
+  schemas:
+    WorkspaceSitesPageDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - page
+        - size
+        - hasNext
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceSiteCardDTO"
+        page:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+        hasNext:
+          type: boolean
+    WorkspaceSiteCardDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - siteId
+        - name
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        siteId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+        type:
+          type: string
+          enum:
+            - PORTFOLIO
+            - BUSINESS
+            - BLOG
+            - STORE
+            - LANDING
+            - OTHER
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
