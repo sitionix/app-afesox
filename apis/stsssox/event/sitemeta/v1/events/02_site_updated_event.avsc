@@ -1,0 +1,59 @@
+{
+  "type": "record",
+  "name": "SiteUpdatedEvent",
+  "namespace": "com.app_afesox.stsssox.events.sitemeta",
+  "doc": "Site updated payload for workspace read-model projection.",
+  "fields": [
+    {
+      "name": "siteId",
+      "type": "string",
+      "doc": "Site identifier (UUID)."
+    },
+    {
+      "name": "userId",
+      "type": "long",
+      "doc": "User identifier from authentication context."
+    },
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Updated site name."
+    },
+    {
+      "name": "status",
+      "type": [
+        "null",
+        "SiteStatusDTO"
+      ],
+      "default": null,
+      "doc": "Updated site status."
+    },
+    {
+      "name": "type",
+      "type": [
+        "null",
+        "SiteTypeDTO"
+      ],
+      "default": null,
+      "doc": "Updated site category."
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Updated site description."
+    },
+    {
+      "name": "updatedAt",
+      "type": "string",
+      "doc": "Update timestamp in UTC ISO-8601 format."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "SiteMetaEnvelope",
+  "namespace": "com.app_afesox.stsssox.events.sitemeta",
+  "fields": [
+    {
+      "name": "metadata",
+      "type": "com.app_afesox.events.Metadata"
+    },
+    {
+      "name": "payload",
+      "type": [
+        "com.app_afesox.stsssox.events.sitemeta.SiteCreatedEvent",
+        "com.app_afesox.stsssox.events.sitemeta.SiteUpdatedEvent",
+        "com.app_afesox.stsssox.events.sitemeta.SiteDeletedEvent"
+      ]
+    }
+  ]
+}
