@@ -488,7 +488,6 @@ components:
             - PUBLISHED
             - ARCHIVED
         type:
-          nullable: true
           type: string
           enum:
             - PORTFOLIO
@@ -498,7 +497,6 @@ components:
             - LANDING
             - OTHER
         description:
-          nullable: true
           type: string
         createdAt:
           type: string
