@@ -136,6 +136,45 @@ paths:
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/sites:
+    get:
+      tags:
+        - Site
+      operationId: getSites
+      summary: Get workspace sites
+      description: >
+        Returns a paginated list of workspace site cards for the authenticated user.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+      responses:
+        '200':
+          description: Sites page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceSitesResponseDTO'
+        '400':
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '401':
+          $ref: '../../common/components.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../../common/components.yml#/components/responses/Forbidden'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
     post:
       tags:
         - Site
@@ -406,6 +445,67 @@ components:
           type: string
           format: date-time
           description: Last site update timestamp (UTC).
+    WorkspaceSitesResponseDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - page
+        - size
+        - hasNext
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceSiteCardResponseDTO'
+        page:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+        hasNext:
+          type: boolean
+    WorkspaceSiteCardResponseDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - siteId
+        - name
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        siteId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+        type:
+          nullable: true
+          type: string
+          enum:
+            - PORTFOLIO
+            - BUSINESS
+            - BLOG
+            - STORE
+            - LANDING
+            - OTHER
+        description:
+          nullable: true
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     LoginRequestDTO:
       type: object
       required:
