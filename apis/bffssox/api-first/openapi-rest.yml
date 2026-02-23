@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.12
+  version: 0.0.13
   contact:
     name: APP Sitionix
 servers:
@@ -13,6 +13,30 @@ tags:
   - name: User
   - name: Site
 paths:
+  /api/v1/session:
+    get:
+      tags:
+        - Auth
+      operationId: getSession
+      summary: Resolve current authenticated session
+      description: >
+        Resolves the current browser session from HttpOnly cookie managed by BFF.
+        Does not expose access or refresh tokens.
+      responses:
+        '200':
+          description: Authenticated session resolved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponseDTO'
+        '401':
+          description: Session is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthenticatedSessionResponseDTO'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
   /api/v1/auth/refresh:
     post:
       tags:
@@ -209,7 +233,7 @@ paths:
 
   /api/v1/auth/login:
     post:
-      description: Service that authenticates user and creates a session
+      description: Service that authenticates user and creates BFF cookie session
       summary: API for user login
       operationId: login
       tags:
@@ -223,7 +247,7 @@ paths:
               $ref: '#/components/schemas/LoginRequestDTO'
       responses:
         '200':
-          description: Success
+          description: Success. BFF sets HttpOnly session cookie.
           content:
             application/json:
               schema:
@@ -509,8 +533,6 @@ components:
       required:
         - email
         - password
-        - sessionSourceId
-        - userAgent
       properties:
         email:
           type: string
@@ -529,33 +551,54 @@ components:
           type: string
           format: uuid
           example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
-        sessionSourceId:
-          type: string
-          minLength: 1
-          maxLength: 64
-          pattern: ".*\\S.*"
-          example: chrome-uuid-12345
-        userAgent:
-          type: string
-          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)...
     LoginResponseDTO:
       type: object
+      additionalProperties: false
       required:
-        - accessToken
-        - refreshToken
-        - expiresIn
-        - tokenType
+        - authenticated
+        - user
       properties:
-        accessToken:
+        authenticated:
+          type: boolean
+          example: true
+        user:
+          $ref: '#/components/schemas/SessionUserDTO'
+        expiresAt:
           type: string
-          example: eyJhbGciOi...
-        refreshToken:
-          type: string
-          example: dGhpc0lzUmVmcmVzaA==
-        expiresIn:
+          format: date-time
+          example: "2026-03-01T10:30:00Z"
+        idleTimeoutSeconds:
           type: integer
           format: int64
-          example: 3600
-        tokenType:
+          minimum: 1
+          example: 86400
+    UnauthenticatedSessionResponseDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - authenticated
+      properties:
+        authenticated:
+          type: boolean
+          example: false
+    SessionUserDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - email
+        - role
+      properties:
+        id:
           type: string
-          example: Bearer
+          example: "123"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        role:
+          type: string
+          example: "SUPER_ADMIN"
+        siteId:
+          type: string
+          format: uuid
