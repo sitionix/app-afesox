@@ -24,9 +24,11 @@ paths:
 
         Transport & Security Notes:
         - Browser refresh token transport uses `__Host-refresh_token` cookie (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, no `Domain`).
-        - CSRF protection uses double-submit: `XSRF-TOKEN` cookie (not `HttpOnly`) plus `X-CSRF` header, where `X-CSRF` MUST equal the `XSRF-TOKEN` cookie value.
         - Refresh token rotation is returned via `Set-Cookie: __Host-refresh_token=...`.
-        - BFF MAY also update `XSRF-TOKEN` via `Set-Cookie`.
+        - BFF enforces Origin/Referer CSRF guard on this endpoint:
+          - If `Origin` header is present, it MUST match an allowed frontend origin.
+          - If `Origin` is missing and `Referer` is present, the parsed `Referer` origin MUST match an allowed frontend origin.
+          - If both are missing, request is rejected with `403 Forbidden`.
         - The request body must include `sessionSourceId` for device/session binding.
         - `User-Agent` is read from HTTP headers only.
       security: []  # public endpoint (no bearer auth)
@@ -38,20 +40,20 @@ paths:
             type: string
             minLength: 1
           description: HttpOnly refresh token cookie sent by the browser.
-        - in: cookie
-          name: XSRF-TOKEN
-          required: true
-          schema:
-            type: string
-            minLength: 1
-          description: Readable CSRF cookie value used for double-submit validation.
         - in: header
-          name: X-CSRF
-          required: true
+          name: Origin
+          required: false
           schema:
             type: string
             minLength: 1
-          description: Must exactly match the `XSRF-TOKEN` cookie value.
+          description: Browser origin. If present, must exactly match configured allowed origins.
+        - in: header
+          name: Referer
+          required: false
+          schema:
+            type: string
+            minLength: 1
+          description: Used only when `Origin` is missing; parsed origin must match configured allowed origins.
       requestBody:
         required: true
         content:
@@ -70,7 +72,6 @@ paths:
             Set-Cookie:
               description: >
                 Contains rotated `__Host-refresh_token` cookie with secure attributes.
-                Response may also include updated `XSRF-TOKEN` cookie.
               schema:
                 type: string
           content:
