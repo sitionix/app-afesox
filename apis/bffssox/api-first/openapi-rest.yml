@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.12
+  version: 0.0.13
   contact:
     name: APP Sitionix
 servers:
@@ -19,14 +19,41 @@ paths:
         - Auth
       operationId: refreshAccessToken
       summary: Refresh access token
-      description: >
+      description: |
         Issues a new short-lived access token based on a valid refresh token.
-        Refresh tokens are single-use (rotation): when a refresh token is used,
-        it is revoked and a new refresh token is issued.
-        
-        The request must include `sessionSourceId` to bind refresh to an existing device session.
-        `User-Agent` is read from HTTP headers only.
+
+        Transport & Security Notes:
+        - Browser refresh token transport uses `__Host-refresh_token` cookie (`HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, no `Domain`).
+        - Refresh token rotation is returned via `Set-Cookie: __Host-refresh_token=...`.
+        - BFF enforces Origin/Referer CSRF guard on this endpoint:
+          - If `Origin` header is present, it MUST match an allowed frontend origin.
+          - If `Origin` is missing and `Referer` is present, the parsed `Referer` origin MUST match an allowed frontend origin.
+          - If both are missing, request is rejected with `403 Forbidden`.
+        - The request body must include `sessionSourceId` for device/session binding.
+        - `User-Agent` is read from HTTP headers only.
       security: []  # public endpoint (no bearer auth)
+      parameters:
+        - in: cookie
+          name: __Host-refresh_token
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          description: HttpOnly refresh token cookie sent by the browser.
+        - in: header
+          name: Origin
+          required: false
+          schema:
+            type: string
+            minLength: 1
+          description: Browser origin. If present, must exactly match configured allowed origins.
+        - in: header
+          name: Referer
+          required: false
+          schema:
+            type: string
+            minLength: 1
+          description: Used only when `Origin` is missing; parsed origin must match configured allowed origins.
       requestBody:
         required: true
         content:
@@ -37,11 +64,16 @@ paths:
               default:
                 summary: Refresh request
                 value:
-                  refreshToken: dGhpc0lzUmVmcmVzaA==
                   sessionSourceId: chrome-uuid-12345
       responses:
         '200':
-          description: New access token (and rotated refresh token) issued
+          description: New access token issued and refresh cookie rotated
+          headers:
+            Set-Cookie:
+              description: >
+                Contains rotated `__Host-refresh_token` cookie with secure attributes.
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -209,7 +241,18 @@ paths:
 
   /api/v1/auth/login:
     post:
-      description: Service that authenticates user and creates a session
+      description: |
+        Service that authenticates user and creates a browser session.
+
+        Transport & Security Notes:
+        - Refresh token is returned only as HttpOnly cookie via `Set-Cookie`.
+        - Browser-facing refresh endpoint (`POST /api/v1/auth/refresh`) requires this cookie.
+        - Cookie defaults:
+          - name: `__Host-refresh_token` (configurable by environment)
+          - `HttpOnly`
+          - `Path=/`
+          - `SameSite=Lax`
+          - `Secure=true` in production, `Secure=false` in local HTTP development
       summary: API for user login
       operationId: login
       tags:
@@ -224,6 +267,12 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            Set-Cookie:
+              description: >
+                Contains refresh token cookie for browser refresh flow.
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -247,15 +296,8 @@ components:
       type: object
       additionalProperties: false
       required:
-        - refreshToken
         - sessionSourceId
       properties:
-        refreshToken:
-          type: string
-          minLength: 1
-          description: >
-            Refresh token previously issued by the Authorization Service.
-            Treated as single-use when rotation is enabled.
         sessionSourceId:
           type: string
           minLength: 1
@@ -269,7 +311,6 @@ components:
       additionalProperties: false
       required:
         - accessToken
-        - refreshToken
         - expiresIn
         - tokenType
       properties:
@@ -277,10 +318,6 @@ components:
           type: string
           minLength: 1
           description: Short-lived JWT access token.
-        refreshToken:
-          type: string
-          minLength: 1
-          description: Rotated refresh token (single-use).
         expiresIn:
           type: integer
           format: int64
@@ -542,16 +579,12 @@ components:
       type: object
       required:
         - accessToken
-        - refreshToken
         - expiresIn
         - tokenType
       properties:
         accessToken:
           type: string
           example: eyJhbGciOi...
-        refreshToken:
-          type: string
-          example: dGhpc0lzUmVmcmVzaA==
         expiresIn:
           type: integer
           format: int64
