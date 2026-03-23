@@ -238,6 +238,41 @@ paths:
           $ref: '../../common/components.yml#/components/responses/Forbidden'
         '500':
           $ref: '../../common/components.yml#/components/responses/InternalServerError'
+  /api/v1/sites/{siteId}/overview:
+    get:
+      tags:
+        - Site
+      operationId: getSiteOverview
+      summary: Get site overview
+      description: >
+        Returns overview summary data for a single site owned by the authenticated user.
+        At the current stage, response includes only the core site overview block.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: siteId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Site overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteOverviewDTO'
+        '400':
+          $ref: '../../common/components.yml#/components/responses/BadRequest'
+        '401':
+          $ref: '../../common/components.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: '../../common/components.yml#/components/responses/Forbidden'
+        '404':
+          $ref: '../../common/components.yml#/components/responses/NotFound'
+        '500':
+          $ref: '../../common/components.yml#/components/responses/InternalServerError'
 
   /api/v1/auth/login:
     post:
@@ -503,6 +538,44 @@ components:
           minimum: 1
         hasNext:
           type: boolean
+    SiteOverviewDTO:
+      type: object
+      additionalProperties: false
+      required:
+        - siteId
+        - name
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        siteId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - ARCHIVED
+        type:
+          type: string
+          enum:
+            - PORTFOLIO
+            - BUSINESS
+            - BLOG
+            - STORE
+            - LANDING
+            - OTHER
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     WorkspaceSiteCardResponseDTO:
       type: object
       additionalProperties: false
