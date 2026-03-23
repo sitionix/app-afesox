@@ -10,22 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v6
         with:
-          node-version: '14'
+          node-version: '24'
+          package-manager-cache: false
 
       - name: Install Spectral CLI
-        run: npm install -g @stoplight/spectral-cli
+        run: npm install -g @stoplight/spectral-cli --loglevel=error
 
       - name: Check Spectral version
         run: spectral --version
 
+      - name: Fetch base branch
+        run: git fetch origin "${{ github.base_ref }}" --depth=1
+
       - name: Validate OpenAPI files
         run: |
-          CHANGED_OPENAPI_FILES=$(find . -type f -name 'openapi-rest.yml')
+          CHANGED_OPENAPI_FILES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- '**/openapi-rest.yml')
+
+          if [ -z "$CHANGED_OPENAPI_FILES" ]; then
+            echo "No changed OpenAPI files found."
+            exit 0
+          fi
+
           for file in $CHANGED_OPENAPI_FILES; do
             echo "Validating $file with Spectral..."
             spectral lint "$file" --ruleset .spectral.yaml || exit 1
