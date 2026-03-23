@@ -9,8 +9,16 @@ rules:
 
   no-example-in-parameters:
     description: "Ensure no 'example' field is present in query parameters."
-    given: "$..parameters"
+    given: "$..parameters[*]"
+    then:
+      field: "example"
+      function: "falsy"
+      message: "The 'example' field should not be used in parameters."
+
+  no-schema-example-in-parameters:
+    description: "Ensure no 'schema.example' field is present in parameters."
+    given: "$..parameters[*]"
     then:
       field: "schema.example"
-      function: "truthy"
-      message: "The 'example' field should not be used in parameters."
+      function: "falsy"
+      message: "The 'schema.example' field should not be used in parameters."
