@@ -22,11 +22,11 @@ components:
       description: Service-to-service access token (Bearer).
   schemas:
     CreateSiteRequestDTO:
-      $ref: './schemas/v1/site/create-site-request.yml'
+      $ref: './schemas/v1/site/create-site-request-dto.yml'
     CreateSiteResponseDTO:
-      $ref: './schemas/v1/site/create-site-response.yml'
+      $ref: './schemas/v1/site/create-site-response-dto.yml'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-response.yml'
+      $ref: './schemas/v1/errors/error-dto.yml'
   responses:
     BadRequest:
       $ref: './schemas/v1/errors/responses.yml#/BadRequest'
