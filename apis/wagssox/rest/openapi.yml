@@ -24,13 +24,17 @@ components:
       description: Service-to-service access token (Bearer).
   schemas:
     SiteOverviewDTO:
-      $ref: './schemas/v1/site/site-overview.yml'
+      allOf:
+        - $ref: './schemas/v1/site/site-overview.yml'
     WorkspaceSitesPageDTO:
-      $ref: './schemas/v1/site/workspace-sites-page.yml'
+      allOf:
+        - $ref: './schemas/v1/site/workspace-sites-page.yml'
     WorkspaceSiteCardDTO:
-      $ref: './schemas/v1/site/workspace-site-card.yml'
+      allOf:
+        - $ref: './schemas/v1/site/workspace-site-card.yml'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-response.yml'
+      allOf:
+        - $ref: './schemas/v1/errors/error-response.yml'
   responses:
     BadRequest:
       $ref: './schemas/v1/errors/responses.yml#/BadRequest'
