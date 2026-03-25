@@ -34,6 +34,19 @@ Use the `/generate` workflow to produce an unstable artifact while your pull req
 
 Every new `/generate` comment replaces the previously published unstable artifact for that ticket and then produces the refreshed build.
 
+## REST Contract Layout
+
+REST contracts now live under:
+
+```text
+apis/<service>/rest/openapi.yml
+apis/<service>/rest/metadata.yml
+apis/<service>/rest/paths/v1/*.yml
+apis/<service>/rest/schemas/v1/<group>/*.yml
+```
+
+`openapi.yml` is the entrypoint file. It keeps only top-level metadata, security definitions, and `$ref` links to `paths/` and `schemas/`.
+
 ## Releasing Stable Versions after Merge
 
 Once the pull request is merged into the `develop` branch, the CI pipeline automatically removes any remaining unstable artifacts for that ticket and produces a stable release. The workflow publishes the stable Maven coordinates for long-term consumption.

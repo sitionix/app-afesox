@@ -1,0 +1,24 @@
+post:
+  description: Service that registers a new user
+  summary: API for user registration
+  operationId: registerUser
+  tags:
+    - User
+  requestBody:
+    description: User registration payload
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/RegisterUserDTO'
+  responses:
+    '201':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ResponseRegisterUserDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

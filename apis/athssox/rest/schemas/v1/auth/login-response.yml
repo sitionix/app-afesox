@@ -1,0 +1,24 @@
+type: object
+required:
+  - accessToken
+  - refreshToken
+  - tokenType
+  - expiresIn
+properties:
+  accessToken:
+    type: string
+    description: Bearer token that authorizes subsequent requests
+    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+  refreshToken:
+    type: string
+    description: Token used to refresh the access token
+    example: dGhpc0lzUmVmcmVzaA==
+  tokenType:
+    type: string
+    description: Type of token returned
+    example: Bearer
+  expiresIn:
+    type: integer
+    format: int64
+    description: Time in seconds until the token expires
+    example: 3600

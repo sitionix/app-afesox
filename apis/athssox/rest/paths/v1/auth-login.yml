@@ -1,0 +1,30 @@
+post:
+  description: Service that authenticates user and creates a session
+  summary: API for user login
+  operationId: login
+  tags:
+    - Auth
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Login payload
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/LoginRequestDTO'
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/LoginResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

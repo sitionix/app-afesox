@@ -77,6 +77,7 @@ jobs:
         id: read-definition-metadata
         run: |
           definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
+          definition_path="${definition_path#/}"
           metadata_file="./apis/${definition_path}/metadata.yml"
           version=$(yq eval '.api.version' $metadata_file)
           name=$(yq eval '.api.name' $metadata_file)

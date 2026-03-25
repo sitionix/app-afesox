@@ -1,0 +1,41 @@
+post:
+  tags:
+    - Auth
+  operationId: refreshAccessToken
+  summary: Refresh access token
+  description: >
+    Issues a new short-lived access token based on a valid refresh token.
+    Refresh tokens are single-use (rotation): when a refresh token is used,
+    it is revoked and a new refresh token is issued.
+
+    The request must include `sessionSourceId` to bind refresh to an existing device session.
+    `User-Agent` is read from HTTP headers only.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/RefreshAccessTokenRequestDTO'
+        examples:
+          default:
+            summary: Refresh request
+            value:
+              refreshToken: dGhpc0lzUmVmcmVzaA==
+              sessionSourceId: chrome-uuid-12345
+  responses:
+    '200':
+      description: New access token (and rotated refresh token) issued
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/RefreshAccessTokenResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

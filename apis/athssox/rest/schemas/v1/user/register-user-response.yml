@@ -1,0 +1,16 @@
+type: object
+properties:
+  message:
+    type: string
+    example: User registered successfully
+  userId:
+    type: integer
+    format: int64
+    example: 123
+  status:
+    type: string
+    enum:
+      - PENDING_EMAIL_VERIFY
+      - ACTIVE
+      - INACTIVE
+      - BANNED

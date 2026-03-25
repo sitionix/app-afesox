@@ -1,0 +1,31 @@
+post:
+  tags:
+    - Site
+  operationId: createSite
+  summary: Create site
+  description: >
+    Creates a new site owned by the currently authenticated user.
+    The site is created with `DRAFT` status and must be opened by the client in builder using returned `siteId`.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/CreateSiteRequestDTO'
+  responses:
+    '201':
+      description: Site created
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/CreateSiteResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

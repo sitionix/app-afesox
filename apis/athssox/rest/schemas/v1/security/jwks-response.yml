@@ -1,0 +1,9 @@
+type: object
+required:
+  - keys
+properties:
+  keys:
+    type: array
+    description: List of public JSON Web Keys (JWK).
+    items:
+      $ref: '../../../openapi.yml#/components/schemas/JwkDTO'

@@ -1,0 +1,20 @@
+type: object
+additionalProperties: false
+required:
+  - items
+  - page
+  - size
+  - hasNext
+properties:
+  items:
+    type: array
+    items:
+      $ref: '../../../openapi.yml#/components/schemas/WorkspaceSiteCardDTO'
+  page:
+    type: integer
+    minimum: 0
+  size:
+    type: integer
+    minimum: 1
+  hasNext:
+    type: boolean

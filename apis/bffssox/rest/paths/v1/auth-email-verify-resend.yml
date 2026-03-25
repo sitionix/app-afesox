@@ -1,0 +1,30 @@
+post:
+  description: Service that re-initiates email verification for the authenticated user.
+  summary: API for resend email verification
+  operationId: resendEmailVerification
+  tags:
+    - Auth
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Empty request body; user is resolved from the session context.
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/ResendEmailVerificationRequestDTO'
+  responses:
+    '202':
+      description: Accepted
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ResendEmailVerificationResponseDTO'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '429':
+      $ref: '../../openapi.yml#/components/responses/TooManyRequests'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

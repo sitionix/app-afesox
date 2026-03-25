@@ -1,0 +1,42 @@
+get:
+  description: Issues a verification link for the provided email verification token id.
+  summary: Issue email verification link
+  operationId: issueEmailVerificationLink
+  tags:
+    - Auth
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: Email verification token identifier.
+      schema:
+        type: string
+        format: uuid
+      example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
+    - name: pepper
+      in: query
+      required: true
+      description: Pepper UUID associated with the email verification token.
+      schema:
+        type: string
+        format: uuid
+      example: d290f1ee-6c54-4b01-90e6-d701748f0851
+  responses:
+    '200':
+      description: Verification link issued
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/IssueEmailVerificationLinkResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '410':
+      $ref: '../../openapi.yml#/components/responses/Gone'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
