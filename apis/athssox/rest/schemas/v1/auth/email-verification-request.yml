@@ -1,3 +1,4 @@
+title: EmailVerificationDTO
 type: object
 required:
   - token

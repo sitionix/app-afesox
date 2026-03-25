@@ -1,3 +1,4 @@
+title: RefreshAccessTokenResponseDTO
 type: object
 additionalProperties: false
 required:

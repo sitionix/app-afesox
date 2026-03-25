@@ -1,3 +1,4 @@
+title: LoginRequestDTO
 type: object
 required:
   - email

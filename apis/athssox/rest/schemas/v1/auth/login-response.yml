@@ -1,3 +1,4 @@
+title: LoginResponseDTO
 type: object
 required:
   - accessToken

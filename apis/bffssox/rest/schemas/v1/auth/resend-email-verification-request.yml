@@ -1,3 +1,4 @@
+title: ResendEmailVerificationRequestDTO
 type: object
 additionalProperties: false
 description: Empty request body.

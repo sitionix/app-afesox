@@ -1,3 +1,4 @@
+title: EmailVerificationResponseDTO
 type: object
 properties:
   message:

@@ -1,3 +1,4 @@
+title: IssueEmailVerificationLinkResponseDTO
 type: object
 required:
   - verifyUrl

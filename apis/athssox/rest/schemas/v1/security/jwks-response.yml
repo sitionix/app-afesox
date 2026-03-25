@@ -1,3 +1,4 @@
+title: JwksResponseDTO
 type: object
 required:
   - keys

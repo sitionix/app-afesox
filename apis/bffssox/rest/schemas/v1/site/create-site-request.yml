@@ -1,3 +1,4 @@
+title: CreateSiteRequestDTO
 type: object
 additionalProperties: false
 required:

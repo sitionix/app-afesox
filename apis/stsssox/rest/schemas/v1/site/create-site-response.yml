@@ -1,3 +1,4 @@
+title: CreateSiteResponseDTO
 type: object
 additionalProperties: false
 required:

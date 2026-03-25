@@ -1,3 +1,4 @@
+title: ResendEmailVerificationResponseDTO
 type: object
 additionalProperties: false
 required:

@@ -1,3 +1,4 @@
+title: WorkspaceSitesResponseDTO
 type: object
 additionalProperties: false
 required:

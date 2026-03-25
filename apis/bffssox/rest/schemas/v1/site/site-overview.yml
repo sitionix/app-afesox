@@ -1,3 +1,4 @@
+title: SiteOverviewDTO
 type: object
 additionalProperties: false
 required:

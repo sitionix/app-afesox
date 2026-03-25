@@ -1,3 +1,4 @@
+title: WorkspaceSiteCardDTO
 type: object
 additionalProperties: false
 required:

@@ -1,3 +1,4 @@
+title: RegisterUserDTO
 type: object
 required:
   - email
