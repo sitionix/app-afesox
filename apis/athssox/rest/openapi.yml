@@ -43,33 +43,33 @@ components:
       description: Internal service-to-service JWT.
   schemas:
     JwksResponseDTO:
-      $ref: './schemas/v1/security/jwks-response-dto.yml'
+      $ref: './schemas/v1/security/jwks-response-dto.yml#/JwksResponseDTO'
     JwkDTO:
-      $ref: './schemas/v1/security/jwk-dto.yml'
+      $ref: './schemas/v1/security/jwk-dto.yml#/JwkDTO'
     RefreshAccessTokenRequestDTO:
-      $ref: './schemas/v1/auth/refresh-access-token-request-dto.yml'
+      $ref: './schemas/v1/auth/refresh-access-token-request-dto.yml#/RefreshAccessTokenRequestDTO'
     RefreshAccessTokenResponseDTO:
-      $ref: './schemas/v1/auth/refresh-access-token-response-dto.yml'
+      $ref: './schemas/v1/auth/refresh-access-token-response-dto.yml#/RefreshAccessTokenResponseDTO'
     EmailVerificationResponseDTO:
-      $ref: './schemas/v1/auth/email-verification-response-dto.yml'
+      $ref: './schemas/v1/auth/email-verification-response-dto.yml#/EmailVerificationResponseDTO'
     EmailVerificationDTO:
-      $ref: './schemas/v1/auth/email-verification-dto.yml'
+      $ref: './schemas/v1/auth/email-verification-dto.yml#/EmailVerificationDTO'
     ResendEmailVerificationRequestDTO:
-      $ref: './schemas/v1/auth/resend-email-verification-request-dto.yml'
+      $ref: './schemas/v1/auth/resend-email-verification-request-dto.yml#/ResendEmailVerificationRequestDTO'
     ResendEmailVerificationResponseDTO:
-      $ref: './schemas/v1/auth/resend-email-verification-response-dto.yml'
+      $ref: './schemas/v1/auth/resend-email-verification-response-dto.yml#/ResendEmailVerificationResponseDTO'
     IssueEmailVerificationLinkResponseDTO:
-      $ref: './schemas/v1/auth/issue-email-verification-link-response-dto.yml'
+      $ref: './schemas/v1/auth/issue-email-verification-link-response-dto.yml#/IssueEmailVerificationLinkResponseDTO'
     ResponseRegisterUserDTO:
-      $ref: './schemas/v1/user/response-register-user-dto.yml'
+      $ref: './schemas/v1/user/response-register-user-dto.yml#/ResponseRegisterUserDTO'
     RegisterUserDTO:
-      $ref: './schemas/v1/user/register-user-dto.yml'
+      $ref: './schemas/v1/user/register-user-dto.yml#/RegisterUserDTO'
     LoginRequestDTO:
-      $ref: './schemas/v1/auth/login-request-dto.yml'
+      $ref: './schemas/v1/auth/login-request-dto.yml#/LoginRequestDTO'
     LoginResponseDTO:
-      $ref: './schemas/v1/auth/login-response-dto.yml'
+      $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-dto.yml'
+      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
   responses:
     BadRequest:
       $ref: './schemas/v1/errors/responses.yml#/BadRequest'

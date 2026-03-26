@@ -1,21 +1,22 @@
-title: WorkspaceSitesResponseDTO
-type: object
-additionalProperties: false
-required:
-  - items
-  - page
-  - size
-  - hasNext
-properties:
-  items:
-    type: array
+WorkspaceSitesResponseDTO:
+  title: WorkspaceSitesResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+    - page
+    - size
+    - hasNext
+  properties:
     items:
-      $ref: '../../../openapi.yml#/components/schemas/WorkspaceSiteCardResponseDTO'
-  page:
-    type: integer
-    minimum: 0
-  size:
-    type: integer
-    minimum: 1
-  hasNext:
-    type: boolean
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/WorkspaceSiteCardResponseDTO'
+    page:
+      type: integer
+      minimum: 0
+    size:
+      type: integer
+      minimum: 1
+    hasNext:
+      type: boolean

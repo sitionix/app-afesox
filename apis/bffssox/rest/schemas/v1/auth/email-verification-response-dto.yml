@@ -1,13 +1,14 @@
-title: EmailVerificationResponseDTO
-type: object
-properties:
-  message:
-    type: string
-    example: Email verified successfully
-  status:
-    type: string
-    enum:
-      - PENDING_EMAIL_VERIFY
-      - ACTIVE
-      - INACTIVE
-      - BANNED
+EmailVerificationResponseDTO:
+  title: EmailVerificationResponseDTO
+  type: object
+  properties:
+    message:
+      type: string
+      example: Email verified successfully
+    status:
+      type: string
+      enum:
+        - PENDING_EMAIL_VERIFY
+        - ACTIVE
+        - INACTIVE
+        - BANNED

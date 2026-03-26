@@ -1,33 +1,34 @@
-title: CreateSiteResponseDTO
-type: object
-additionalProperties: false
-required:
-  - siteId
-  - name
-  - status
-  - createdAt
-  - updatedAt
-properties:
-  siteId:
-    type: string
-    format: uuid
-    description: Globally unique site identifier.
-  name:
-    type: string
-    description: Site name.
-  status:
-    type: string
-    description: Current site status.
-    enum:
-      - DRAFT
-      - PUBLISHED
-      - ARCHIVED
-    example: DRAFT
-  createdAt:
-    type: string
-    format: date-time
-    description: Site creation timestamp (UTC).
-  updatedAt:
-    type: string
-    format: date-time
-    description: Last site update timestamp (UTC).
+CreateSiteResponseDTO:
+  title: CreateSiteResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - siteId
+    - name
+    - status
+    - createdAt
+    - updatedAt
+  properties:
+    siteId:
+      type: string
+      format: uuid
+      description: Globally unique site identifier.
+    name:
+      type: string
+      description: Site name.
+    status:
+      type: string
+      description: Current site status.
+      enum:
+        - DRAFT
+        - PUBLISHED
+        - ARCHIVED
+      example: DRAFT
+    createdAt:
+      type: string
+      format: date-time
+      description: Site creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last site update timestamp (UTC).

@@ -1,20 +1,21 @@
-title: IssueEmailVerificationLinkResponseDTO
-type: object
-required:
-  - verifyUrl
-properties:
-  token:
-    type: string
-    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-  expiresAt:
-    type: string
-    format: date-time
-    example: 2024-07-18T12:34:56Z
-  tokenId:
-    type: string
-    format: uuid
-    example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
-  siteId:
-    type: string
-    format: uuid
-    example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
+IssueEmailVerificationLinkResponseDTO:
+  title: IssueEmailVerificationLinkResponseDTO
+  type: object
+  required:
+    - verifyUrl
+  properties:
+    token:
+      type: string
+      example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+    expiresAt:
+      type: string
+      format: date-time
+      example: 2024-07-18T12:34:56Z
+    tokenId:
+      type: string
+      format: uuid
+      example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f
+    siteId:
+      type: string
+      format: uuid
+      example: 2f6a6c3c-8b0f-4f58-9c18-2a7d9c889a4f

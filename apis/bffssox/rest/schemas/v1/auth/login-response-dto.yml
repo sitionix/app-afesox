@@ -1,17 +1,18 @@
-title: LoginResponseDTO
-type: object
-required:
-  - accessToken
-  - expiresIn
-  - tokenType
-properties:
-  accessToken:
-    type: string
-    example: eyJhbGciOi...
-  expiresIn:
-    type: integer
-    format: int64
-    example: 3600
-  tokenType:
-    type: string
-    example: Bearer
+LoginResponseDTO:
+  title: LoginResponseDTO
+  type: object
+  required:
+    - accessToken
+    - expiresIn
+    - tokenType
+  properties:
+    accessToken:
+      type: string
+      example: eyJhbGciOi...
+    expiresIn:
+      type: integer
+      format: int64
+      example: 3600
+    tokenType:
+      type: string
+      example: Bearer

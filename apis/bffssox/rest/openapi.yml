@@ -36,37 +36,37 @@ components:
       description: User access token (Bearer).
   schemas:
     RefreshAccessTokenRequestDTO:
-      $ref: './schemas/v1/auth/refresh-access-token-request-dto.yml'
+      $ref: './schemas/v1/auth/refresh-access-token-request-dto.yml#/RefreshAccessTokenRequestDTO'
     RefreshAccessTokenResponseDTO:
-      $ref: './schemas/v1/auth/refresh-access-token-response-dto.yml'
+      $ref: './schemas/v1/auth/refresh-access-token-response-dto.yml#/RefreshAccessTokenResponseDTO'
     EmailVerificationResponseDTO:
-      $ref: './schemas/v1/auth/email-verification-response-dto.yml'
+      $ref: './schemas/v1/auth/email-verification-response-dto.yml#/EmailVerificationResponseDTO'
     EmailVerificationDTO:
-      $ref: './schemas/v1/auth/email-verification-dto.yml'
+      $ref: './schemas/v1/auth/email-verification-dto.yml#/EmailVerificationDTO'
     ResendEmailVerificationRequestDTO:
-      $ref: './schemas/v1/auth/resend-email-verification-request-dto.yml'
+      $ref: './schemas/v1/auth/resend-email-verification-request-dto.yml#/ResendEmailVerificationRequestDTO'
     ResendEmailVerificationResponseDTO:
-      $ref: './schemas/v1/auth/resend-email-verification-response-dto.yml'
+      $ref: './schemas/v1/auth/resend-email-verification-response-dto.yml#/ResendEmailVerificationResponseDTO'
     ResponseRegisterUserDTO:
-      $ref: './schemas/v1/user/response-register-user-dto.yml'
+      $ref: './schemas/v1/user/response-register-user-dto.yml#/ResponseRegisterUserDTO'
     RegisterUserDTO:
-      $ref: './schemas/v1/user/register-user-dto.yml'
+      $ref: './schemas/v1/user/register-user-dto.yml#/RegisterUserDTO'
     CreateSiteRequestDTO:
-      $ref: './schemas/v1/site/create-site-request-dto.yml'
+      $ref: './schemas/v1/site/create-site-request-dto.yml#/CreateSiteRequestDTO'
     CreateSiteResponseDTO:
-      $ref: './schemas/v1/site/create-site-response-dto.yml'
+      $ref: './schemas/v1/site/create-site-response-dto.yml#/CreateSiteResponseDTO'
     WorkspaceSitesResponseDTO:
-      $ref: './schemas/v1/site/workspace-sites-response-dto.yml'
+      $ref: './schemas/v1/site/workspace-sites-response-dto.yml#/WorkspaceSitesResponseDTO'
     SiteOverviewDTO:
-      $ref: './schemas/v1/site/site-overview-dto.yml'
+      $ref: './schemas/v1/site/site-overview-dto.yml#/SiteOverviewDTO'
     WorkspaceSiteCardResponseDTO:
-      $ref: './schemas/v1/site/workspace-site-card-response-dto.yml'
+      $ref: './schemas/v1/site/workspace-site-card-response-dto.yml#/WorkspaceSiteCardResponseDTO'
     LoginRequestDTO:
-      $ref: './schemas/v1/auth/login-request-dto.yml'
+      $ref: './schemas/v1/auth/login-request-dto.yml#/LoginRequestDTO'
     LoginResponseDTO:
-      $ref: './schemas/v1/auth/login-response-dto.yml'
+      $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-dto.yml'
+      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
   responses:
     BadRequest:
       $ref: './schemas/v1/errors/responses.yml#/BadRequest'
