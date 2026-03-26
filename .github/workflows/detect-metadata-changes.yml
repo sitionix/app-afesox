@@ -77,16 +77,26 @@ jobs:
           }
 
           # ---------- determine base/head ----------
-          # Prefer actual triggering commit range if available, otherwise compare with origin/develop.
+          # Prefer exact PR base/head for pull_request events. For push events use before/after.
           git fetch origin develop --prune
 
           BASE=""
           HEAD=""
+          PR_NUMBER=""
 
           if [[ -n "${GITHUB_EVENT_PATH:-}" ]] && command -v jq >/dev/null 2>&1; then
-            # push event: before/after
-            BASE="$(jq -r '.before // empty' "$GITHUB_EVENT_PATH" || true)"
-            HEAD="$(jq -r '.after // empty' "$GITHUB_EVENT_PATH" || true)"
+            PR_NUMBER="$(jq -r '.pull_request.number // empty' "$GITHUB_EVENT_PATH" || true)"
+
+            if [[ -n "$PR_NUMBER" && "$PR_NUMBER" != "null" ]]; then
+              BASE="$(jq -r '.pull_request.base.sha // empty' "$GITHUB_EVENT_PATH" || true)"
+              HEAD="$(jq -r '.pull_request.head.sha // empty' "$GITHUB_EVENT_PATH" || true)"
+
+              # Ensure the PR head objects are available even for closed PRs.
+              git fetch origin "pull/${PR_NUMBER}/head:refs/remotes/origin/pr/${PR_NUMBER}/head" --prune || true
+            else
+              BASE="$(jq -r '.before // empty' "$GITHUB_EVENT_PATH" || true)"
+              HEAD="$(jq -r '.after // empty' "$GITHUB_EVENT_PATH" || true)"
+            fi
           fi
 
           if [[ -z "$HEAD" ]]; then
@@ -102,8 +112,8 @@ jobs:
           echo "HEAD=$HEAD"
 
           # ---------- find changed files ----------
-          CHANGED_API="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/rest/metadata\.yml$' || true)"
-          CHANGED_EVENT="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/event/metadata\.yml$' || true)"
+          CHANGED_API="$(git diff --name-only --find-renames --diff-filter=ACMR "$BASE" "$HEAD" | grep -E '^apis/[^/]+/rest/metadata\.yml$' || true)"
+          CHANGED_EVENT="$(git diff --name-only --find-renames --diff-filter=ACMR "$BASE" "$HEAD" | grep -E '^apis/[^/]+/event/metadata\.yml$' || true)"
 
           echo "CHANGED_API=$CHANGED_API"
           echo "CHANGED_EVENT=$CHANGED_EVENT"
