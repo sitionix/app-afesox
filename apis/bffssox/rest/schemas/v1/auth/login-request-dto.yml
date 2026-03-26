@@ -1,0 +1,35 @@
+LoginRequestDTO:
+  title: LoginRequestDTO
+  type: object
+  required:
+    - email
+    - password
+    - sessionSourceId
+    - userAgent
+  properties:
+    email:
+      type: string
+      format: email
+      minLength: 1
+      maxLength: 254
+      pattern: ".*\\S.*"
+      example: user@example.com
+    password:
+      type: string
+      minLength: 1
+      maxLength: 128
+      pattern: ".*\\S.*"
+      example: StrongPassword123
+    siteId:
+      type: string
+      format: uuid
+      example: c9b1f3f4-12c7-11ec-82a8-0242ac130003
+    sessionSourceId:
+      type: string
+      minLength: 1
+      maxLength: 64
+      pattern: ".*\\S.*"
+      example: chrome-uuid-12345
+    userAgent:
+      type: string
+      example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)...

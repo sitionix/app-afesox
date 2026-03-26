@@ -1,0 +1,32 @@
+get:
+  tags:
+    - Security
+  operationId: getJwksAlias
+  summary: Public JSON Web Key Set (enterprise alias)
+  description: >
+    Enterprise alias for /.well-known/jwks.json.
+    Payload is identical.
+    Returns a JSON Web Key Set containing public keys used to verify JWT signatures.
+    Used by OAuth2/OIDC resource servers.
+    Keys are selected via JWT header `kid` value.
+
+    This endpoint is public; no authentication is required and it does not return 401/403.
+
+    Clients may cache JWKS for up to 300 seconds to reduce load.
+    Rotation strategy relies on `kid` plus the cache TTL.
+  security:
+    - bearerAuth: []
+  responses:
+    '200':
+      description: JWKS returned
+      headers:
+        Cache-Control:
+          description: Clients may cache the JWKS for up to 300 seconds to reduce load.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/JwksResponseDTO'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

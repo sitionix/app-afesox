@@ -14,15 +14,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for changes in `metadata.yml` and `openapi-rest.yml`
+      - name: Check for changes in REST API definitions
         id: check_changes
         run: |
           # Fetch the base branch and the head branch
           git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
           git fetch origin ${{ github.head_ref }}:${{ github.head_ref }}
 
-          # Check for changes in metadata.yml or openapi-rest.yml
-          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/api-first/metadata.yml' 'apis/**/api-first/openapi-rest.yml')
+          # Check for changes in REST API definition files
+          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/rest/**.yml')
           
           if [ -n "$CHANGED_FILES" ]; then
             echo "is_changed=true" >> $GITHUB_ENV
@@ -33,76 +33,85 @@ jobs:
       - name: Print and Store Changed File Directory
         if: env.is_changed == 'true'
         run: |
-          CHANGED_DIR=""
-          for FILE in $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/api-first/metadata.yml' 'apis/**/api-first/openapi-rest.yml'); do
-            DIR=$(dirname "$FILE")
-            # If CHANGED_DIR is empty, set it; otherwise, check for uniqueness
-            if [ -z "$CHANGED_DIR" ]; then
-              CHANGED_DIR="$DIR"
-            elif [ "$CHANGED_DIR" != "$DIR" ]; then
-              echo "You can modify only one API via one PR."
-              exit 1
-            fi
-          done
+          CHANGED_DIRS=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/rest/**.yml' | awk -F/ '/^apis\/[^/]+\/rest\// {print $1 "/" $2 "/rest"}' | sort -u)
 
-          if [ -z "$CHANGED_DIR" ]; then
-            echo "No changed directories found."
+          if [ -z "$CHANGED_DIRS" ]; then
+            echo "No changed REST API directories found."
           else
-            echo "CHANGED_DIR=${CHANGED_DIR}" >> $GITHUB_ENV
-            echo "Changed directory: ${CHANGED_DIR}"
+            {
+              echo "CHANGED_DIRS<<EOF"
+              printf '%s\n' "$CHANGED_DIRS"
+              echo "EOF"
+            } >> $GITHUB_ENV
+            echo "Changed directories:"
+            printf '%s\n' "$CHANGED_DIRS"
           fi
 
       - name: Extract Versions from Files
         if: env.is_changed == 'true'
         run: |
-          METADATA_FILE="$CHANGED_DIR/metadata.yml"
-          OPENAPI_FILE="$CHANGED_DIR/openapi-rest.yml"
+          while IFS= read -r CHANGED_DIR; do
+            [ -z "$CHANGED_DIR" ] && continue
 
-          API_VERSION=$(yq e '.api.version' "$METADATA_FILE")
-          echo "API_VERSION=$API_VERSION" >> $GITHUB_ENV
+            METADATA_FILE="$CHANGED_DIR/metadata.yml"
+            DEFINITION_FILE=$(yq e '.api.definition // "openapi.yml"' "$METADATA_FILE")
+            OPENAPI_FILE="$CHANGED_DIR/$DEFINITION_FILE"
 
-          OPENAPI_VERSION=$(yq e '.info.version' "$OPENAPI_FILE")
-          echo "OPENAPI_VERSION=$OPENAPI_VERSION" >> $GITHUB_ENV
+            API_VERSION=$(yq e '.api.version' "$METADATA_FILE")
+            OPENAPI_VERSION=$(yq e '.info.version' "$OPENAPI_FILE")
+
+            echo "Checking versions for $CHANGED_DIR"
+            echo "API version from metadata.yml: $API_VERSION"
+            echo "OpenAPI version from $DEFINITION_FILE: $OPENAPI_VERSION"
+
+            if [ "$API_VERSION" != "$OPENAPI_VERSION" ]; then
+              echo "Error: Versions in $METADATA_FILE ($API_VERSION) and $OPENAPI_FILE ($OPENAPI_VERSION) should be the same."
+              exit 1
+            fi
+          done <<< "$CHANGED_DIRS"
 
       - name: Compare Versions
         if: env.is_changed == 'true'
         run: |
-          echo "API version from metadata.yml: $API_VERSION"
-          echo "OpenAPI version from openapi-rest.yml: $OPENAPI_VERSION"
-
-          if [ "$API_VERSION" != "$OPENAPI_VERSION" ]; then
-            echo "Error: Versions in metadata.yml ($API_VERSION) and openapi-rest.yml ($OPENAPI_VERSION) should be the same."
-            exit 1
-          fi
+          echo "REST API version consistency validated successfully."
 
       - name: Extract Versions from develop Branch
         if: env.is_changed == 'true'
         run: |
-          # Checkout the develop branch
-          git fetch origin develop:develop
-          git checkout develop
+          while IFS= read -r CHANGED_DIR; do
+            [ -z "$CHANGED_DIR" ] && continue
 
-          # Set the path to the changed directory
-          METADATA_FILE="$CHANGED_DIR/metadata.yml"
-          OPENAPI_FILE="$CHANGED_DIR/openapi-rest.yml"
+            SERVICE=$(echo "$CHANGED_DIR" | awk -F/ '{print $2}')
+            NEW_METADATA_FILE="$CHANGED_DIR/metadata.yml"
+            NEW_DEFINITION_FILE=$(yq e '.api.definition // "openapi.yml"' "$NEW_METADATA_FILE")
 
-          # Extract API version from develop branch
-          API_VERSION=$(yq e '.api.version' "$METADATA_FILE")
-          echo "DEV_API_VERSION=$API_VERSION" >> $GITHUB_ENV
+            if git cat-file -e "develop:apis/$SERVICE/rest/metadata.yml" 2>/dev/null; then
+              DEV_METADATA_FILE="apis/$SERVICE/rest/metadata.yml"
+              DEV_DEFINITION_FILE=$(git show "develop:$DEV_METADATA_FILE" | yq e '.api.definition // "openapi.yml"' -)
+              DEV_OPENAPI_FILE="apis/$SERVICE/rest/$DEV_DEFINITION_FILE"
+            else
+              DEV_METADATA_FILE="apis/$SERVICE/api-first/metadata.yml"
+              DEV_OPENAPI_FILE="apis/$SERVICE/api-first/openapi-rest.yml"
+            fi
 
-          # Extract OpenAPI version from develop branch
-          OPENAPI_VERSION=$(yq e '.info.version' "$OPENAPI_FILE")
-          echo "DEV_OPENAPI_VERSION=$OPENAPI_VERSION" >> $GITHUB_ENV
+            API_VERSION=$(git show "develop:$DEV_METADATA_FILE" | yq e '.api.version' -)
+            OPENAPI_VERSION=$(git show "develop:$DEV_OPENAPI_FILE" | yq e '.info.version' -)
+            CURRENT_API_VERSION=$(yq e '.api.version' "$NEW_METADATA_FILE")
+            CURRENT_OPENAPI_VERSION=$(yq e '.info.version' "$CHANGED_DIR/$NEW_DEFINITION_FILE")
+
+            echo "Comparing $SERVICE against develop"
+            echo "Develop metadata version: $API_VERSION"
+            echo "Develop openapi version: $OPENAPI_VERSION"
+            echo "Current metadata version: $CURRENT_API_VERSION"
+            echo "Current openapi version: $CURRENT_OPENAPI_VERSION"
+
+            if [ "$CURRENT_API_VERSION" = "$API_VERSION" ] && [ "$CURRENT_OPENAPI_VERSION" = "$OPENAPI_VERSION" ]; then
+              echo "Error: Versions for $SERVICE are unchanged compared to develop. Please increase the versions."
+              exit 1
+            fi
+          done <<< "$CHANGED_DIRS"
           
       - name: Compare Versions with develop
         if: env.is_changed == 'true'
         run: |
-          echo "API version from develop branch: ${{ env.DEV_API_VERSION }}"
-          echo "OpenAPI version from develop branch: ${{ env.DEV_OPENAPI_VERSION }}"
-          echo "API version from pull request: ${{ env.API_VERSION }}"
-          echo "OpenAPI version from pull request: ${{ env.OPENAPI_VERSION }}"
-
-          if [ "${{ env.API_VERSION }}" = "${{ env.DEV_API_VERSION }}" ] && [ "${{ env.OPENAPI_VERSION }}" = "${{ env.DEV_OPENAPI_VERSION }}" ]; then
-            echo "Error: The versions in the pull request and develop branch are the same. Please increase the versions."
-            exit 1
-          fi
+          echo "REST API version bumps validated successfully against develop."

@@ -10,7 +10,7 @@ on:
         description: "Boolean flag if anything changed"
         value: ${{ jobs.detect.outputs.changed }}
       changed_api:
-        description: "Boolean flag if any api-first metadata changed"
+        description: "Boolean flag if any REST API metadata changed"
         value: ${{ jobs.detect.outputs.changed_api }}
       matrix_api:
         description: "API matrix rows (strategy.matrix compatible)"
@@ -102,7 +102,7 @@ jobs:
           echo "HEAD=$HEAD"
 
           # ---------- find changed files ----------
-          CHANGED_API="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/api-first/metadata\.yml$' || true)"
+          CHANGED_API="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/rest/metadata\.yml$' || true)"
           CHANGED_EVENT="$(git diff --name-only --diff-filter=AM "$BASE" "$HEAD" | grep -E '^apis/[^/]+/event/metadata\.yml$' || true)"
 
           echo "CHANGED_API=$CHANGED_API"
@@ -120,12 +120,12 @@ jobs:
 
           MATRIX_ITEMS='[]'
 
-          # ---------- API-first items ----------
+          # ---------- REST API items ----------
           if [[ -n "$CHANGED_API" ]]; then
             API_CHANGED_FLAG=true
             while IFS= read -r FILE; do
               [[ -z "$FILE" ]] && continue
-              [[ -f "$FILE" ]] || { echo "::error:: api-first metadata not found: $FILE"; exit 1; }
+              [[ -f "$FILE" ]] || { echo "::error:: REST API metadata not found: $FILE"; exit 1; }
 
               VERSION="$(yq_val '.api.version' "$FILE")"
               NAME="$(yq_val '.api.name' "$FILE")"
@@ -134,7 +134,7 @@ jobs:
               EXECUTIONS="$(yq e -r '.api.executions[].type // ""' "$FILE" 2>/dev/null || true)"
 
               if [[ -z "$VERSION" || -z "$NAME" || -z "$EXECUTIONS" ]]; then
-                echo "::error:: Invalid api-first metadata file: $FILE (api.version/api.name/api.executions[].type required)"
+                echo "::error:: Invalid REST API metadata file: $FILE (api.version/api.name/api.executions[].type required)"
                 exit 1
               fi
 

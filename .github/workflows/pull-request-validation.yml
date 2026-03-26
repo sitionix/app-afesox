@@ -3,7 +3,7 @@ name: Validate OpenAPI Files
 on:
   pull_request:
     paths:
-      - '**/openapi-rest.yml'
+      - 'apis/**/rest/**/*.yml'
 
 jobs:
   validate:
@@ -29,12 +29,12 @@ jobs:
       - name: Fetch base branch
         run: git fetch origin "${{ github.base_ref }}" --depth=1
 
-      - name: Validate OpenAPI files
+      - name: Validate OpenAPI entrypoints
         run: |
-          CHANGED_OPENAPI_FILES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- '**/openapi-rest.yml')
+          CHANGED_OPENAPI_FILES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- 'apis/**/rest/**/*.yml' | awk -F/ '/^apis\/[^/]+\/rest\// {print $1 "/" $2 "/rest/openapi.yml"}' | sort -u)
 
           if [ -z "$CHANGED_OPENAPI_FILES" ]; then
-            echo "No changed OpenAPI files found."
+            echo "No changed REST OpenAPI entrypoints found."
             exit 0
           fi
 

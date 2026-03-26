@@ -1,0 +1,86 @@
+openapi: "3.0.0"
+info:
+  title: API Backend for Frontend Sitionix
+  description: API specification for the BFF authentication facade
+  version: 0.0.15
+  contact:
+    name: APP Sitionix
+servers:
+  - description: Localhost (dev only)
+    url: 'http://localhost:8080/bffssox'
+tags:
+  - name: Auth
+  - name: User
+  - name: Site
+paths:
+  /api/v1/auth/refresh:
+    $ref: './paths/v1/auth-refresh.yml'
+  /api/v1/auth/email/verify:
+    $ref: './paths/v1/auth-email-verify.yml'
+  /api/v1/auth/email/verify/resend:
+    $ref: './paths/v1/auth-email-verify-resend.yml'
+  /api/v1/users:
+    $ref: './paths/v1/users.yml'
+  /api/v1/sites:
+    $ref: './paths/v1/sites.yml'
+  /api/v1/sites/{siteId}/overview:
+    $ref: './paths/v1/sites-overview.yml'
+  /api/v1/auth/login:
+    $ref: './paths/v1/auth-login.yml'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: User access token (Bearer).
+  schemas:
+    RefreshAccessTokenRequestDTO:
+      $ref: './schemas/v1/auth/refresh-access-token-request-dto.yml#/RefreshAccessTokenRequestDTO'
+    RefreshAccessTokenResponseDTO:
+      $ref: './schemas/v1/auth/refresh-access-token-response-dto.yml#/RefreshAccessTokenResponseDTO'
+    EmailVerificationResponseDTO:
+      $ref: './schemas/v1/auth/email-verification-response-dto.yml#/EmailVerificationResponseDTO'
+    EmailVerificationDTO:
+      $ref: './schemas/v1/auth/email-verification-dto.yml#/EmailVerificationDTO'
+    ResendEmailVerificationRequestDTO:
+      $ref: './schemas/v1/auth/resend-email-verification-request-dto.yml#/ResendEmailVerificationRequestDTO'
+    ResendEmailVerificationResponseDTO:
+      $ref: './schemas/v1/auth/resend-email-verification-response-dto.yml#/ResendEmailVerificationResponseDTO'
+    ResponseRegisterUserDTO:
+      $ref: './schemas/v1/user/response-register-user-dto.yml#/ResponseRegisterUserDTO'
+    RegisterUserDTO:
+      $ref: './schemas/v1/user/register-user-dto.yml#/RegisterUserDTO'
+    CreateSiteRequestDTO:
+      $ref: './schemas/v1/site/create-site-request-dto.yml#/CreateSiteRequestDTO'
+    CreateSiteResponseDTO:
+      $ref: './schemas/v1/site/create-site-response-dto.yml#/CreateSiteResponseDTO'
+    WorkspaceSitesResponseDTO:
+      $ref: './schemas/v1/site/workspace-sites-response-dto.yml#/WorkspaceSitesResponseDTO'
+    SiteOverviewDTO:
+      $ref: './schemas/v1/site/site-overview-dto.yml#/SiteOverviewDTO'
+    WorkspaceSiteCardResponseDTO:
+      $ref: './schemas/v1/site/workspace-site-card-response-dto.yml#/WorkspaceSiteCardResponseDTO'
+    LoginRequestDTO:
+      $ref: './schemas/v1/auth/login-request-dto.yml#/LoginRequestDTO'
+    LoginResponseDTO:
+      $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
+    ErrorDTO:
+      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
+  responses:
+    BadRequest:
+      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
+    NotFound:
+      $ref: './schemas/v1/errors/responses.yml#/NotFound'
+    Conflict:
+      $ref: './schemas/v1/errors/responses.yml#/Conflict'
+    Gone:
+      $ref: './schemas/v1/errors/responses.yml#/Gone'
+    InternalServerError:
+      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
+    Unauthorized:
+      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
+    Forbidden:
+      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
+    TooManyRequests:
+      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'

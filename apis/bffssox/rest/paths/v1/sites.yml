@@ -1,0 +1,70 @@
+get:
+  tags:
+    - Site
+  operationId: getSites
+  summary: Get workspace sites
+  description: >
+    Returns a paginated list of workspace site cards for the authenticated user.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: query
+      name: page
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    - in: query
+      name: size
+      required: false
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+  responses:
+    '200':
+      description: Sites page
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/WorkspaceSitesResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
+post:
+  tags:
+    - Site
+  operationId: createSite
+  summary: Create site
+  description: >
+    Creates a new site owned by the currently authenticated user.
+    The site is created with `DRAFT` status and must be opened by the client in builder using returned `siteId`.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/CreateSiteRequestDTO'
+  responses:
+    '201':
+      description: Site created
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/CreateSiteResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

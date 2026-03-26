@@ -1,0 +1,46 @@
+openapi: "3.0.0"
+info:
+  title: API Site Service Sitionix
+  description: Api specification for site service
+  version: 0.0.2
+  contact:
+    name: APP Sitionix
+servers:
+  - description: Localhost (dev only)
+    url: 'http://localhost:8080/stsssox'
+tags:
+  - name: Site
+paths:
+  /api/v1/sites:
+    $ref: './paths/v1/sites.yml'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service access token (Bearer).
+  schemas:
+    CreateSiteRequestDTO:
+      $ref: './schemas/v1/site/create-site-request-dto.yml#/CreateSiteRequestDTO'
+    CreateSiteResponseDTO:
+      $ref: './schemas/v1/site/create-site-response-dto.yml#/CreateSiteResponseDTO'
+    ErrorDTO:
+      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
+  responses:
+    BadRequest:
+      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
+    NotFound:
+      $ref: './schemas/v1/errors/responses.yml#/NotFound'
+    Conflict:
+      $ref: './schemas/v1/errors/responses.yml#/Conflict'
+    Gone:
+      $ref: './schemas/v1/errors/responses.yml#/Gone'
+    InternalServerError:
+      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
+    Unauthorized:
+      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
+    Forbidden:
+      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
+    TooManyRequests:
+      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'

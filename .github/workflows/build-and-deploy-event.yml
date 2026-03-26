@@ -77,11 +77,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Cache OpenAPI Generator
+      - name: Cache Event Generator Inputs
         uses: actions/cache@v3
         with:
           path: ~/.openapi-generator
-          key: openapi-${{ hashFiles('**/openapi-rest.yml') }}
+          key: event-${{ hashFiles('apis/**/*.yml', 'apis/**/*.avsc') }}
 
       - name: Install yq
         run: |

@@ -1,0 +1,42 @@
+get:
+  tags:
+    - Site
+  operationId: getSites
+  summary: Get sites page
+  description: >
+    Returns a paginated list of site cards for the currently authenticated user.
+    Endpoint is intended for internal S2S callers (for example BFF).
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: query
+      name: page
+      description: Zero-based page index.
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    - in: query
+      name: size
+      description: Requested page size. Defaults to 20 when omitted.
+      required: false
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+  responses:
+    "200":
+      description: Sites page.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/WorkspaceSitesPageDTO'
+    "400":
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    "401":
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    "403":
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    "500":
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

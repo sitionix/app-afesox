@@ -1,0 +1,27 @@
+JwkDTO:
+  title: JwkDTO
+  type: object
+  required:
+    - kty
+    - kid
+    - use
+    - alg
+  properties:
+    kty:
+      type: string
+      description: Key Type, for example "RSA" or "EC".
+    kid:
+      type: string
+      description: Key ID. Used to match JWT header "kid" to the correct public key.
+    use:
+      type: string
+      description: Public key usage. Usually "sig" (signature verification).
+    alg:
+      type: string
+      description: Algorithm intended for use with this key, e.g. "RS256" or "ES256".
+    n:
+      type: string
+      description: RSA modulus (Base64URL-encoded).
+    e:
+      type: string
+      description: RSA public exponent (Base64URL-encoded). Usually "AQAB".

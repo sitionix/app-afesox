@@ -1,0 +1,26 @@
+post:
+  description: Service that verifies user's email
+  summary: API for email verification
+  operationId: verifyEmail
+  tags:
+    - Auth
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: Email verification payload
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/EmailVerificationDTO'
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/EmailVerificationResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

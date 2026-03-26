@@ -1,0 +1,39 @@
+SiteOverviewDTO:
+  title: SiteOverviewDTO
+  type: object
+  additionalProperties: false
+  required:
+    - siteId
+    - name
+    - status
+    - createdAt
+    - updatedAt
+  properties:
+    siteId:
+      type: string
+      format: uuid
+    name:
+      type: string
+    status:
+      type: string
+      enum:
+        - DRAFT
+        - PUBLISHED
+        - ARCHIVED
+    type:
+      type: string
+      enum:
+        - PORTFOLIO
+        - BUSINESS
+        - BLOG
+        - STORE
+        - LANDING
+        - OTHER
+    description:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time

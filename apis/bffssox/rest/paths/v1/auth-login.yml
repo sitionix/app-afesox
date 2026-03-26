@@ -1,0 +1,43 @@
+post:
+  description: |
+    Service that authenticates user and creates a browser session.
+
+    Transport & Security Notes:
+    - Refresh token is returned only as HttpOnly cookie via `Set-Cookie`.
+    - Browser-facing refresh endpoint (`POST /api/v1/auth/refresh`) requires this cookie.
+    - Cookie defaults:
+      - name: `__Host-refresh_token` (configurable by environment)
+      - `HttpOnly`
+      - `Path=/`
+      - `SameSite=Lax`
+      - `Secure=true` in production, `Secure=false` in local HTTP development
+  summary: API for user login
+  operationId: login
+  tags:
+    - Auth
+  requestBody:
+    description: Login payload
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/LoginRequestDTO'
+  responses:
+    '200':
+      description: Success
+      headers:
+        Set-Cookie:
+          description: >
+            Contains refresh token cookie for browser refresh flow.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/LoginResponseDTO'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
