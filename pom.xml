@@ -148,6 +148,7 @@
                                     <output>${project.build.directory}/generated-sources</output>
                                     <apiPackage>com.app-afesox.${env.artifact.name}.api-first.api</apiPackage>
                                     <modelPackage>com.app-afesox.${env.artifact.name}.api-first.dto</modelPackage>
+                                    <modelNameMappings>CreateSiteRequestDto=CreateSiteRequestDTO,CreateSiteResponseDto=CreateSiteResponseDTO,EmailVerificationDto=EmailVerificationDTO,EmailVerificationResponseDto=EmailVerificationResponseDTO,ErrorDto=ErrorDTO,IssueEmailVerificationLinkResponseDto=IssueEmailVerificationLinkResponseDTO,JwkDto=JwkDTO,JwksResponseDto=JwksResponseDTO,LoginRequestDto=LoginRequestDTO,LoginResponseDto=LoginResponseDTO,RefreshAccessTokenRequestDto=RefreshAccessTokenRequestDTO,RefreshAccessTokenResponseDto=RefreshAccessTokenResponseDTO,RegisterUserDto=RegisterUserDTO,ResendEmailVerificationResponseDto=ResendEmailVerificationResponseDTO,ResponseRegisterUserDto=ResponseRegisterUserDTO,SiteOverviewDto=SiteOverviewDTO,WorkspaceSiteCardDto=WorkspaceSiteCardDTO,WorkspaceSiteCardResponseDto=WorkspaceSiteCardResponseDTO,WorkspaceSitesPageDto=WorkspaceSitesPageDTO,WorkspaceSitesResponseDto=WorkspaceSitesResponseDTO</modelNameMappings>
                                     <configOptions>
                                         <delegatePattern>true</delegatePattern>
                                         <useTags>true</useTags>
@@ -189,6 +190,7 @@
                                     <apiPackage>com.app-afesox.${env.artifact.name}.client.api</apiPackage>
                                     <modelPackage>com.app-afesox.${env.artifact.name}.client.dto</modelPackage>
                                     <invokerPackage>com.app-afesox.${env.artifact.name}.client.invoker</invokerPackage>
+                                    <modelNameMappings>CreateSiteRequestDto=CreateSiteRequestDTO,CreateSiteResponseDto=CreateSiteResponseDTO,EmailVerificationDto=EmailVerificationDTO,EmailVerificationResponseDto=EmailVerificationResponseDTO,ErrorDto=ErrorDTO,IssueEmailVerificationLinkResponseDto=IssueEmailVerificationLinkResponseDTO,JwkDto=JwkDTO,JwksResponseDto=JwksResponseDTO,LoginRequestDto=LoginRequestDTO,LoginResponseDto=LoginResponseDTO,RefreshAccessTokenRequestDto=RefreshAccessTokenRequestDTO,RefreshAccessTokenResponseDto=RefreshAccessTokenResponseDTO,RegisterUserDto=RegisterUserDTO,ResendEmailVerificationResponseDto=ResendEmailVerificationResponseDTO,ResponseRegisterUserDto=ResponseRegisterUserDTO,SiteOverviewDto=SiteOverviewDTO,WorkspaceSiteCardDto=WorkspaceSiteCardDTO,WorkspaceSiteCardResponseDto=WorkspaceSiteCardResponseDTO,WorkspaceSitesPageDto=WorkspaceSitesPageDTO,WorkspaceSitesResponseDto=WorkspaceSitesResponseDTO</modelNameMappings>
                                     <configOptions>
                                         <delegatePattern>true</delegatePattern>
                                         <useTags>true</useTags>
