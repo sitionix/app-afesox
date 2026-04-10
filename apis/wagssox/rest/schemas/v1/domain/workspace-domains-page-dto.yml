@@ -1,0 +1,14 @@
+WorkspaceDomainsPageDTO:
+  title: WorkspaceDomainsPageDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+    - meta
+  properties:
+    items:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/WorkspaceDomainDTO'
+    meta:
+      $ref: '../../../openapi.yml#/components/schemas/PageMetaDTO'

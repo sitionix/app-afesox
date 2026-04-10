@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Workspace Aggregation Service Sitionix
   description: API specification for workspace projection service
-  version: 0.0.4
+  version: 0.0.5
   contact:
     name: APP Sitionix
 servers:
@@ -10,11 +10,14 @@ servers:
     url: "http://localhost:8080/wagssox"
 tags:
   - name: Site
+  - name: Domain
 paths:
   /api/v1/sites:
     $ref: './paths/v1/sites.yml'
   /api/v1/sites/{siteId}/overview:
     $ref: './paths/v1/sites-overview.yml'
+  /api/v1/domains:
+    $ref: './paths/v1/domains.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -29,6 +32,12 @@ components:
       $ref: './schemas/v1/site/workspace-sites-page-dto.yml#/WorkspaceSitesPageDTO'
     WorkspaceSiteCardDTO:
       $ref: './schemas/v1/site/workspace-site-card-dto.yml#/WorkspaceSiteCardDTO'
+    WorkspaceDomainsPageDTO:
+      $ref: './schemas/v1/domain/workspace-domains-page-dto.yml#/WorkspaceDomainsPageDTO'
+    WorkspaceDomainDTO:
+      $ref: './schemas/v1/domain/workspace-domain-dto.yml#/WorkspaceDomainDTO'
+    PageMetaDTO:
+      $ref: './schemas/v1/domain/page-meta-dto.yml#/PageMetaDTO'
     ErrorDTO:
       $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
   responses:

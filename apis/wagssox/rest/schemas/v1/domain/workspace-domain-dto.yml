@@ -1,0 +1,27 @@
+WorkspaceDomainDTO:
+  title: WorkspaceDomainDTO
+  type: object
+  additionalProperties: false
+  required:
+    - domainId
+    - domain
+    - status
+    - linkedSiteId
+    - linkedSiteName
+  properties:
+    domainId:
+      type: string
+    domain:
+      type: string
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - PENDING
+        - FAILED
+    linkedSiteId:
+      type: string
+      nullable: true
+    linkedSiteName:
+      type: string
+      nullable: true

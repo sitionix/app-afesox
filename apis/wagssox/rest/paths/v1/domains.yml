@@ -1,0 +1,43 @@
+get:
+  tags:
+    - Domain
+  operationId: getDomains
+  summary: Get domains page
+  description: >
+    Returns a paginated list of domains owned by the currently authenticated user.
+    Endpoint is intended for internal S2S callers such as BFF.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: query
+      name: page
+      description: Zero-based page index.
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    - in: query
+      name: size
+      description: Fixed page size. Must equal 20.
+      required: true
+      schema:
+        type: integer
+        default: 20
+        enum:
+          - 20
+  responses:
+    "200":
+      description: Domains page.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/WorkspaceDomainsPageDTO'
+    "400":
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    "401":
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    "403":
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    "500":
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
