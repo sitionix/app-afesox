@@ -1,0 +1,36 @@
+AgentDTO:
+  title: AgentDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - name
+    - description
+    - status
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Globally unique agent identifier.
+    name:
+      type: string
+      description: Agent name.
+    description:
+      type: string
+      description: Agent description.
+    status:
+      type: string
+      description: Current agent status.
+      enum:
+        - DRAFT
+      example: DRAFT
+    createdAt:
+      type: string
+      format: date-time
+      description: Agent creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last agent update timestamp (UTC).
