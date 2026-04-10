@@ -1,0 +1,22 @@
+PageMetaDTO:
+  title: PageMetaDTO
+  type: object
+  additionalProperties: false
+  required:
+    - page
+    - size
+    - totalItems
+    - totalPages
+  properties:
+    page:
+      type: integer
+      minimum: 0
+    size:
+      type: integer
+      minimum: 1
+    totalItems:
+      type: integer
+      minimum: 0
+    totalPages:
+      type: integer
+      minimum: 0

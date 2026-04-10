@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.16
+  version: 0.0.17
   contact:
     name: APP Sitionix
 servers:
@@ -12,6 +12,7 @@ tags:
   - name: Auth
   - name: User
   - name: Site
+  - name: Domain
 paths:
   /api/v1/auth/refresh:
     $ref: './paths/v1/auth-refresh.yml'
@@ -25,6 +26,8 @@ paths:
     $ref: './paths/v1/sites.yml'
   /api/v1/sites/{siteId}/overview:
     $ref: './paths/v1/sites-overview.yml'
+  /api/v1/domains:
+    $ref: './paths/v1/domains.yml'
   /api/v1/auth/login:
     $ref: './paths/v1/auth-login.yml'
 components:
@@ -61,6 +64,12 @@ components:
       $ref: './schemas/v1/site/site-overview-dto.yml#/SiteOverviewDTO'
     WorkspaceSiteCardResponseDTO:
       $ref: './schemas/v1/site/workspace-site-card-response-dto.yml#/WorkspaceSiteCardResponseDTO'
+    WorkspaceDomainsResponseDTO:
+      $ref: './schemas/v1/domain/workspace-domains-response-dto.yml#/WorkspaceDomainsResponseDTO'
+    WorkspaceDomainResponseDTO:
+      $ref: './schemas/v1/domain/workspace-domain-response-dto.yml#/WorkspaceDomainResponseDTO'
+    PageMetaDTO:
+      $ref: './schemas/v1/domain/page-meta-dto.yml#/PageMetaDTO'
     LoginRequestDTO:
       $ref: './schemas/v1/auth/login-request-dto.yml#/LoginRequestDTO'
     LoginResponseDTO:

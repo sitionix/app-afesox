@@ -1,0 +1,40 @@
+get:
+  tags:
+    - Domain
+  operationId: getDomains
+  summary: Get workspace domains
+  description: >
+    Returns a paginated list of domains owned by the authenticated browser user.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: query
+      name: page
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    - in: query
+      name: size
+      required: true
+      schema:
+        type: integer
+        default: 20
+        enum:
+          - 20
+  responses:
+    '200':
+      description: Domains page
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/WorkspaceDomainsResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
