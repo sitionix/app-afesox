@@ -1,0 +1,11 @@
+api:
+  version: 0.0.1
+  visibility: PUBLIC
+  metadata:
+    version: "1.0"
+  definition: openapi.yml
+  type: application
+  name: atmssox
+  executions:
+    - type: client
+    - type: api-first

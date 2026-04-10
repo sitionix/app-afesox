@@ -1,0 +1,17 @@
+ErrorDTO:
+  title: ErrorDTO
+  type: object
+  required:
+    - code
+    - title
+    - details
+  properties:
+    code:
+      type: integer
+      example: 401
+    title:
+      type: string
+      example: Unauthorized
+    details:
+      type: string
+      example: Invalid request
