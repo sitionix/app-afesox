@@ -1,0 +1,50 @@
+openapi: "3.0.0"
+info:
+  title: API Automation Service Sitionix
+  description: API specification for automation service
+  version: 0.0.1
+  contact:
+    name: APP Sitionix
+servers:
+  - description: Localhost (dev only)
+    url: 'http://localhost:9083/atmssox'
+tags:
+  - name: Agent
+paths:
+  /api/v1/agents:
+    $ref: './paths/v1/agents.yml'
+  /api/v1/agents/{agentId}:
+    $ref: './paths/v1/agents-by-id.yml'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service access token (Bearer).
+  schemas:
+    CreateAgentRequestDTO:
+      $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequest'
+    AgentDTO:
+      $ref: './schemas/v1/agent/agent-dto.yml#/Agent'
+    AgentsResponseDTO:
+      $ref: './schemas/v1/agent/agents-response-dto.yml#/AgentsResponse'
+    ErrorDTO:
+      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
+  responses:
+    BadRequest:
+      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
+    NotFound:
+      $ref: './schemas/v1/errors/responses.yml#/NotFound'
+    Conflict:
+      $ref: './schemas/v1/errors/responses.yml#/Conflict'
+    Gone:
+      $ref: './schemas/v1/errors/responses.yml#/Gone'
+    InternalServerError:
+      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
+    Unauthorized:
+      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
+    Forbidden:
+      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
+    TooManyRequests:
+      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'
