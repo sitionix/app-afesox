@@ -1,0 +1,29 @@
+openapi: "3.0.0"
+info:
+  title: API Common Errors Sitionix
+  description: Shared REST error components for Sitionix services
+  version: 0.0.1
+  contact:
+    name: APP Sitionix
+paths: {}
+components:
+  schemas:
+    ErrorDTO:
+      $ref: './error/error-dto.yml#/ErrorDTO'
+  responses:
+    BadRequest:
+      $ref: './error/responses.yml#/BadRequest'
+    NotFound:
+      $ref: './error/responses.yml#/NotFound'
+    Conflict:
+      $ref: './error/responses.yml#/Conflict'
+    Gone:
+      $ref: './error/responses.yml#/Gone'
+    InternalServerError:
+      $ref: './error/responses.yml#/InternalServerError'
+    Unauthorized:
+      $ref: './error/responses.yml#/Unauthorized'
+    Forbidden:
+      $ref: './error/responses.yml#/Forbidden'
+    TooManyRequests:
+      $ref: './error/responses.yml#/TooManyRequests'

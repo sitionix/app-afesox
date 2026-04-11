@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.16
+  version: 0.0.17
   contact:
     name: APP Sitionix
 servers:
@@ -12,6 +12,7 @@ tags:
   - name: Auth
   - name: User
   - name: Site
+  - name: Agent
 paths:
   /api/v1/auth/refresh:
     $ref: './paths/v1/auth-refresh.yml'
@@ -25,6 +26,10 @@ paths:
     $ref: './paths/v1/sites.yml'
   /api/v1/sites/{siteId}/overview:
     $ref: './paths/v1/sites-overview.yml'
+  /api/v1/agents:
+    $ref: './paths/v1/agents.yml'
+  /api/v1/agents/{agentId}:
+    $ref: './paths/v1/agents-by-id.yml'
   /api/v1/auth/login:
     $ref: './paths/v1/auth-login.yml'
 components:
@@ -55,6 +60,12 @@ components:
       $ref: './schemas/v1/site/create-site-request-dto.yml#/CreateSiteRequestDTO'
     CreateSiteResponseDTO:
       $ref: './schemas/v1/site/create-site-response-dto.yml#/CreateSiteResponseDTO'
+    CreateAgentRequestDTO:
+      $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequest'
+    AgentDTO:
+      $ref: './schemas/v1/agent/agent-dto.yml#/Agent'
+    AgentsResponseDTO:
+      $ref: './schemas/v1/agent/agents-response-dto.yml#/AgentsResponse'
     WorkspaceSitesResponseDTO:
       $ref: './schemas/v1/site/workspace-sites-response-dto.yml#/WorkspaceSitesResponseDTO'
     SiteOverviewDTO:
@@ -66,21 +77,21 @@ components:
     LoginResponseDTO:
       $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
+      $ref: '../../common/rest/openapi.yml#/components/schemas/ErrorDTO'
   responses:
     BadRequest:
-      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
+      $ref: '../../common/rest/openapi.yml#/components/responses/BadRequest'
     NotFound:
-      $ref: './schemas/v1/errors/responses.yml#/NotFound'
+      $ref: '../../common/rest/openapi.yml#/components/responses/NotFound'
     Conflict:
-      $ref: './schemas/v1/errors/responses.yml#/Conflict'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Conflict'
     Gone:
-      $ref: './schemas/v1/errors/responses.yml#/Gone'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Gone'
     InternalServerError:
-      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
+      $ref: '../../common/rest/openapi.yml#/components/responses/InternalServerError'
     Unauthorized:
-      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Unauthorized'
     Forbidden:
-      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Forbidden'
     TooManyRequests:
-      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'
+      $ref: '../../common/rest/openapi.yml#/components/responses/TooManyRequests'
