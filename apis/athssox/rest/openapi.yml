@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Auth Sitionix
   description: Api specification for auth service
-  version: 0.0.27
+  version: 0.0.28
   contact:
     name: APP Sitionix
 servers:
@@ -69,21 +69,21 @@ components:
     LoginResponseDTO:
       $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
+      $ref: '../../common/rest/openapi.yml#/components/schemas/ErrorDTO'
   responses:
     BadRequest:
-      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
+      $ref: '../../common/rest/openapi.yml#/components/responses/BadRequest'
     NotFound:
-      $ref: './schemas/v1/errors/responses.yml#/NotFound'
+      $ref: '../../common/rest/openapi.yml#/components/responses/NotFound'
     Conflict:
-      $ref: './schemas/v1/errors/responses.yml#/Conflict'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Conflict'
     Gone:
-      $ref: './schemas/v1/errors/responses.yml#/Gone'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Gone'
     InternalServerError:
-      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
+      $ref: '../../common/rest/openapi.yml#/components/responses/InternalServerError'
     Unauthorized:
-      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Unauthorized'
     Forbidden:
-      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
+      $ref: '../../common/rest/openapi.yml#/components/responses/Forbidden'
     TooManyRequests:
-      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'
+      $ref: '../../common/rest/openapi.yml#/components/responses/TooManyRequests'
