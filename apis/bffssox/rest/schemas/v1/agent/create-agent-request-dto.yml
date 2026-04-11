@@ -1,5 +1,5 @@
-CreateAgentRequest:
-  title: CreateAgentRequest
+CreateAgentRequestDTO:
+  title: CreateAgentRequestDTO
   type: object
   additionalProperties: false
   required:
