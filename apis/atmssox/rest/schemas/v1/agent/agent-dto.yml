@@ -1,5 +1,5 @@
-Agent:
-  title: Agent
+AgentDTO:
+  title: AgentDTO
   type: object
   additionalProperties: false
   required:
