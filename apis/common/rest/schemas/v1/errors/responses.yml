@@ -3,7 +3,7 @@ BadRequest:
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
       examples:
         default:
           summary: Bad Request
@@ -16,7 +16,7 @@ NotFound:
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
       examples:
         default:
           summary: Not Found
@@ -29,7 +29,7 @@ Conflict:
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
       examples:
         default:
           summary: Conflict
@@ -42,7 +42,7 @@ Gone:
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
       examples:
         default:
           summary: Gone
@@ -55,25 +55,25 @@ InternalServerError:
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
 Unauthorized:
   description: Unauthorized
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
 Forbidden:
   description: Forbidden
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
 TooManyRequests:
   description: Too Many Requests
   content:
     application/json:
       schema:
-        $ref: '../../../openapi.yml#/components/schemas/ErrorDTO'
+        $ref: './error-dto.yml#/ErrorDTO'
       examples:
         default:
           summary: Too Many Requests

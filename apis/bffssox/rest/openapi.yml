@@ -61,11 +61,11 @@ components:
     CreateSiteResponseDTO:
       $ref: './schemas/v1/site/create-site-response-dto.yml#/CreateSiteResponseDTO'
     CreateAgentRequestDTO:
-      $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequestDTO'
+      $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequest'
     AgentDTO:
-      $ref: './schemas/v1/agent/agent-dto.yml#/AgentDTO'
+      $ref: './schemas/v1/agent/agent-dto.yml#/Agent'
     AgentsResponseDTO:
-      $ref: './schemas/v1/agent/agents-response-dto.yml#/AgentsResponseDTO'
+      $ref: './schemas/v1/agent/agents-response-dto.yml#/AgentsResponse'
     WorkspaceSitesResponseDTO:
       $ref: './schemas/v1/site/workspace-sites-response-dto.yml#/WorkspaceSitesResponseDTO'
     SiteOverviewDTO:
@@ -77,21 +77,21 @@ components:
     LoginResponseDTO:
       $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
     ErrorDTO:
-      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
+      $ref: '../../common/rest/schemas/v1/errors/error-dto.yml#/ErrorDTO'
   responses:
     BadRequest:
-      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/BadRequest'
     NotFound:
-      $ref: './schemas/v1/errors/responses.yml#/NotFound'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/NotFound'
     Conflict:
-      $ref: './schemas/v1/errors/responses.yml#/Conflict'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Conflict'
     Gone:
-      $ref: './schemas/v1/errors/responses.yml#/Gone'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Gone'
     InternalServerError:
-      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/InternalServerError'
     Unauthorized:
-      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Unauthorized'
     Forbidden:
-      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Forbidden'
     TooManyRequests:
-      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'
+      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/TooManyRequests'
