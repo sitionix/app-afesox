@@ -69,21 +69,21 @@ components:
     LoginResponseDTO:
       $ref: './schemas/v1/auth/login-response-dto.yml#/LoginResponseDTO'
     ErrorDTO:
-      $ref: '../../common/rest/openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../common/rest/error/error-dto.yml#/ErrorDTO'
   responses:
     BadRequest:
-      $ref: '../../common/rest/openapi.yml#/components/responses/BadRequest'
+      $ref: '../../common/rest/error/responses.yml#/BadRequest'
     NotFound:
-      $ref: '../../common/rest/openapi.yml#/components/responses/NotFound'
+      $ref: '../../common/rest/error/responses.yml#/NotFound'
     Conflict:
-      $ref: '../../common/rest/openapi.yml#/components/responses/Conflict'
+      $ref: '../../common/rest/error/responses.yml#/Conflict'
     Gone:
-      $ref: '../../common/rest/openapi.yml#/components/responses/Gone'
+      $ref: '../../common/rest/error/responses.yml#/Gone'
     InternalServerError:
-      $ref: '../../common/rest/openapi.yml#/components/responses/InternalServerError'
+      $ref: '../../common/rest/error/responses.yml#/InternalServerError'
     Unauthorized:
-      $ref: '../../common/rest/openapi.yml#/components/responses/Unauthorized'
+      $ref: '../../common/rest/error/responses.yml#/Unauthorized'
     Forbidden:
-      $ref: '../../common/rest/openapi.yml#/components/responses/Forbidden'
+      $ref: '../../common/rest/error/responses.yml#/Forbidden'
     TooManyRequests:
-      $ref: '../../common/rest/openapi.yml#/components/responses/TooManyRequests'
+      $ref: '../../common/rest/error/responses.yml#/TooManyRequests'
