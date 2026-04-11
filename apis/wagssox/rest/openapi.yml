@@ -30,21 +30,21 @@ components:
     WorkspaceSiteCardDTO:
       $ref: './schemas/v1/site/workspace-site-card-dto.yml#/WorkspaceSiteCardDTO'
     ErrorDTO:
-      $ref: '../../common/rest/schemas/v1/errors/error-dto.yml#/ErrorDTO'
+      $ref: './schemas/v1/errors/error-dto.yml#/ErrorDTO'
   responses:
     BadRequest:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/BadRequest'
+      $ref: './schemas/v1/errors/responses.yml#/BadRequest'
     NotFound:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/NotFound'
+      $ref: './schemas/v1/errors/responses.yml#/NotFound'
     Conflict:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Conflict'
+      $ref: './schemas/v1/errors/responses.yml#/Conflict'
     Gone:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Gone'
+      $ref: './schemas/v1/errors/responses.yml#/Gone'
     InternalServerError:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/InternalServerError'
+      $ref: './schemas/v1/errors/responses.yml#/InternalServerError'
     Unauthorized:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Unauthorized'
+      $ref: './schemas/v1/errors/responses.yml#/Unauthorized'
     Forbidden:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/Forbidden'
+      $ref: './schemas/v1/errors/responses.yml#/Forbidden'
     TooManyRequests:
-      $ref: '../../common/rest/schemas/v1/errors/responses.yml#/TooManyRequests'
+      $ref: './schemas/v1/errors/responses.yml#/TooManyRequests'
