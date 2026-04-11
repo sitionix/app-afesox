@@ -22,7 +22,7 @@ jobs:
           git fetch origin ${{ github.head_ref }}:${{ github.head_ref }}
 
           # Check for changes in REST API definition files
-          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/rest/**.yml')
+          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} -- 'apis/**/rest/**.yml')
           
           if [ -n "$CHANGED_FILES" ]; then
             echo "is_changed=true" >> $GITHUB_ENV
@@ -33,7 +33,7 @@ jobs:
       - name: Print and Store Changed File Directory
         if: env.is_changed == 'true'
         run: |
-          CHANGED_DIRS=$(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} -- 'apis/**/rest/**.yml' | awk -F/ '/^apis\/[^/]+\/rest\// {print $1 "/" $2 "/rest"}' | sort -u)
+          CHANGED_DIRS=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} -- 'apis/**/rest/**.yml' | awk -F/ '/^apis\/[^/]+\/rest\// {print $1 "/" $2 "/rest"}' | sort -u)
 
           if [ -z "$CHANGED_DIRS" ]; then
             echo "No changed REST API directories found."
