@@ -1,0 +1,6 @@
+api:
+  name: common
+  version: 0.0.1
+  definition: openapi.yml
+  executions:
+    - type: api-first
