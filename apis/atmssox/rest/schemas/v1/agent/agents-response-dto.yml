@@ -1,5 +1,5 @@
-AgentsResponseDTO:
-  title: AgentsResponseDTO
+AgentsResponse:
+  title: AgentsResponse
   type: object
   additionalProperties: false
   required:
