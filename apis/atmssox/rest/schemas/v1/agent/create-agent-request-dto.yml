@@ -1,0 +1,22 @@
+CreateAgentRequest:
+  title: CreateAgentRequest
+  type: object
+  additionalProperties: false
+  required:
+    - name
+    - description
+  properties:
+    name:
+      type: string
+      minLength: 1
+      maxLength: 60
+      pattern: ".*\\S.*"
+      description: Human-readable agent name. Value is trimmed before validation.
+      example: Architecture Reviewer
+    description:
+      type: string
+      minLength: 1
+      maxLength: 160
+      pattern: ".*\\S.*"
+      description: Short description of the agent responsibility.
+      example: Minimal internal agent foundation entry
