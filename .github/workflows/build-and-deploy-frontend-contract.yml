@@ -1,4 +1,4 @@
-name: Build and Deploy Frontend Contract
+name: Build and Publish Frontend Contract
 
 on:
   workflow_call:
@@ -27,9 +27,9 @@ on:
         required: true
 
 jobs:
-  build-and-deploy:
+  build-and-publish:
     runs-on: ubuntu-latest
-    name: FrontendContract • ${{ inputs.name }} • ${{ inputs.execution }} • v${{ inputs.version }}
+    name: Frontend • ${{ inputs.name }} • ${{ inputs.execution }} • v${{ inputs.version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,9 +37,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.ref || github.sha }}
 
-      - name: Log deploy/build source
+      - name: Log publish/build source
         run: |
-          echo "DEPLOY_REF_INPUT=${{ inputs.ref }}"
+          echo "PUBLISH_REF_INPUT=${{ inputs.ref }}"
           echo "GITHUB_SHA=${{ github.sha }}"
           echo "GITHUB_REF=${{ github.ref }}"
           echo "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)"
@@ -52,6 +52,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Cache Maven packages
         uses: actions/cache@v3
@@ -67,19 +72,6 @@ jobs:
           path: ~/.openapi-generator
           key: openapi-${{ hashFiles('apis/**/*.yml') }}
 
-      - name: Setup Maven settings
-        run: |
-          mkdir -p ~/.m2
-          echo "<settings>
-                  <servers>
-                    <server>
-                      <id>github-app-afesox</id>
-                      <username>${{ github.actor }}</username>
-                      <password>${{ secrets.APP_AFESOX }}</password>
-                    </server>
-                  </servers>
-                </settings>" > ~/.m2/settings.xml
-
       - name: Set dynamic environment variables
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
@@ -92,16 +84,21 @@ jobs:
           else
             echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
           fi
+
           echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
+          echo "NPM_SCOPE=@sitionix" >> $GITHUB_ENV
+          echo "NPM_PACKAGE_NAME=@sitionix/app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
           echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
           echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
           echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
 
-      - name: Build and Deploy
+      - name: Generate frontend contract
         run: |
-          echo "::group::🔧 Building $NAME ($EXECUTION) - version $VERSION with artifact ID $ARTIFACT_ID"
+          echo "::group::🔧 Generating frontend contract for $NAME ($EXECUTION) version $VERSION"
           set -euo pipefail
-          mvn clean deploy -P$EXECUTION \
+          ARTIFACT_ID="$ARTIFACT_ID" VERSION="$VERSION" NAME="$NAME" \
+          mvn clean generate-resources -P$EXECUTION \
+            -DskipTests \
             -Dproject.version=$VERSION \
             -DARTIFACT_ID=$ARTIFACT_ID \
             -DVERSION=$VERSION \
@@ -109,10 +106,105 @@ jobs:
             -DVARIANT=$VARIANT
           echo "::endgroup::"
 
+      - name: Validate generated frontend contract files
+        run: |
+          set -euo pipefail
+          GENERATED_DIR="target/generated-frontend"
+          [[ -f "$GENERATED_DIR/index.ts" ]] || { echo "::error:: Missing generated file: $GENERATED_DIR/index.ts"; exit 1; }
+          [[ -f "$GENERATED_DIR/runtime.ts" ]] || { echo "::error:: Missing generated file: $GENERATED_DIR/runtime.ts"; exit 1; }
+          [[ -d "$GENERATED_DIR/apis" ]] || { echo "::error:: Missing generated folder: $GENERATED_DIR/apis"; exit 1; }
+          [[ -d "$GENERATED_DIR/models" ]] || { echo "::error:: Missing generated folder: $GENERATED_DIR/models"; exit 1; }
+
+      - name: Configure npm auth
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          set -euo pipefail
+          echo "${NPM_SCOPE}:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+
+      - name: Delete previous unstable npm package (if exists)
+        if: endsWith(inputs.variant, '-unstable')
+        env:
+          GH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          set -euo pipefail
+          OWNER="${{ github.repository_owner }}"
+          ENCODED_NAME="$(python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["NPM_PACKAGE_NAME"], safe=""))')"
+
+          echo "Attempting to delete npm package: $NPM_PACKAGE_NAME"
+          set +e
+          gh api \
+            --method DELETE \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "/user/packages/npm/$ENCODED_NAME"
+          STATUS=$?
+
+          if [ $STATUS -ne 0 ]; then
+            gh api \
+              --method DELETE \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/$OWNER/packages/npm/$ENCODED_NAME"
+            STATUS=$?
+          fi
+          set -e
+
+          if [ $STATUS -eq 0 ]; then
+            echo "Deleted previous unstable npm package."
+            exit 0
+          fi
+
+          echo "npm package delete returned non-zero. Continuing if package does not exist."
+
+      - name: Create npm package manifest
+        run: |
+          set -euo pipefail
+          GENERATED_DIR="target/generated-frontend"
+          cat > "$GENERATED_DIR/package.json" <<EOF
+          {
+            "name": "${NPM_PACKAGE_NAME}",
+            "version": "${VERSION}",
+            "description": "Generated frontend contracts for ${NAME} (${EXECUTION})",
+            "license": "UNLICENSED",
+            "private": false,
+            "type": "module",
+            "types": "index.ts",
+            "main": "index.ts",
+            "exports": {
+              ".": "./index.ts",
+              "./apis": "./apis/index.ts",
+              "./models": "./models/index.ts"
+            },
+            "files": [
+              "index.ts",
+              "runtime.ts",
+              "apis",
+              "models"
+            ],
+            "publishConfig": {
+              "registry": "https://npm.pkg.github.com"
+            },
+            "repository": {
+              "type": "git",
+              "url": "https://github.com/${{ github.repository }}.git"
+            }
+          }
+          EOF
+
+      - name: Publish npm package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          set -euo pipefail
+          cd target/generated-frontend
+          npm publish
+
   notify-failure:
-    name: Deploy notify failure
+    name: Publish notify failure
     if: failure()
-    needs: build-and-deploy
+    needs: build-and-publish
     runs-on: ubuntu-latest
     steps:
       - name: Post comment to PR
@@ -127,9 +219,9 @@ jobs:
 
             const body = [
               '---',
-              '### ❌ Frontend Contract Deploy Job Failed',
+              '### ❌ Frontend Contract Publish Failed',
               '',
-              '> ⚠️ **The frontend contract deploy job could not be completed.**',
+              '> ⚠️ **The frontend npm publish job could not be completed.**',
               '',
               `🔍 [View Workflow Run Logs](${workflow_run_url})`,
               '---'
@@ -142,9 +234,9 @@ jobs:
             });
 
   notify-success:
-    name: Deploy success message
+    name: Publish success message
     if: success()
-    needs: build-and-deploy
+    needs: build-and-publish
     runs-on: ubuntu-latest
     steps:
       - name: Post comment to PR
@@ -156,24 +248,18 @@ jobs:
             const run_id = process.env.GITHUB_RUN_ID;
             const repo = context.repo;
             const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
-
-            const groupId = "com.afesox";
-            const artifactId = `app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}`;
+            const packageName = `@sitionix/app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}`;
             const version = `${{ inputs.version }}`;
 
             const body = [
               '---',
-              '### ✅ Frontend Contract Deployment Successful',
+              '### ✅ Frontend Contract Published',
               '',
               '<details>',
-              '<summary>📦 Maven Dependency Snippet</summary>',
+              '<summary>📦 npm package snippet</summary>',
               '',
-              '```xml',
-              '<dependency>',
-              `  <groupId>${groupId}</groupId>`,
-              `  <artifactId>${artifactId}</artifactId>`,
-              `  <version>${version}</version>`,
-              '</dependency>',
+              '```bash',
+              `pnpm add ${packageName}@${version}`,
               '```',
               '</details>',
               '',

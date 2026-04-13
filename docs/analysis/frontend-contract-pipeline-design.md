@@ -35,10 +35,10 @@ Rationale:
 - Keeps frontend contract boundary at BFF while preserving additive, low-risk integration in existing Maven publication flow.
 
 ## Artifact strategy
-- Keep existing publication channel and naming family intact.
-- Published artifact follows existing pattern:
-  - `app-afesox-<api-name>-frontend-<variant>`
-- Artifact remains separate from `api-first` and `client` outputs.
+- Keep BE publication (`api-first`/`client`) in Maven unchanged.
+- Publish frontend contracts as a dedicated npm package:
+  - `@sitionix/app-afesox-<api-name>-frontend-<variant>`
+- Frontend package remains separate from Java artifacts and aligns with frontend consumption tooling.
 
 ## Workflow extension strategy
 - Add dedicated reusable workflow for frontend contracts:
