@@ -210,6 +210,62 @@
         </profile>
 
         <profile>
+            <id>frontend</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>6.6.0</version>
+                        <executions>
+                            <execution>
+                                <id>frontend-execution</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <inputSpec>${project.basedir}/apis/${env.artifact.name}/rest/openapi.yml</inputSpec>
+                                    <generatorName>typescript-fetch</generatorName>
+                                    <output>${project.build.directory}/generated-frontend</output>
+                                    <configOptions>
+                                        <typescriptThreePlus>true</typescriptThreePlus>
+                                        <supportsES6>true</supportsES6>
+                                        <withoutRuntimeChecks>true</withoutRuntimeChecks>
+                                        <modelPropertyNaming>original</modelPropertyNaming>
+                                        <enumPropertyNaming>original</enumPropertyNaming>
+                                    </configOptions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-frontend-generated-resources</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>add-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}/generated-frontend</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>event-producer</id>
             <dependencies>
                 <dependency>

@@ -11,6 +11,9 @@ apis:
   - name: CLIENT Backend for Frontend SOX
     api-spec-type: client
     definition-path: /bffssox/rest
+  - name: FE Backend for Frontend SOX
+    api-spec-type: frontend
+    definition-path: /bffssox/rest
   - name: API Site Service SOX
     api-spec-type: api-first
     definition-path: /stsssox/rest

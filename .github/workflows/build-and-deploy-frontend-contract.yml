@@ -1,0 +1,274 @@
+name: Build and Publish Frontend Contract
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      execution:
+        required: true
+        type: string
+      variant:
+        required: false
+        type: string
+        default: stable
+      issue_number:
+        required: false
+        type: number
+      ref:
+        required: false
+        type: string
+    secrets:
+      APP_AFESOX:
+        required: true
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    name: Frontend • ${{ inputs.name }} • ${{ inputs.execution }} • v${{ inputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.sha }}
+
+      - name: Log publish/build source
+        run: |
+          echo "PUBLISH_REF_INPUT=${{ inputs.ref }}"
+          echo "GITHUB_SHA=${{ github.sha }}"
+          echo "GITHUB_REF=${{ github.ref }}"
+          echo "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)"
+          echo "CURRENT_SHA=$(git rev-parse HEAD)"
+          REMOTE_BRANCH=$(git branch -r --contains HEAD | head -n1 | xargs)
+          echo "REMOTE_BRANCH=${REMOTE_BRANCH}"
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v3
+        with:
+          path: ~/.openapi-generator
+          key: openapi-${{ hashFiles('apis/**/*.yml') }}
+
+      - name: Set dynamic environment variables
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+            if [[ "${{ inputs.version }}" != "$TAG_VERSION" ]]; then
+              echo "::error:: Tag version ($TAG_VERSION) does not match workflow input version (${{ inputs.version }})."
+              exit 1
+            fi
+            echo "VERSION=$TAG_VERSION" >> $GITHUB_ENV
+          else
+            echo "VERSION=${{ inputs.version }}" >> $GITHUB_ENV
+          fi
+
+          echo "ARTIFACT_ID=app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
+          echo "NPM_SCOPE=@sitionix" >> $GITHUB_ENV
+          echo "NPM_PACKAGE_NAME=@sitionix/app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}" >> $GITHUB_ENV
+          echo "NAME=${{ inputs.name }}" >> $GITHUB_ENV
+          echo "EXECUTION=${{ inputs.execution }}" >> $GITHUB_ENV
+          echo "VARIANT=${{ inputs.variant }}" >> $GITHUB_ENV
+
+      - name: Generate frontend contract
+        run: |
+          echo "::group::🔧 Generating frontend contract for $NAME ($EXECUTION) version $VERSION"
+          set -euo pipefail
+          ARTIFACT_ID="$ARTIFACT_ID" VERSION="$VERSION" NAME="$NAME" \
+          mvn clean generate-resources -P$EXECUTION \
+            -DskipTests \
+            -Dproject.version=$VERSION \
+            -DARTIFACT_ID=$ARTIFACT_ID \
+            -DVERSION=$VERSION \
+            -DNAME=$NAME \
+            -DVARIANT=$VARIANT
+          echo "::endgroup::"
+
+      - name: Validate generated frontend contract files
+        run: |
+          set -euo pipefail
+          GENERATED_DIR="target/generated-frontend"
+          [[ -f "$GENERATED_DIR/index.ts" ]] || { echo "::error:: Missing generated file: $GENERATED_DIR/index.ts"; exit 1; }
+          [[ -f "$GENERATED_DIR/runtime.ts" ]] || { echo "::error:: Missing generated file: $GENERATED_DIR/runtime.ts"; exit 1; }
+          [[ -d "$GENERATED_DIR/apis" ]] || { echo "::error:: Missing generated folder: $GENERATED_DIR/apis"; exit 1; }
+          [[ -d "$GENERATED_DIR/models" ]] || { echo "::error:: Missing generated folder: $GENERATED_DIR/models"; exit 1; }
+
+      - name: Configure npm auth
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          set -euo pipefail
+          echo "${NPM_SCOPE}:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+
+      - name: Delete previous unstable npm package (if exists)
+        if: endsWith(inputs.variant, '-unstable')
+        env:
+          GH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          set -euo pipefail
+          OWNER="${{ github.repository_owner }}"
+          ENCODED_NAME="$(python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["NPM_PACKAGE_NAME"], safe=""))')"
+
+          echo "Attempting to delete npm package: $NPM_PACKAGE_NAME"
+          set +e
+          gh api \
+            --method DELETE \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "/user/packages/npm/$ENCODED_NAME"
+          STATUS=$?
+
+          if [ $STATUS -ne 0 ]; then
+            gh api \
+              --method DELETE \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/$OWNER/packages/npm/$ENCODED_NAME"
+            STATUS=$?
+          fi
+          set -e
+
+          if [ $STATUS -eq 0 ]; then
+            echo "Deleted previous unstable npm package."
+            exit 0
+          fi
+
+          echo "npm package delete returned non-zero. Continuing if package does not exist."
+
+      - name: Create npm package manifest
+        run: |
+          set -euo pipefail
+          GENERATED_DIR="target/generated-frontend"
+          cat > "$GENERATED_DIR/package.json" <<EOF
+          {
+            "name": "${NPM_PACKAGE_NAME}",
+            "version": "${VERSION}",
+            "description": "Generated frontend contracts for ${NAME} (${EXECUTION})",
+            "license": "UNLICENSED",
+            "private": false,
+            "type": "module",
+            "types": "index.ts",
+            "main": "index.ts",
+            "exports": {
+              ".": "./index.ts",
+              "./apis": "./apis/index.ts",
+              "./models": "./models/index.ts"
+            },
+            "files": [
+              "index.ts",
+              "runtime.ts",
+              "apis",
+              "models"
+            ],
+            "publishConfig": {
+              "registry": "https://npm.pkg.github.com"
+            },
+            "repository": {
+              "type": "git",
+              "url": "https://github.com/${{ github.repository }}.git"
+            }
+          }
+          EOF
+
+      - name: Publish npm package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.APP_AFESOX }}
+        run: |
+          set -euo pipefail
+          cd target/generated-frontend
+          npm publish
+
+  notify-failure:
+    name: Publish notify failure
+    if: failure()
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = ${{ inputs.issue_number }};
+            if (!issue_number) return;
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+
+            const body = [
+              '---',
+              '### ❌ Frontend Contract Publish Failed',
+              '',
+              '> ⚠️ **The frontend npm publish job could not be completed.**',
+              '',
+              `🔍 [View Workflow Run Logs](${workflow_run_url})`,
+              '---'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
+            });
+
+  notify-success:
+    name: Publish success message
+    if: success()
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = ${{ inputs.issue_number }};
+            if (!issue_number) return;
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+            const packageName = `@sitionix/app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.variant }}`;
+            const version = `${{ inputs.version }}`;
+
+            const body = [
+              '---',
+              '### ✅ Frontend Contract Published',
+              '',
+              '<details>',
+              '<summary>📦 npm package snippet</summary>',
+              '',
+              '```bash',
+              `pnpm add ${packageName}@${version}`,
+              '```',
+              '</details>',
+              '',
+              `🔗 [View Workflow Run](${workflow_run_url})`,
+              '---'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
+            });

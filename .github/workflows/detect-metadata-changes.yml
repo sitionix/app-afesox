@@ -15,6 +15,12 @@ on:
       matrix_api:
         description: "API matrix rows (strategy.matrix compatible)"
         value: ${{ jobs.detect.outputs.matrix_api }}
+      changed_frontend_contract:
+        description: "Boolean flag if any frontend contract metadata changed"
+        value: ${{ jobs.detect.outputs.changed_frontend_contract }}
+      matrix_frontend_contract:
+        description: "Frontend contract matrix rows (strategy.matrix compatible)"
+        value: ${{ jobs.detect.outputs.matrix_frontend_contract }}
       matrix_event:
         description: "Event matrix rows (strategy.matrix compatible)"
         value: ${{ jobs.detect.outputs.matrix_event }}
@@ -30,6 +36,8 @@ jobs:
       matrix: ${{ steps.set_outputs.outputs.matrix }}
       changed_api: ${{ steps.set_outputs.outputs.changed_api }}
       matrix_api: ${{ steps.set_outputs.outputs.matrix_api }}
+      changed_frontend_contract: ${{ steps.set_outputs.outputs.changed_frontend_contract }}
+      matrix_frontend_contract: ${{ steps.set_outputs.outputs.matrix_frontend_contract }}
       matrix_event: ${{ steps.set_outputs.outputs.matrix_event }}
       changed_event: ${{ steps.set_outputs.outputs.changed_event }}
     steps:
@@ -59,6 +67,8 @@ jobs:
             echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
             echo 'changed_api=false' >> "$GITHUB_OUTPUT"
             echo 'matrix_api={"include":[]}' >> "$GITHUB_OUTPUT"
+            echo 'changed_frontend_contract=false' >> "$GITHUB_OUTPUT"
+            echo 'matrix_frontend_contract={"include":[]}' >> "$GITHUB_OUTPUT"
             echo 'matrix_event={"include":[]}' >> "$GITHUB_OUTPUT"
             echo 'changed_event=false' >> "$GITHUB_OUTPUT"
           }
@@ -124,6 +134,7 @@ jobs:
           fi
 
           API_CHANGED_FLAG=false
+          FRONTEND_CONTRACT_CHANGED_FLAG=false
           EVENT_CHANGED_FLAG=false
           printf "%s\n%s\n" "$CHANGED_API" "$CHANGED_EVENT" | sed '/^$/d' > changed_files.txt
           echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -132,7 +143,6 @@ jobs:
 
           # ---------- REST API items ----------
           if [[ -n "$CHANGED_API" ]]; then
-            API_CHANGED_FLAG=true
             while IFS= read -r FILE; do
               [[ -z "$FILE" ]] && continue
               [[ -f "$FILE" ]] || { echo "::error:: REST API metadata not found: $FILE"; exit 1; }
@@ -150,6 +160,9 @@ jobs:
 
               while IFS= read -r EXEC; do
                 [[ -z "$EXEC" ]] && continue
+                if [[ "$EXEC" == "frontend" ]]; then
+                  FRONTEND_CONTRACT_CHANGED_FLAG=true
+                fi
                 MATRIX_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c \
                   --arg name "$NAME" \
                   --arg execution "$EXEC" \
@@ -255,15 +268,26 @@ jobs:
           fi
 
           API_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api")]')"
+          API_ITEMS="$(echo "$API_ITEMS" | jq -c '[.[] | select(.execution != "frontend")]')"
+          FRONTEND_CONTRACT_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api" and .execution == "frontend")]')"
+          if [[ "$(echo "$FRONTEND_CONTRACT_ITEMS" | jq length)" -gt 0 ]]; then
+            FRONTEND_CONTRACT_CHANGED_FLAG=true
+          fi
+          if [[ "$(echo "$API_ITEMS" | jq length)" -gt 0 ]]; then
+            API_CHANGED_FLAG=true
+          fi
           EVENT_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "event")]')"
 
           echo "API_ITEMS=$API_ITEMS"
+          echo "FRONTEND_CONTRACT_ITEMS=$FRONTEND_CONTRACT_ITEMS"
           echo "EVENT_ITEMS=$EVENT_ITEMS"
 
           # IMPORTANT: outputs are strategy.matrix compatible objects
           echo "matrix=$(echo "$MATRIX_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "changed_api=$API_CHANGED_FLAG" >> "$GITHUB_OUTPUT"
           echo "matrix_api=$(echo "$API_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
+          echo "changed_frontend_contract=$FRONTEND_CONTRACT_CHANGED_FLAG" >> "$GITHUB_OUTPUT"
+          echo "matrix_frontend_contract=$(echo "$FRONTEND_CONTRACT_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "matrix_event=$(echo "$EVENT_ITEMS" | jq -c '{include: .}')" >> "$GITHUB_OUTPUT"
           echo "changed_event=$EVENT_CHANGED_FLAG" >> "$GITHUB_OUTPUT"
 
