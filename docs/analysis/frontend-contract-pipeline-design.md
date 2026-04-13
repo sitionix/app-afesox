@@ -17,7 +17,7 @@
 The least-risk extension point is adding a new explicit `api-spec-type` and mapping it to a new Maven profile, while keeping existing `api-first`/`client` and event behavior unchanged.
 
 ## New type decision
-Chosen new type: `frontend-contract`.
+Chosen new type: `frontend`.
 
 Why:
 - Matches current hyphenated type style (`event-producer`, `event-consumer`).
@@ -25,7 +25,7 @@ Why:
 - Generic for all future BFF APIs, not Automation-specific.
 
 ## Generation strategy
-- Add Maven profile `frontend-contract`.
+- Add Maven profile `frontend`.
 - Input spec: `apis/<name>/rest/openapi.yml` (same metadata-driven resolution).
 - Generator: `typescript-fetch` via OpenAPI Generator.
 - Output shape: generated TypeScript contract package (`apis/*`, `models/*`, `runtime.ts`) published as a dedicated artifact.
@@ -37,18 +37,18 @@ Rationale:
 ## Artifact strategy
 - Keep existing publication channel and naming family intact.
 - Published artifact follows existing pattern:
-  - `app-afesox-<api-name>-frontend-contract-<variant>`
+  - `app-afesox-<api-name>-frontend-<variant>`
 - Artifact remains separate from `api-first` and `client` outputs.
 
 ## Workflow extension strategy
 - Add dedicated reusable workflow for frontend contracts:
   - `build-and-deploy-frontend-contract.yml`
 - Comment flow (`trigger-message.yml`):
-  - route `frontend-contract` entries to new reusable workflow
+  - route `frontend` entries to new reusable workflow
   - keep existing non-event Java path untouched
 - Develop flow:
-  - extend detection with dedicated `frontend-contract` matrix output
-  - run separate frontend-contract deploy job
+  - extend detection with dedicated `frontend` matrix output
+  - run separate frontend deploy job
 
 ## BFF boundary decision
 Frontend-oriented contracts are generated from BFF specs (`bffssox`) and registered in metadata as BFF entries. Internal service specs are not used as frontend boundary in this pipeline.
@@ -56,4 +56,4 @@ Frontend-oriented contracts are generated from BFF specs (`bffssox`) and registe
 ## Regression safety
 - No behavior changes to existing type semantics.
 - Existing workflows, metadata entries, and artifact naming for `api-first`/`client` remain unchanged.
-- New behavior is additive and type-gated by `frontend-contract`.
+- New behavior is additive and type-gated by `frontend`.

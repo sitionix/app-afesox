@@ -210,7 +210,7 @@
         </profile>
 
         <profile>
-            <id>frontend-contract</id>
+            <id>frontend</id>
             <build>
                 <plugins>
                     <plugin>
@@ -219,7 +219,7 @@
                         <version>6.6.0</version>
                         <executions>
                             <execution>
-                                <id>frontend-contract-execution</id>
+                                <id>frontend-execution</id>
                                 <goals>
                                     <goal>generate</goal>
                                 </goals>
@@ -227,7 +227,7 @@
                                 <configuration>
                                     <inputSpec>${project.basedir}/apis/${env.artifact.name}/rest/openapi.yml</inputSpec>
                                     <generatorName>typescript-fetch</generatorName>
-                                    <output>${project.build.directory}/generated-frontend-contract</output>
+                                    <output>${project.build.directory}/generated-frontend</output>
                                     <configOptions>
                                         <typescriptThreePlus>true</typescriptThreePlus>
                                         <supportsES6>true</supportsES6>
@@ -246,7 +246,7 @@
                         <version>3.5.0</version>
                         <executions>
                             <execution>
-                                <id>add-frontend-contract-generated-resources</id>
+                                <id>add-frontend-generated-resources</id>
                                 <phase>generate-resources</phase>
                                 <goals>
                                     <goal>add-resource</goal>
@@ -254,7 +254,7 @@
                                 <configuration>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/generated-frontend-contract</directory>
+                                            <directory>${project.build.directory}/generated-frontend</directory>
                                         </resource>
                                     </resources>
                                 </configuration>

@@ -36,13 +36,13 @@ Every new `/generate` comment replaces the previously published unstable artifac
 
 ### Frontend Contract generation for BFF APIs
 
-In addition to `api-first` and `client`, metadata can now define `frontend-contract` entries for BFF boundaries.  
+In addition to `api-first` and `client`, metadata can now define `frontend` entries for BFF boundaries.  
 These entries generate a separate frontend-oriented contract artifact (TypeScript models generated from OpenAPI).
 
 Example trigger:
 
 ```text
-/generate --name "FRONTEND CONTRACT Backend for Frontend SOX"
+/generate --name "FE Backend for Frontend SOX"
 ```
 
 This path is additive and isolated from existing backend/client generation flows.

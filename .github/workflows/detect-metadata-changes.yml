@@ -160,7 +160,7 @@ jobs:
 
               while IFS= read -r EXEC; do
                 [[ -z "$EXEC" ]] && continue
-                if [[ "$EXEC" == "frontend-contract" ]]; then
+                if [[ "$EXEC" == "frontend" ]]; then
                   FRONTEND_CONTRACT_CHANGED_FLAG=true
                 fi
                 MATRIX_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c \
@@ -268,8 +268,8 @@ jobs:
           fi
 
           API_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api")]')"
-          API_ITEMS="$(echo "$API_ITEMS" | jq -c '[.[] | select(.execution != "frontend-contract")]')"
-          FRONTEND_CONTRACT_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api" and .execution == "frontend-contract")]')"
+          API_ITEMS="$(echo "$API_ITEMS" | jq -c '[.[] | select(.execution != "frontend")]')"
+          FRONTEND_CONTRACT_ITEMS="$(echo "$MATRIX_ITEMS" | jq -c '[.[] | select(.kind == "api" and .execution == "frontend")]')"
           if [[ "$(echo "$FRONTEND_CONTRACT_ITEMS" | jq length)" -gt 0 ]]; then
             FRONTEND_CONTRACT_CHANGED_FLAG=true
           fi

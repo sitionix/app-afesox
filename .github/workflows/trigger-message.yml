@@ -148,7 +148,7 @@ jobs:
 
   deploy:
     needs: [build, delete-unused-version]
-    if: ${{ needs.build.outputs.execution != 'frontend-contract' }}
+    if: ${{ needs.build.outputs.execution != 'frontend' }}
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       name: ${{ needs.build.outputs.name }}
@@ -162,7 +162,7 @@ jobs:
 
   deploy-frontend-contract:
     needs: [build, delete-unused-version]
-    if: ${{ needs.build.outputs.execution == 'frontend-contract' }}
+    if: ${{ needs.build.outputs.execution == 'frontend' }}
     uses: ./.github/workflows/build-and-deploy-frontend-contract.yml
     with:
       name: ${{ needs.build.outputs.name }}
