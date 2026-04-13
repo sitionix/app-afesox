@@ -148,7 +148,22 @@ jobs:
 
   deploy:
     needs: [build, delete-unused-version]
+    if: ${{ needs.build.outputs.execution != 'frontend-contract' }}
     uses: ./.github/workflows/build-and-deploy.yml
+    with:
+      name: ${{ needs.build.outputs.name }}
+      version: ${{ needs.build.outputs.version }}
+      execution: ${{ needs.build.outputs.execution }}
+      variant: ${{ needs.build.outputs.ticket }}-unstable
+      issue_number: ${{ github.event.issue.number }}
+      ref: ${{ needs.build.outputs.ref }}
+    secrets:
+      APP_AFESOX: ${{ secrets.APP_AFESOX }}
+
+  deploy-frontend-contract:
+    needs: [build, delete-unused-version]
+    if: ${{ needs.build.outputs.execution == 'frontend-contract' }}
+    uses: ./.github/workflows/build-and-deploy-frontend-contract.yml
     with:
       name: ${{ needs.build.outputs.name }}
       version: ${{ needs.build.outputs.version }}

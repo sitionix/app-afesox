@@ -24,6 +24,21 @@ jobs:
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
 
+  build-and-deploy-frontend-contract:
+    needs: detect
+    if: ${{ needs.detect.outputs.changed_frontend_contract == 'true' }}
+    name: ${{ format('FrontendContract • {0} • {1} • v{2}', matrix.name, matrix.execution, matrix.version) }}
+    strategy:
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_frontend_contract) }}
+    uses: ./.github/workflows/build-and-deploy-frontend-contract.yml
+    with:
+      name: ${{ matrix.name }}
+      version: ${{ matrix.version }}
+      execution: ${{ matrix.execution }}
+      variant: stable
+    secrets:
+      APP_AFESOX: ${{ secrets.APP_AFESOX }}
+
   build-and-deploy-event:
     needs: detect
     if: ${{ needs.detect.outputs.changed_event == 'true' }}

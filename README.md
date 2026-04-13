@@ -34,6 +34,19 @@ Use the `/generate` workflow to produce an unstable artifact while your pull req
 
 Every new `/generate` comment replaces the previously published unstable artifact for that ticket and then produces the refreshed build.
 
+### Frontend Contract generation for BFF APIs
+
+In addition to `api-first` and `client`, metadata can now define `frontend-contract` entries for BFF boundaries.  
+These entries generate a separate frontend-oriented contract artifact (TypeScript models generated from OpenAPI).
+
+Example trigger:
+
+```text
+/generate --name "FRONTEND CONTRACT Backend for Frontend SOX"
+```
+
+This path is additive and isolated from existing backend/client generation flows.
+
 ## REST Contract Layout
 
 REST contracts now live under:
