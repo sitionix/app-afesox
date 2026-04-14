@@ -1,0 +1,119 @@
+name: Delete Unstable Frontend Contract Workflow
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      execution:
+        required: true
+        type: string
+      ticket:
+        required: true
+        type: string
+      issue_number:
+        required: false
+        type: number
+    secrets:
+      APP_AFESOX:
+        required: true
+
+jobs:
+  delete:
+    name: Delete Unstable Frontend Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build npm package name from inputs
+        if: endsWith(inputs.ticket, '-unstable')
+        id: build-package-name
+        run: |
+          PACKAGE_NAME="@sitionix/app-afesox-${{ inputs.name }}-${{ inputs.execution }}-${{ inputs.ticket }}"
+          echo "package_name=$PACKAGE_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve package owner from context
+        if: endsWith(inputs.ticket, '-unstable')
+        id: resolve-owner
+        run: echo "owner=${{ github.repository_owner }}" >> "$GITHUB_OUTPUT"
+
+      - name: Delete npm package via GitHub API
+        if: endsWith(inputs.ticket, '-unstable')
+        env:
+          GH_TOKEN: ${{ secrets.APP_AFESOX }}
+          PACKAGE_NAME: ${{ steps.build-package-name.outputs.package_name }}
+          PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
+        run: |
+          set -euo pipefail
+          ENCODED_NAME="$(python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["PACKAGE_NAME"], safe=""))')"
+
+          echo "Deleting npm package: $PACKAGE_NAME"
+          set +e
+          gh api \
+            --method DELETE \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "/user/packages/npm/$ENCODED_NAME"
+          STATUS=$?
+
+          if [ $STATUS -ne 0 ]; then
+            gh api \
+              --method DELETE \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "/orgs/$PACKAGE_OWNER/packages/npm/$ENCODED_NAME"
+            STATUS=$?
+          fi
+          set -e
+
+          if [ $STATUS -eq 0 ]; then
+            echo "Successfully deleted unstable npm package."
+            exit 0
+          fi
+
+          echo "Delete failed. Checking existence to tolerate missing package."
+          USER_GET="$(gh api --method GET -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "/user/packages/npm/$ENCODED_NAME" 2>&1 || true)"
+          if echo "$USER_GET" | grep -q '404'; then
+            ORG_GET="$(gh api --method GET -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "/orgs/$PACKAGE_OWNER/packages/npm/$ENCODED_NAME" 2>&1 || true)"
+            if echo "$ORG_GET" | grep -q '404'; then
+              echo "Package not found; nothing to delete."
+              exit 0
+            fi
+          fi
+
+          echo "GitHub API delete failed with status $STATUS"
+          exit $STATUS
+
+  notify-failure:
+    name: Delete frontend package failure comment
+    if: failure()
+    needs: delete
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post comment to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue_number = ${{ inputs.issue_number }};
+            if (!issue_number) {
+              console.log('No issue number provided, skipping comment.');
+              return;
+            }
+            const run_id = process.env.GITHUB_RUN_ID;
+            const repo = context.repo;
+            const workflow_run_url = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${run_id}`;
+
+            const body = [
+              '---',
+              '### ❌ Frontend Unstable Delete Job Failed',
+              '',
+              '> ⚠️ **The frontend unstable package delete job could not be completed.**',
+              '',
+              `🔍 [View Workflow Run Logs](${workflow_run_url})`,
+              '---'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              ...repo,
+              issue_number,
+              body
+            });
