@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.21
+  version: 0.0.22
   contact:
     name: APP Sitionix
 servers:
@@ -62,6 +62,8 @@ components:
       $ref: './schemas/v1/site/create-site-response-dto.yml#/CreateSiteResponseDTO'
     CreateAgentRequestDTO:
       $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequestDTO'
+    PatchAgentRequestDTO:
+      $ref: './schemas/v1/agent/patch-agent-request-dto.yml#/PatchAgentRequestDTO'
     AgentDTO:
       $ref: './schemas/v1/agent/agent-dto.yml#/AgentDTO'
     AgentsResponseDTO:
