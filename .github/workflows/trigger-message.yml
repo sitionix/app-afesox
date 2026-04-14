@@ -111,6 +111,8 @@ jobs:
           echo "definition_path=$definition_path" >> $GITHUB_OUTPUT
 
       - name: Ensure PR contains metadata change for selected API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           PR_NUMBER=${{ github.event.issue.number }}
@@ -126,6 +128,65 @@ jobs:
           if ! printf '%s\n' "$changed_files" | grep -Fxq "$target_metadata_file"; then
             echo "ERROR: /generate is allowed only when PR changes ${target_metadata_file}."
             echo "Add a metadata version update for the selected API and retry /generate."
+            exit 1
+          fi
+
+      - name: Ensure selected API version is bumped and synced with OpenAPI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PR_NUMBER=${{ github.event.issue.number }}
+          BASE_REF=$(gh pr view "$PR_NUMBER" --json baseRefName -q '.baseRefName')
+          definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
+          definition_path="${definition_path#/}"
+          target_metadata_file="apis/${definition_path}/metadata.yml"
+
+          git fetch origin "$BASE_REF" --prune
+
+          current_api_version="$(yq e '.api.version' "$target_metadata_file")"
+          if [[ -z "$current_api_version" || "$current_api_version" == "null" ]]; then
+            echo "ERROR: api.version is missing in ${target_metadata_file}"
+            exit 1
+          fi
+
+          base_api_version="$(
+            git show "origin/$BASE_REF:$target_metadata_file" 2>/dev/null | yq e '.api.version' - 2>/dev/null || true
+          )"
+          base_api_version="$(echo "$base_api_version" | tr -d '\r' | xargs)"
+          if [[ -z "$base_api_version" || "$base_api_version" == "null" ]]; then
+            echo "ERROR: base api.version not found for ${target_metadata_file} on ${BASE_REF}."
+            echo "Generation requires explicit version bump against base branch."
+            exit 1
+          fi
+
+          if [[ "$current_api_version" == "$base_api_version" ]]; then
+            echo "ERROR: api.version for ${target_metadata_file} was not bumped."
+            echo "Base: ${base_api_version}, PR: ${current_api_version}."
+            echo "Bump api.version before running /generate."
+            exit 1
+          fi
+
+          definition_file="$(yq e '.api.definition' "$target_metadata_file")"
+          if [[ -z "$definition_file" || "$definition_file" == "null" ]]; then
+            definition_file="openapi.yml"
+          fi
+          openapi_file="apis/${definition_path}/${definition_file}"
+
+          if [[ ! -f "$openapi_file" ]]; then
+            echo "ERROR: OpenAPI definition file not found at ${openapi_file}."
+            exit 1
+          fi
+
+          openapi_version="$(yq e '.info.version' "$openapi_file")"
+          if [[ -z "$openapi_version" || "$openapi_version" == "null" ]]; then
+            echo "ERROR: info.version is missing in ${openapi_file}."
+            exit 1
+          fi
+
+          if [[ "$openapi_version" != "$current_api_version" ]]; then
+            echo "ERROR: version mismatch between ${target_metadata_file} and ${openapi_file}."
+            echo "metadata api.version=${current_api_version}, openapi info.version=${openapi_version}."
             exit 1
           fi
 
