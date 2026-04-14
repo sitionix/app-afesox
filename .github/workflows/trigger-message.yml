@@ -110,6 +110,25 @@ jobs:
           echo "api_spec_type=$api_spec_type" >> $GITHUB_OUTPUT
           echo "definition_path=$definition_path" >> $GITHUB_OUTPUT
 
+      - name: Ensure PR contains metadata change for selected API
+        run: |
+          set -euo pipefail
+          PR_NUMBER=${{ github.event.issue.number }}
+          BASE_REF=$(gh pr view "$PR_NUMBER" --json baseRefName -q '.baseRefName')
+          definition_path="${{ steps.find-api-spec.outputs.definition_path }}"
+          definition_path="${definition_path#/}"
+          target_metadata_file="apis/${definition_path}/metadata.yml"
+
+          git fetch origin "$BASE_REF" --prune
+          merge_base="$(git merge-base "origin/$BASE_REF" HEAD)"
+          changed_files="$(git diff --name-only "$merge_base" HEAD)"
+
+          if ! printf '%s\n' "$changed_files" | grep -Fxq "$target_metadata_file"; then
+            echo "ERROR: /generate is allowed only when PR changes ${target_metadata_file}."
+            echo "Add a metadata version update for the selected API and retry /generate."
+            exit 1
+          fi
+
       - name: Read additional metadata from definition-path
         id: read-definition-metadata
         run: |
