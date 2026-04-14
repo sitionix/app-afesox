@@ -1,0 +1,24 @@
+PatchAgentRequestDTO:
+  title: PatchAgentRequestDTO
+  type: object
+  additionalProperties: false
+  anyOf:
+    - required:
+        - name
+    - required:
+        - description
+  properties:
+    name:
+      type: string
+      minLength: 1
+      maxLength: 60
+      pattern: ".*\\S.*"
+      description: Human-readable agent name. Value is trimmed before validation.
+      example: Updated Product Manager
+    description:
+      type: string
+      minLength: 1
+      maxLength: 160
+      pattern: ".*\\S.*"
+      description: Short description of the agent responsibility.
+      example: Updated description

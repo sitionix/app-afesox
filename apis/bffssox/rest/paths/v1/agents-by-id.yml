@@ -31,3 +31,43 @@ get:
       $ref: '../../openapi.yml#/components/responses/NotFound'
     '500':
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
+patch:
+  tags:
+    - Agent
+  operationId: patchAgent
+  summary: Patch automation agent identity
+  description: >
+    Partially updates one automation agent for the authenticated user.
+    Supports only `name` and `description` fields.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/PatchAgentRequestDTO'
+  responses:
+    '200':
+      description: Updated agent
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

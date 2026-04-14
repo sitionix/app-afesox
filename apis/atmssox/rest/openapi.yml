@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.4
+  version: 0.0.5
   contact:
     name: APP Sitionix
 servers:
@@ -25,6 +25,8 @@ components:
   schemas:
     CreateAgentRequestDTO:
       $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequestDTO'
+    PatchAgentRequestDTO:
+      $ref: './schemas/v1/agent/patch-agent-request-dto.yml#/PatchAgentRequestDTO'
     AgentDTO:
       $ref: './schemas/v1/agent/agent-dto.yml#/AgentDTO'
     AgentsResponseDTO:
