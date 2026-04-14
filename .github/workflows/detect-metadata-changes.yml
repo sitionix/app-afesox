@@ -149,17 +149,22 @@ jobs:
 
               VERSION="$(yq_val '.api.version' "$FILE")"
               NAME="$(yq_val '.api.name' "$FILE")"
+              DEFINITION_PATH="/$(echo "$FILE" | awk -F/ '{print $2}')/rest"
 
-              # executions as lines; empty means invalid
-              EXECUTIONS="$(yq e -r '.api.executions[].type // ""' "$FILE" 2>/dev/null || true)"
+              # Resolve executions from central registry (apis/metadata.yml) by definition-path.
+              # This keeps unstable and develop flows aligned and avoids duplicated execution config.
+              EXECUTIONS="$(yq e -r ".apis[] | select(.definition-path == \"${DEFINITION_PATH}\") | .api-spec-type" apis/metadata.yml 2>/dev/null || true)"
 
               if [[ -z "$VERSION" || -z "$NAME" || -z "$EXECUTIONS" ]]; then
-                echo "::error:: Invalid REST API metadata file: $FILE (api.version/api.name/api.executions[].type required)"
+                echo "::error:: Invalid REST API metadata file or missing central execution mapping: $FILE (api.version/api.name and apis/metadata.yml mapping required)"
                 exit 1
               fi
 
               while IFS= read -r EXEC; do
                 [[ -z "$EXEC" ]] && continue
+                if [[ "$EXEC" =~ ^event- ]]; then
+                  continue
+                fi
                 if [[ "$EXEC" == "frontend" ]]; then
                   FRONTEND_CONTRACT_CHANGED_FLAG=true
                 fi

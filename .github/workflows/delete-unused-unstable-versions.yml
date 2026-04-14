@@ -58,3 +58,17 @@ jobs:
       issue_number: ${{ github.event.pull_request.number }}
     secrets:
       APP_AFESOX: ${{ secrets.APP_AFESOX }}
+
+  delete-unused-frontend-contract-version:
+    needs: [detect, parse-ticket]
+    if: ${{ needs.detect.outputs.changed_frontend_contract == 'true' }}
+    uses: ./.github/workflows/delete-unstable-frontend-contract-workflow.yml
+    strategy:
+      matrix: ${{ fromJson(needs.detect.outputs.matrix_frontend_contract) }}
+    with:
+      name: ${{ matrix.name }}
+      execution: ${{ matrix.execution }}
+      ticket: ${{ needs.parse-ticket.outputs.ticket }}
+      issue_number: ${{ github.event.pull_request.number }}
+    secrets:
+      APP_AFESOX: ${{ secrets.APP_AFESOX }}
