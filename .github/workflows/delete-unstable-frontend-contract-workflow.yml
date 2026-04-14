@@ -44,44 +44,63 @@ jobs:
           PACKAGE_OWNER: ${{ steps.resolve-owner.outputs.owner }}
         run: |
           set -euo pipefail
-          ENCODED_NAME="$(python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["PACKAGE_NAME"], safe=""))')"
+          RAW_PACKAGE_NAME="${PACKAGE_NAME#@sitionix/}"
 
-          echo "Deleting npm package: $PACKAGE_NAME"
-          set +e
-          gh api \
-            --method DELETE \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "/user/packages/npm/$ENCODED_NAME"
-          STATUS=$?
+          delete_candidate() {
+            local candidate="$1"
+            local encoded_name
+            encoded_name="$(CANDIDATE="$candidate" python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["CANDIDATE"], safe=""))')"
 
-          if [ $STATUS -ne 0 ]; then
+            echo "Trying delete for npm package: $candidate"
+            set +e
             gh api \
               --method DELETE \
               -H "Authorization: Bearer $GH_TOKEN" \
               -H "Accept: application/vnd.github+json" \
-              "/orgs/$PACKAGE_OWNER/packages/npm/$ENCODED_NAME"
-            STATUS=$?
-          fi
-          set -e
+              "/user/packages/npm/$encoded_name"
+            local status=$?
 
-          if [ $STATUS -eq 0 ]; then
+            if [ $status -ne 0 ]; then
+              gh api \
+                --method DELETE \
+                -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "/orgs/$PACKAGE_OWNER/packages/npm/$encoded_name"
+              status=$?
+            fi
+            set -e
+            return $status
+          }
+
+          exists_candidate() {
+            local candidate="$1"
+            local encoded_name
+            encoded_name="$(CANDIDATE="$candidate" python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["CANDIDATE"], safe=""))')"
+            local user_get org_get
+            user_get="$(gh api --method GET -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "/user/packages/npm/$encoded_name" 2>&1 || true)"
+            org_get="$(gh api --method GET -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "/orgs/$PACKAGE_OWNER/packages/npm/$encoded_name" 2>&1 || true)"
+
+            if ! echo "$user_get" | grep -q '404'; then
+              return 0
+            fi
+            if ! echo "$org_get" | grep -q '404'; then
+              return 0
+            fi
+            return 1
+          }
+
+          if delete_candidate "$PACKAGE_NAME" || delete_candidate "$RAW_PACKAGE_NAME"; then
             echo "Successfully deleted unstable npm package."
             exit 0
           fi
 
-          echo "Delete failed. Checking existence to tolerate missing package."
-          USER_GET="$(gh api --method GET -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "/user/packages/npm/$ENCODED_NAME" 2>&1 || true)"
-          if echo "$USER_GET" | grep -q '404'; then
-            ORG_GET="$(gh api --method GET -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "/orgs/$PACKAGE_OWNER/packages/npm/$ENCODED_NAME" 2>&1 || true)"
-            if echo "$ORG_GET" | grep -q '404'; then
-              echo "Package not found; nothing to delete."
-              exit 0
-            fi
+          echo "Delete failed for scoped and unscoped names. Checking if package exists."
+          if exists_candidate "$PACKAGE_NAME" || exists_candidate "$RAW_PACKAGE_NAME"; then
+            echo "Package exists (or access is denied) after delete attempt. Failing workflow."
+            exit 1
           fi
 
-          echo "GitHub API delete failed with status $STATUS"
-          exit $STATUS
+          echo "Package not found for scoped and unscoped names; nothing to delete."
 
   notify-failure:
     name: Delete frontend package failure comment

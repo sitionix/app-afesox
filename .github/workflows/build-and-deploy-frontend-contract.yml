@@ -130,33 +130,39 @@ jobs:
         run: |
           set -euo pipefail
           OWNER="${{ github.repository_owner }}"
-          ENCODED_NAME="$(python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["NPM_PACKAGE_NAME"], safe=""))')"
+          RAW_PACKAGE_NAME="${NPM_PACKAGE_NAME#@sitionix/}"
 
-          echo "Attempting to delete npm package: $NPM_PACKAGE_NAME"
-          set +e
-          gh api \
-            --method DELETE \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            "/user/packages/npm/$ENCODED_NAME"
-          STATUS=$?
+          delete_candidate() {
+            local candidate="$1"
+            local encoded_name
+            encoded_name="$(CANDIDATE="$candidate" python3 -c 'import urllib.parse, os; print(urllib.parse.quote(os.environ["CANDIDATE"], safe=""))')"
 
-          if [ $STATUS -ne 0 ]; then
+            echo "Attempting to delete npm package: $candidate"
+            set +e
             gh api \
               --method DELETE \
               -H "Authorization: Bearer $GH_TOKEN" \
               -H "Accept: application/vnd.github+json" \
-              "/orgs/$OWNER/packages/npm/$ENCODED_NAME"
-            STATUS=$?
-          fi
-          set -e
+              "/user/packages/npm/$encoded_name"
+            local status=$?
 
-          if [ $STATUS -eq 0 ]; then
+            if [ $status -ne 0 ]; then
+              gh api \
+                --method DELETE \
+                -H "Authorization: Bearer $GH_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "/orgs/$OWNER/packages/npm/$encoded_name"
+              status=$?
+            fi
+            set -e
+            return $status
+          }
+
+          if delete_candidate "$NPM_PACKAGE_NAME" || delete_candidate "$RAW_PACKAGE_NAME"; then
             echo "Deleted previous unstable npm package."
-            exit 0
+          else
+            echo "npm package delete returned non-zero. Continuing if package does not exist."
           fi
-
-          echo "npm package delete returned non-zero. Continuing if package does not exist."
 
       - name: Create npm package manifest
         run: |
