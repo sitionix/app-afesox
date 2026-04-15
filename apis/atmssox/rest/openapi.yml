@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.5
+  version: 0.0.6
   contact:
     name: APP Sitionix
 servers:
@@ -15,6 +15,10 @@ paths:
     $ref: './paths/v1/agents.yml'
   /api/v1/agents/{agentId}:
     $ref: './paths/v1/agents-by-id.yml'
+  /api/v1/agents/{agentId}/activate:
+    $ref: './paths/v1/agents-activate.yml'
+  /api/v1/agents/{agentId}/archive:
+    $ref: './paths/v1/agents-archive.yml'
 components:
   securitySchemes:
     bearerAuth:
