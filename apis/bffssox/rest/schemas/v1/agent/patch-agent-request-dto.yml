@@ -19,7 +19,6 @@ PatchAgentRequestDTO:
       example: Updated Product Manager
     description:
       type: string
-      nullable: true
       minLength: 1
       maxLength: 160
       pattern: ".*\\S.*"
@@ -27,6 +26,5 @@ PatchAgentRequestDTO:
       example: Updated description
     instruction:
       type: string
-      nullable: true
       description: Behavioral definition text used to guide agent execution.
       example: Focus on maintainability, explicit boundaries, and production-grade architecture.

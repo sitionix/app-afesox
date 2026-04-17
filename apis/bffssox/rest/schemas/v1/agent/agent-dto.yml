@@ -5,8 +5,6 @@ AgentDTO:
   required:
     - id
     - name
-    - description
-    - instruction
     - status
     - createdAt
     - updatedAt
@@ -20,11 +18,9 @@ AgentDTO:
       description: Agent name.
     description:
       type: string
-      nullable: true
       description: Agent description.
     instruction:
       type: string
-      nullable: true
       description: Agent behavioral definition text.
     status:
       type: string
