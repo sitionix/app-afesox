@@ -4,7 +4,6 @@ CreateAgentRequestDTO:
   additionalProperties: false
   required:
     - name
-    - description
   properties:
     name:
       type: string
@@ -15,6 +14,7 @@ CreateAgentRequestDTO:
       example: Architecture Reviewer
     description:
       type: string
+      nullable: true
       minLength: 1
       maxLength: 160
       pattern: ".*\\S.*"
