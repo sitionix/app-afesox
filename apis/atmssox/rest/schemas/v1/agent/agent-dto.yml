@@ -25,7 +25,9 @@ AgentDTO:
       description: Current agent status.
       enum:
         - DRAFT
-      example: DRAFT
+        - ACTIVE
+        - ARCHIVED
+      example: ACTIVE
     createdAt:
       type: string
       format: date-time
