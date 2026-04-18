@@ -4,7 +4,6 @@ CreateAgentRequestDTO:
   additionalProperties: false
   required:
     - name
-    - description
   properties:
     name:
       type: string
