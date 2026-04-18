@@ -5,6 +5,7 @@ get:
   summary: Get agents
   description: >
     Returns the currently persisted automation agents.
+    Agents in `DELETED` status are excluded from standard list flow.
   security:
     - bearerAuth: []
   responses:

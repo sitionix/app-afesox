@@ -5,6 +5,7 @@ get:
   summary: Get agent by id
   description: >
     Returns one automation agent by identifier.
+    Agents in `DELETED` status are treated as not found in standard get flow.
   security:
     - bearerAuth: []
   parameters:
