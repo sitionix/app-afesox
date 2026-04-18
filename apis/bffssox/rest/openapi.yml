@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.25
+  version: 0.0.24
   contact:
     name: APP Sitionix
 servers:
