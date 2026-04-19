@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.25
+  version: 0.0.26
   contact:
     name: APP Sitionix
 servers:
@@ -36,8 +36,6 @@ paths:
     $ref: './paths/v1/agents-archive.yml'
   /api/v1/agents/{agentId}/restore:
     $ref: './paths/v1/agents-restore.yml'
-  /api/v1/agents/{agentId}/delete:
-    $ref: './paths/v1/agents-delete.yml'
   /api/v1/auth/login:
     $ref: './paths/v1/auth-login.yml'
 components:
