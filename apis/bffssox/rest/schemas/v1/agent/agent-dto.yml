@@ -29,6 +29,7 @@ AgentDTO:
         - DRAFT
         - ACTIVE
         - ARCHIVED
+        - DELETED
       example: ACTIVE
     createdAt:
       type: string

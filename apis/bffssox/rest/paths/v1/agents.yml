@@ -5,6 +5,7 @@ get:
   summary: Get automation agents
   description: >
     Returns automation agents visible in workspace for the authenticated user.
+    Agents in `DELETED` status are excluded from standard list flow.
   security:
     - bearerAuth: []
   responses:

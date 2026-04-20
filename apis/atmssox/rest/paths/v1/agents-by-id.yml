@@ -5,6 +5,7 @@ get:
   summary: Get agent by id
   description: >
     Returns one automation agent by identifier.
+    Agents in `DELETED` status are treated as not found in standard get flow.
   security:
     - bearerAuth: []
   parameters:
@@ -54,6 +55,40 @@ patch:
       application/json:
         schema:
           $ref: '../../openapi.yml#/components/schemas/PatchAgentRequestDTO'
+  responses:
+    '200':
+      description: Updated agent
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
+delete:
+  tags:
+    - Agent
+  operationId: deleteAgent
+  summary: Soft delete agent
+  description: >
+    Soft deletes one automation agent by identifier.
+    This operation is idempotent: repeated calls on an already `DELETED` agent return success with the same `DELETED` state.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
   responses:
     '200':
       description: Updated agent
