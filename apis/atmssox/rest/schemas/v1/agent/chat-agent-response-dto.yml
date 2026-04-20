@@ -1,0 +1,11 @@
+ChatAgentResponseDTO:
+  title: ChatAgentResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - reply
+  properties:
+    reply:
+      type: string
+      description: Assistant reply generated for one chat execution.
+      example: Clean architecture separates business rules from frameworks and delivery details.
