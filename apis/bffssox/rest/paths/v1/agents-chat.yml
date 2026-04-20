@@ -1,0 +1,41 @@
+post:
+  tags:
+    - Agent
+  operationId: chatAgent
+  summary: Execute one agent chat request
+  description: >
+    Executes one request-response chat interaction for one automation agent.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/ChatAgentRequestDTO'
+  responses:
+    '200':
+      description: Chat reply
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ChatAgentResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
