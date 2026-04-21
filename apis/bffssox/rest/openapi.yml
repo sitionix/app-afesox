@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.26
+  version: 0.0.27
   contact:
     name: APP Sitionix
 servers:
@@ -38,6 +38,10 @@ paths:
     $ref: './paths/v1/agents-restore.yml'
   /api/v1/agents/{agentId}/chat:
     $ref: './paths/v1/agents-chat.yml'
+  /api/v1/agents/{agentId}/conversations:
+    $ref: './paths/v1/agents-conversations.yml'
+  /api/v1/agents/{agentId}/conversations/{conversationId}:
+    $ref: './paths/v1/agents-conversations-by-id.yml'
   /api/v1/auth/login:
     $ref: './paths/v1/auth-login.yml'
 components:
@@ -80,6 +84,14 @@ components:
       $ref: './schemas/v1/agent/chat-agent-request-dto.yml#/ChatAgentRequestDTO'
     ChatAgentResponseDTO:
       $ref: './schemas/v1/agent/chat-agent-response-dto.yml#/ChatAgentResponseDTO'
+    AgentConversationDTO:
+      $ref: './schemas/v1/agent/agent-conversation-dto.yml#/AgentConversationDTO'
+    AgentConversationMessageDTO:
+      $ref: './schemas/v1/agent/agent-conversation-message-dto.yml#/AgentConversationMessageDTO'
+    AgentConversationsResponseDTO:
+      $ref: './schemas/v1/agent/agent-conversations-response-dto.yml#/AgentConversationsResponseDTO'
+    AgentConversationDetailsDTO:
+      $ref: './schemas/v1/agent/agent-conversation-details-dto.yml#/AgentConversationDetailsDTO'
     WorkspaceSitesResponseDTO:
       $ref: './schemas/v1/site/workspace-sites-response-dto.yml#/WorkspaceSitesResponseDTO'
     SiteOverviewDTO:

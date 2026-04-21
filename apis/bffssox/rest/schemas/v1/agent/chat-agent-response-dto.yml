@@ -3,9 +3,12 @@ ChatAgentResponseDTO:
   type: object
   additionalProperties: false
   required:
+    - conversationId
     - reply
   properties:
-    reply:
+    conversationId:
       type: string
-      description: Assistant reply generated for one chat execution.
-      example: Clean architecture separates business rules from frameworks and delivery details.
+      format: uuid
+      description: Conversation identifier where message was persisted.
+    reply:
+      $ref: '../../../openapi.yml#/components/schemas/AgentConversationMessageDTO'
