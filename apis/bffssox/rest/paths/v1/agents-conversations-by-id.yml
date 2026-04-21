@@ -5,16 +5,10 @@ get:
   summary: Get agent conversation details
   description: >
     Returns one active direct conversation with full ordered message history
-    for current user scoped to one agent.
+    for current user.
   security:
     - bearerAuth: []
   parameters:
-    - in: path
-      name: agentId
-      required: true
-      schema:
-        type: string
-        format: uuid
     - in: path
       name: conversationId
       required: true
