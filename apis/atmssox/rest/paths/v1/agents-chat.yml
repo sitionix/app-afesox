@@ -2,9 +2,10 @@ post:
   tags:
     - Agent
   operationId: chatAgent
-  summary: Execute one agent chat request
+  summary: Send agent chat message
   description: >
-    Executes one request-response chat interaction for one automation agent.
+    Executes direct chat message flow for one automation agent.
+    Creates conversation on first send when conversationId is absent.
   security:
     - bearerAuth: []
   parameters:
@@ -22,7 +23,7 @@ post:
           $ref: '../../openapi.yml#/components/schemas/ChatAgentRequestDTO'
   responses:
     '200':
-      description: Chat reply
+      description: Persisted assistant reply
       content:
         application/json:
           schema:
