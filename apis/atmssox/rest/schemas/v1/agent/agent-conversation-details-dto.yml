@@ -1,0 +1,42 @@
+AgentConversationDetailsDTO:
+  title: AgentConversationDetailsDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - title
+    - type
+    - createdAt
+    - updatedAt
+    - lastMessageAt
+    - messages
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Conversation identifier.
+    title:
+      type: string
+      description: Conversation title.
+    type:
+      type: string
+      enum:
+        - DIRECT
+      description: Conversation type.
+    createdAt:
+      type: string
+      format: date-time
+      description: Conversation creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last conversation update timestamp (UTC).
+    lastMessageAt:
+      type: string
+      format: date-time
+      description: Last message timestamp (UTC).
+    messages:
+      type: array
+      description: Full ordered message history.
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/AgentConversationMessageDTO'

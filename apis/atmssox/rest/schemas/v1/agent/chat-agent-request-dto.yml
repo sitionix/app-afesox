@@ -5,9 +5,13 @@ ChatAgentRequestDTO:
   required:
     - message
   properties:
+    conversationId:
+      type: string
+      format: uuid
+      description: Existing conversation identifier for continue-chat flow.
     message:
       type: string
       minLength: 1
       pattern: ".*\\S.*"
-      description: User message for one chat execution.
+      description: User message to persist and execute.
       example: Explain clean architecture in simple words.

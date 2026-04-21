@@ -1,0 +1,12 @@
+AgentConversationsResponseDTO:
+  title: AgentConversationsResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      description: Conversations for one agent and current user.
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/AgentConversationDTO'
