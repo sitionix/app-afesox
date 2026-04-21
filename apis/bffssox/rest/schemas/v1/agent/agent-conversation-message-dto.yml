@@ -1,0 +1,31 @@
+AgentConversationMessageDTO:
+  title: AgentConversationMessageDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - authorType
+    - authorId
+    - content
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Message identifier.
+    authorType:
+      type: string
+      enum:
+        - USER
+        - AGENT
+      description: Message author type.
+    authorId:
+      type: string
+      description: Message author identifier.
+    content:
+      type: string
+      description: Persisted message content.
+    createdAt:
+      type: string
+      format: date-time
+      description: Message creation timestamp (UTC).
