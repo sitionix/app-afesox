@@ -25,7 +25,7 @@ paths:
     $ref: './paths/v1/agents-chat.yml'
   /api/v1/agents/{agentId}/conversations:
     $ref: './paths/v1/agents-conversations.yml'
-  /api/v1/agents/{agentId}/conversations/{conversationId}:
+  /api/v1/conversations/{conversationId}:
     $ref: './paths/v1/agents-conversations-by-id.yml'
 components:
   securitySchemes:
