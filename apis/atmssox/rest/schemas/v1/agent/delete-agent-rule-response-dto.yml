@@ -1,0 +1,13 @@
+DeleteAgentRuleResponseDTO:
+  title: DeleteAgentRuleResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - status
+  properties:
+    status:
+      type: string
+      description: Rule status after delete action.
+      enum:
+        - DELETED
+      example: DELETED
