@@ -1,0 +1,13 @@
+CreateAgentRuleRequestDTO:
+  title: CreateAgentRuleRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - text
+  properties:
+    text:
+      type: string
+      minLength: 1
+      pattern: ".*\\S.*"
+      description: Rule text. Value is trimmed before validation.
+      example: Always write clean and maintainable code.

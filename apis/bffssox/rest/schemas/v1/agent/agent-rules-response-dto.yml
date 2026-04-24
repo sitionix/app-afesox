@@ -1,0 +1,12 @@
+AgentRulesResponseDTO:
+  title: AgentRulesResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      description: Active automation rules for one agent.
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/AgentRuleDTO'

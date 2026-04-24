@@ -1,0 +1,25 @@
+AgentRuleDTO:
+  title: AgentRuleDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - text
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Globally unique rule identifier.
+    text:
+      type: string
+      description: Rule text used in agent execution context.
+    createdAt:
+      type: string
+      format: date-time
+      description: Rule creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last rule update timestamp (UTC).

@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.27
+  version: 0.0.28
   contact:
     name: APP Sitionix
 servers:
@@ -38,6 +38,10 @@ paths:
     $ref: './paths/v1/agents-restore.yml'
   /api/v1/agents/{agentId}/chat:
     $ref: './paths/v1/agents-chat.yml'
+  /api/v1/agents/{agentId}/rules:
+    $ref: './paths/v1/agents-rules.yml'
+  /api/v1/agents/{agentId}/rules/{ruleId}:
+    $ref: './paths/v1/agents-rules-by-id.yml'
   /api/v1/agents/{agentId}/conversations:
     $ref: './paths/v1/agents-conversations.yml'
   /api/v1/conversations/{conversationId}:
@@ -92,6 +96,16 @@ components:
       $ref: './schemas/v1/agent/agent-conversations-response-dto.yml#/AgentConversationsResponseDTO'
     AgentConversationDetailsDTO:
       $ref: './schemas/v1/agent/agent-conversation-details-dto.yml#/AgentConversationDetailsDTO'
+    AgentRuleDTO:
+      $ref: './schemas/v1/agent/agent-rule-dto.yml#/AgentRuleDTO'
+    AgentRulesResponseDTO:
+      $ref: './schemas/v1/agent/agent-rules-response-dto.yml#/AgentRulesResponseDTO'
+    CreateAgentRuleRequestDTO:
+      $ref: './schemas/v1/agent/create-agent-rule-request-dto.yml#/CreateAgentRuleRequestDTO'
+    PatchAgentRuleRequestDTO:
+      $ref: './schemas/v1/agent/patch-agent-rule-request-dto.yml#/PatchAgentRuleRequestDTO'
+    DeleteAgentRuleResponseDTO:
+      $ref: './schemas/v1/agent/delete-agent-rule-response-dto.yml#/DeleteAgentRuleResponseDTO'
     WorkspaceSitesResponseDTO:
       $ref: './schemas/v1/site/workspace-sites-response-dto.yml#/WorkspaceSitesResponseDTO'
     SiteOverviewDTO:
