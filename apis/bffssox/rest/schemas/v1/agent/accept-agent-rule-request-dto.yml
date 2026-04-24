@@ -1,20 +1,17 @@
-CreateAgentRuleRequestDTO:
-  title: CreateAgentRuleRequestDTO
+AcceptAgentRuleRequestDTO:
+  title: AcceptAgentRuleRequestDTO
   type: object
   additionalProperties: false
-  required:
-    - title
-    - content
   properties:
     title:
       type: string
       minLength: 1
       pattern: ".*\\S.*"
-      description: Rule title. Value is trimmed before validation.
+      description: Updated rule title before activation.
       example: Language preference
     content:
       type: string
       minLength: 1
       pattern: ".*\\S.*"
-      description: Rule content. Value is trimmed before validation.
+      description: Updated rule content before activation.
       example: Always answer in Ukrainian unless user explicitly asks otherwise.

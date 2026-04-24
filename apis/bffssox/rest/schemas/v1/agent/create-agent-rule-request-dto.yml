@@ -3,11 +3,18 @@ CreateAgentRuleRequestDTO:
   type: object
   additionalProperties: false
   required:
-    - text
+    - title
+    - content
   properties:
-    text:
+    title:
       type: string
       minLength: 1
       pattern: ".*\\S.*"
-      description: Rule text. Value is trimmed before validation.
-      example: Always write clean and maintainable code.
+      description: Rule title. Value is trimmed before validation.
+      example: Language preference
+    content:
+      type: string
+      minLength: 1
+      pattern: ".*\\S.*"
+      description: Rule content. Value is trimmed before validation.
+      example: Always answer in Ukrainian unless user explicitly asks otherwise.

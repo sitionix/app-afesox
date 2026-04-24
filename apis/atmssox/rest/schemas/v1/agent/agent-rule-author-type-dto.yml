@@ -1,0 +1,8 @@
+AgentRuleAuthorTypeDTO:
+  title: AgentRuleAuthorTypeDTO
+  type: string
+  description: Agent rule author source.
+  enum:
+    - USER
+    - AI
+  example: USER

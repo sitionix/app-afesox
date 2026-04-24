@@ -1,0 +1,10 @@
+AgentRuleStatusDTO:
+  title: AgentRuleStatusDTO
+  type: string
+  description: Agent rule lifecycle status.
+  enum:
+    - PENDING
+    - ACTIVE
+    - REJECTED
+    - DELETED
+  example: ACTIVE

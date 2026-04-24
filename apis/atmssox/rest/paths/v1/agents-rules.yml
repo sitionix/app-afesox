@@ -2,9 +2,9 @@ get:
   tags:
     - Agent
   operationId: getAgentRules
-  summary: Get active automation rules
+  summary: Get automation rules
   description: >
-    Returns active rules for one automation agent owned by the authenticated user.
+    Returns rules for one automation agent owned by the authenticated user.
     Rules are sorted by createdAt ascending.
   security:
     - bearerAuth: []
@@ -15,6 +15,18 @@ get:
       schema:
         type: string
         format: uuid
+    - in: query
+      name: status
+      required: false
+      schema:
+        $ref: '../../openapi.yml#/components/schemas/AgentRuleStatusDTO'
+      description: Rule status filter. If omitted, service returns ACTIVE rules by default.
+    - in: query
+      name: authorType
+      required: false
+      schema:
+        $ref: '../../openapi.yml#/components/schemas/AgentRuleAuthorTypeDTO'
+      description: Optional author source filter.
   responses:
     '200':
       description: Active rules collection
@@ -38,7 +50,7 @@ post:
   operationId: createAgentRule
   summary: Create automation rule
   description: >
-    Creates one active rule for one automation agent owned by the authenticated user.
+    Creates one active user-authored rule for one automation agent owned by the authenticated user.
   security:
     - bearerAuth: []
   parameters:

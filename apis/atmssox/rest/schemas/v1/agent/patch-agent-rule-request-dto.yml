@@ -2,12 +2,21 @@ PatchAgentRuleRequestDTO:
   title: PatchAgentRuleRequestDTO
   type: object
   additionalProperties: false
-  required:
-    - text
+  anyOf:
+    - required:
+        - title
+    - required:
+        - content
   properties:
-    text:
+    title:
       type: string
       minLength: 1
       pattern: ".*\\S.*"
-      description: Updated rule text. Value is trimmed before validation.
-      example: Always write clean, maintainable, and explicit code.
+      description: Updated rule title. Value is trimmed before validation.
+      example: Language preference
+    content:
+      type: string
+      minLength: 1
+      pattern: ".*\\S.*"
+      description: Updated rule content. Value is trimmed before validation.
+      example: Always answer in Ukrainian unless user explicitly asks otherwise.

@@ -4,7 +4,11 @@ AgentRuleDTO:
   additionalProperties: false
   required:
     - id
-    - text
+    - agentId
+    - title
+    - content
+    - status
+    - authorType
     - createdAt
     - updatedAt
   properties:
@@ -12,9 +16,20 @@ AgentRuleDTO:
       type: string
       format: uuid
       description: Globally unique rule identifier.
-    text:
+    agentId:
       type: string
-      description: Rule text used in agent execution context.
+      format: uuid
+      description: Globally unique agent identifier.
+    title:
+      type: string
+      description: Rule title used in UI and matching.
+    content:
+      type: string
+      description: Rule content used in execution context.
+    status:
+      $ref: '../../../openapi.yml#/components/schemas/AgentRuleStatusDTO'
+    authorType:
+      $ref: '../../../openapi.yml#/components/schemas/AgentRuleAuthorTypeDTO'
     createdAt:
       type: string
       format: date-time
