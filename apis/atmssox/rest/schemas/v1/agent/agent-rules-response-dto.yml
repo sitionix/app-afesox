@@ -9,4 +9,4 @@ AgentRulesResponseDTO:
       type: array
       description: Automation rules for one agent.
       items:
-        $ref: '../../../openapi.yml#/components/schemas/AgentRuleDTO'
+        $ref: './agent-rule-dto.yml#/AgentRuleDTO'
