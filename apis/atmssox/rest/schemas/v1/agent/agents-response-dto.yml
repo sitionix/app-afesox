@@ -9,4 +9,4 @@ AgentsResponseDTO:
       type: array
       description: Persisted automation agents.
       items:
-        $ref: '../../../openapi.yml#/components/schemas/AgentDTO'
+        $ref: './agent-dto.yml#/AgentDTO'

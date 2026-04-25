@@ -27,9 +27,9 @@ AgentRuleDTO:
       type: string
       description: Rule content used in execution context.
     status:
-      $ref: '../../../openapi.yml#/components/schemas/AgentRuleStatusDTO'
+      $ref: './agent-rule-status-dto.yml#/AgentRuleStatusDTO'
     authorType:
-      $ref: '../../../openapi.yml#/components/schemas/AgentRuleAuthorTypeDTO'
+      $ref: './agent-rule-author-type-dto.yml#/AgentRuleAuthorTypeDTO'
     createdAt:
       type: string
       format: date-time

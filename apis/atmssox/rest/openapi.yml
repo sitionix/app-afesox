@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.12
+  version: 0.0.13
   contact:
     name: APP Sitionix
 servers:
