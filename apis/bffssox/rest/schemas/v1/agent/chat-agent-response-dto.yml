@@ -11,4 +11,4 @@ ChatAgentResponseDTO:
       format: uuid
       description: Conversation identifier where message was persisted.
     reply:
-      $ref: '../../../openapi.yml#/components/schemas/AgentConversationMessageDTO'
+      $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'

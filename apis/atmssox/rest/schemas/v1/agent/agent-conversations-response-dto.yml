@@ -9,4 +9,4 @@ AgentConversationsResponseDTO:
       type: array
       description: Conversations for one agent and current user.
       items:
-        $ref: '../../../openapi.yml#/components/schemas/AgentConversationDTO'
+        $ref: './agent-conversation-dto.yml#/AgentConversationDTO'

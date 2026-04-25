@@ -39,4 +39,4 @@ AgentConversationDetailsDTO:
       type: array
       description: Full ordered message history.
       items:
-        $ref: '../../../openapi.yml#/components/schemas/AgentConversationMessageDTO'
+        $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'
