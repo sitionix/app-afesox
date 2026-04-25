@@ -1,0 +1,48 @@
+post:
+  tags:
+    - Agent
+  operationId: acceptAgentRule
+  summary: Accept automation rule
+  description: >
+    Accepts one automation rule for one agent owned by the authenticated user.
+    Allowed transitions: PENDING, REJECTED, or DELETED to ACTIVE.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: path
+      name: ruleId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/AcceptAgentRuleRequestDTO'
+  responses:
+    '200':
+      description: Accepted rule
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentRuleDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

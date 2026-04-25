@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.11
+  version: 0.0.12
   contact:
     name: APP Sitionix
 servers:
@@ -27,6 +27,10 @@ paths:
     $ref: './paths/v1/agents-rules.yml'
   /api/v1/agents/{agentId}/rules/{ruleId}:
     $ref: './paths/v1/agents-rules-by-id.yml'
+  /api/v1/agents/{agentId}/rules/{ruleId}/accept:
+    $ref: './paths/v1/agents-rules-accept.yml'
+  /api/v1/agents/{agentId}/rules/{ruleId}/reject:
+    $ref: './paths/v1/agents-rules-reject.yml'
   /api/v1/agents/{agentId}/conversations:
     $ref: './paths/v1/agents-conversations.yml'
   /api/v1/conversations/{conversationId}:
@@ -61,12 +65,18 @@ components:
       $ref: './schemas/v1/agent/agent-conversation-details-dto.yml#/AgentConversationDetailsDTO'
     AgentRuleDTO:
       $ref: './schemas/v1/agent/agent-rule-dto.yml#/AgentRuleDTO'
+    AgentRuleStatusDTO:
+      $ref: './schemas/v1/agent/agent-rule-status-dto.yml#/AgentRuleStatusDTO'
+    AgentRuleAuthorTypeDTO:
+      $ref: './schemas/v1/agent/agent-rule-author-type-dto.yml#/AgentRuleAuthorTypeDTO'
     AgentRulesResponseDTO:
       $ref: './schemas/v1/agent/agent-rules-response-dto.yml#/AgentRulesResponseDTO'
     CreateAgentRuleRequestDTO:
       $ref: './schemas/v1/agent/create-agent-rule-request-dto.yml#/CreateAgentRuleRequestDTO'
     PatchAgentRuleRequestDTO:
       $ref: './schemas/v1/agent/patch-agent-rule-request-dto.yml#/PatchAgentRuleRequestDTO'
+    AcceptAgentRuleRequestDTO:
+      $ref: './schemas/v1/agent/accept-agent-rule-request-dto.yml#/AcceptAgentRuleRequestDTO'
     DeleteAgentRuleResponseDTO:
       $ref: './schemas/v1/agent/delete-agent-rule-response-dto.yml#/DeleteAgentRuleResponseDTO'
     ErrorDTO:

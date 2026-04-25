@@ -7,6 +7,6 @@ AgentRulesResponseDTO:
   properties:
     items:
       type: array
-      description: Active automation rules for one agent.
+      description: Automation rules for one agent.
       items:
         $ref: '../../../openapi.yml#/components/schemas/AgentRuleDTO'

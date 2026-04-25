@@ -2,10 +2,10 @@ patch:
   tags:
     - Agent
   operationId: patchAgentRule
-  summary: Update active automation rule
+  summary: Update automation rule
   description: >
-    Updates text of one active rule for one automation agent owned by the authenticated user.
-    Deleted rules are rejected in this flow.
+    Updates title and content for one rule owned by the authenticated user.
+    Status transition is not allowed through this endpoint.
   security:
     - bearerAuth: []
   parameters:
