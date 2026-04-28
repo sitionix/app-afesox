@@ -1,0 +1,10 @@
+ExecutionStatusDTO:
+  title: ExecutionStatusDTO
+  type: string
+  description: >
+    Canonical async execution lifecycle. Terminal states are immutable.
+  enum:
+    - ACCEPTED
+    - IN_PROGRESS
+    - SUCCEEDED
+    - FAILED

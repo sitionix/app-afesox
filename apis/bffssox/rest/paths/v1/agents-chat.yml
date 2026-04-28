@@ -3,6 +3,7 @@ post:
     - Agent
   operationId: chatAgent
   summary: Send agent chat message
+  deprecated: true
   description: >
     Executes direct chat message flow for one automation agent.
     Creates conversation on first send when conversationId is absent.

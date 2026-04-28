@@ -1,0 +1,54 @@
+post:
+  tags:
+    - Agent
+  operationId: submitAgentChatExecution
+  summary: Submit async agent chat execution
+  description: >
+    Accepts user message for asynchronous execution and returns lifecycle metadata.
+    The execution is created in ACCEPTED state and processed out of band.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/ChatAgentRequestDTO'
+  responses:
+    '202':
+      description: Chat execution accepted
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/SubmitChatExecutionResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      description: Forbidden scope for agent or conversation.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '404':
+      description: Unknown agent or conversation identifier.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '409':
+      description: Invalid conversation state transition.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

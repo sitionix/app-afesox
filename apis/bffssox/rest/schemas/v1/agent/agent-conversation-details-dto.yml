@@ -10,6 +10,7 @@ AgentConversationDetailsDTO:
     - updatedAt
     - lastMessageAt
     - messages
+    - executions
   properties:
     id:
       type: string
@@ -40,3 +41,8 @@ AgentConversationDetailsDTO:
       description: Full ordered message history.
       items:
         $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'
+    executions:
+      type: array
+      description: Ordered execution history for this conversation.
+      items:
+        $ref: './chat-execution-dto.yml#/ChatExecutionDTO'

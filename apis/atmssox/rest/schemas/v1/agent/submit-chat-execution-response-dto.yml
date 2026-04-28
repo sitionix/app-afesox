@@ -1,0 +1,9 @@
+SubmitChatExecutionResponseDTO:
+  title: SubmitChatExecutionResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - execution
+  properties:
+    execution:
+      $ref: './chat-execution-dto.yml#/ChatExecutionDTO'

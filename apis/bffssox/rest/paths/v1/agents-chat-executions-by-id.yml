@@ -1,0 +1,45 @@
+get:
+  tags:
+    - Agent
+  operationId: getAgentChatExecution
+  summary: Get async agent chat execution
+  description: >
+    Returns current execution lifecycle state and terminal result by execution identifier.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: path
+      name: executionId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Chat execution state and result
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ChatExecutionDTO'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      description: Forbidden scope for requested execution.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '404':
+      description: Unknown execution identifier.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

@@ -1,0 +1,16 @@
+ChatExecutionFailureDTO:
+  title: ChatExecutionFailureDTO
+  type: object
+  additionalProperties: false
+  required:
+    - code
+    - message
+  properties:
+    code:
+      type: string
+      description: Machine-readable failure code.
+      example: AGENT_EXECUTION_TIMEOUT
+    message:
+      type: string
+      description: Failure summary safe for client consumption.
+      example: Execution timed out before completion.
