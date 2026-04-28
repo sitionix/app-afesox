@@ -6,7 +6,7 @@ ChatExecutionDTO:
     - executionId
     - conversationId
     - agentId
-    - status
+    - state
     - createdAt
   properties:
     executionId:
@@ -21,7 +21,7 @@ ChatExecutionDTO:
       type: string
       format: uuid
       description: Agent identifier that owns the execution.
-    status:
+    state:
       $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
     createdAt:
       type: string
@@ -32,7 +32,7 @@ ChatExecutionDTO:
       format: date-time
       nullable: true
       description: Execution start timestamp (UTC).
-    finishedAt:
+    completedAt:
       type: string
       format: date-time
       nullable: true
@@ -41,7 +41,7 @@ ChatExecutionDTO:
       nullable: true
       allOf:
         - $ref: './chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
-    reply:
+    assistantMessage:
       nullable: true
       allOf:
         - $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'

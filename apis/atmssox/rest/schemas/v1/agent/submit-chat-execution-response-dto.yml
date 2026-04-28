@@ -3,7 +3,28 @@ SubmitChatExecutionResponseDTO:
   type: object
   additionalProperties: false
   required:
-    - execution
+    - executionId
+    - conversationId
+    - state
+    - createdAt
   properties:
-    execution:
-      $ref: './chat-execution-dto.yml#/ChatExecutionDTO'
+    executionId:
+      type: string
+      format: uuid
+      description: Created execution identifier.
+    conversationId:
+      type: string
+      format: uuid
+      description: Conversation identifier linked to this execution.
+    state:
+      $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
+    createdAt:
+      type: string
+      format: date-time
+      description: Execution creation timestamp (UTC).
+    idempotencyKey:
+      type: string
+      description: Echoed idempotency key when provided.
+    idempotencyReplayed:
+      type: boolean
+      description: True when response is replayed from a previous equivalent submit.

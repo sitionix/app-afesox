@@ -5,6 +5,7 @@ get:
   summary: Get async agent chat execution
   description: >
     Returns current execution lifecycle state and terminal result by execution identifier.
+    When conversationId is provided, it must match execution's conversationId.
   security:
     - bearerAuth: []
   parameters:
@@ -20,6 +21,13 @@ get:
       schema:
         type: string
         format: uuid
+    - in: query
+      name: conversationId
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: Optional conversation consistency guard.
   responses:
     '200':
       description: Chat execution state and result
@@ -27,16 +35,28 @@ get:
         application/json:
           schema:
             $ref: '../../openapi.yml#/components/schemas/ChatExecutionDTO'
+    '400':
+      description: Invalid query parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
     '401':
       $ref: '../../openapi.yml#/components/responses/Unauthorized'
     '403':
-      description: Forbidden scope for requested execution.
+      description: Ownership or visibility violation for requested execution.
       content:
         application/json:
           schema:
             $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
     '404':
-      description: Unknown execution identifier.
+      description: Conversation or execution not found for provided context.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '409':
+      description: Invalid lifecycle state request.
       content:
         application/json:
           schema:
