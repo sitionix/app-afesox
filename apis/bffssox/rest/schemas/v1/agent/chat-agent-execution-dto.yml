@@ -1,0 +1,40 @@
+ChatAgentExecutionDTO:
+  title: ChatAgentExecutionDTO
+  type: object
+  additionalProperties: false
+  required:
+    - executionId
+    - status
+    - submittedAt
+    - conversationId
+  properties:
+    executionId:
+      type: string
+      format: uuid
+      description: Chat execution identifier.
+    status:
+      $ref: './chat-agent-execution-status-dto.yml#/ChatAgentExecutionStatusDTO'
+    submittedAt:
+      type: string
+      format: date-time
+      description: Execution creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last execution state update timestamp (UTC).
+    completedAt:
+      type: string
+      format: date-time
+      description: Terminal completion timestamp (UTC).
+    conversationId:
+      type: string
+      format: uuid
+      description: Conversation identifier linked to the execution.
+    userMessageId:
+      type: string
+      format: uuid
+      description: Persisted user message identifier.
+    assistantMessage:
+      $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'
+    failure:
+      $ref: './chat-agent-execution-failure-dto.yml#/ChatAgentExecutionFailureDTO'
