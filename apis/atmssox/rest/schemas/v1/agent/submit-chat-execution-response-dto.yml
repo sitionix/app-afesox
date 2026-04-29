@@ -5,8 +5,8 @@ SubmitChatExecutionResponseDTO:
   required:
     - executionId
     - conversationId
-    - state
-    - createdAt
+    - status
+    - acceptedAt
   properties:
     executionId:
       type: string
@@ -16,12 +16,16 @@ SubmitChatExecutionResponseDTO:
       type: string
       format: uuid
       description: Conversation identifier linked to this execution.
-    state:
+    status:
       $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
-    createdAt:
+    acceptedAt:
       type: string
       format: date-time
-      description: Execution creation timestamp (UTC).
+      description: Execution acceptance timestamp (UTC).
+    error:
+      nullable: true
+      allOf:
+        - $ref: './chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
     idempotencyKey:
       type: string
       description: Echoed idempotency key when provided.

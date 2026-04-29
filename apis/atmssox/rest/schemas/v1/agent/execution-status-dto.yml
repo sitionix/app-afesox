@@ -4,7 +4,8 @@ ExecutionStatusDTO:
   description: >
     Canonical async execution lifecycle. Terminal states are immutable.
   enum:
+    - ACCEPTED
     - QUEUED
-    - IN_PROGRESS
+    - RUNNING
     - COMPLETED
     - FAILED

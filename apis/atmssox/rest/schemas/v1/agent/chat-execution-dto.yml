@@ -5,9 +5,8 @@ ChatExecutionDTO:
   required:
     - executionId
     - conversationId
-    - agentId
-    - state
-    - createdAt
+    - status
+    - acceptedAt
   properties:
     executionId:
       type: string
@@ -17,16 +16,12 @@ ChatExecutionDTO:
       type: string
       format: uuid
       description: Conversation identifier linked to this execution.
-    agentId:
-      type: string
-      format: uuid
-      description: Agent identifier that owns the execution.
-    state:
+    status:
       $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
-    createdAt:
+    acceptedAt:
       type: string
       format: date-time
-      description: Execution creation timestamp (UTC).
+      description: Execution acceptance timestamp (UTC).
     startedAt:
       type: string
       format: date-time
@@ -37,7 +32,7 @@ ChatExecutionDTO:
       format: date-time
       nullable: true
       description: Terminal execution timestamp (UTC).
-    failure:
+    error:
       nullable: true
       allOf:
         - $ref: './chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
