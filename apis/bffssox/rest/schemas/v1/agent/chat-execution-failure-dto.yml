@@ -3,23 +3,17 @@ ChatExecutionFailureDTO:
   type: object
   additionalProperties: false
   required:
-    - failureClass
-    - reason
-    - retryable
+    - code
+    - message
   properties:
-    failureClass:
+    code:
       type: string
-      description: Stable failure taxonomy for async execution.
-      enum:
-        - OWNERSHIP_VIOLATION
-        - CONVERSATION_NOT_FOUND
-        - INVALID_LIFECYCLE_STATE
-        - IDEMPOTENCY_CONFLICT
-        - EXECUTION_ERROR
-    reason:
+      description: Machine-readable terminal failure code.
+      example: AGENT_EXECUTION_FAILED
+    message:
       type: string
-      description: Human-readable failure summary safe for client consumption.
-      example: Execution failed due to an upstream model timeout.
-    retryable:
-      type: boolean
-      description: Indicates whether client can safely retry submit request.
+      description: Human-readable terminal failure message.
+    details:
+      type: object
+      additionalProperties: true
+      description: Optional machine-readable failure details.

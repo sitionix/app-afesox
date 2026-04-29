@@ -6,6 +6,7 @@ post:
   description: >
     Accepts user message for asynchronous execution and returns lifecycle envelope.
     Creates conversation when conversationId is absent.
+    Duplicate in-flight submit for the same clientRequestId returns the same executionId.
   security:
     - bearerAuth: []
   parameters:
