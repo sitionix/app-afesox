@@ -1,14 +1,4 @@
 ChatAgentResponseDTO:
   title: ChatAgentResponseDTO
-  type: object
-  additionalProperties: false
-  required:
-    - conversationId
-    - reply
-  properties:
-    conversationId:
-      type: string
-      format: uuid
-      description: Conversation identifier where message was persisted.
-    reply:
-      $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'
+  allOf:
+    - $ref: './chat-agent-execution-dto.yml#/ChatAgentExecutionDTO'

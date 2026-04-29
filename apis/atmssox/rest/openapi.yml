@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.13
+  version: 0.0.14
   contact:
     name: APP Sitionix
 servers:
@@ -23,6 +23,10 @@ paths:
     $ref: './paths/v1/agents-restore.yml'
   /api/v1/agents/{agentId}/chat:
     $ref: './paths/v1/agents-chat.yml'
+  /api/v1/agents/{agentId}/chat/executions:
+    $ref: './paths/v1/agents-chat-executions.yml'
+  /api/v1/agents/{agentId}/chat/executions/{executionId}:
+    $ref: './paths/v1/agents-chat-executions-by-id.yml'
   /api/v1/agents/{agentId}/rules:
     $ref: './paths/v1/agents-rules.yml'
   /api/v1/agents/{agentId}/rules/{ruleId}:
@@ -55,6 +59,14 @@ components:
       $ref: './schemas/v1/agent/chat-agent-request-dto.yml#/ChatAgentRequestDTO'
     ChatAgentResponseDTO:
       $ref: './schemas/v1/agent/chat-agent-response-dto.yml#/ChatAgentResponseDTO'
+    SubmitChatExecutionResponseDTO:
+      $ref: './schemas/v1/agent/submit-chat-execution-response-dto.yml#/SubmitChatExecutionResponseDTO'
+    ChatExecutionDTO:
+      $ref: './schemas/v1/agent/chat-execution-dto.yml#/ChatExecutionDTO'
+    ChatExecutionFailureDTO:
+      $ref: './schemas/v1/agent/chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
+    ExecutionStatusDTO:
+      $ref: './schemas/v1/agent/execution-status-dto.yml#/ExecutionStatusDTO'
     AgentConversationDTO:
       $ref: './schemas/v1/agent/agent-conversation-dto.yml#/AgentConversationDTO'
     AgentConversationMessageDTO:

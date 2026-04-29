@@ -1,0 +1,8 @@
+ChatAgentExecutionStatusDTO:
+  title: ChatAgentExecutionStatusDTO
+  type: string
+  enum:
+    - ACCEPTED
+    - IN_PROGRESS
+    - SUCCEEDED
+    - FAILED

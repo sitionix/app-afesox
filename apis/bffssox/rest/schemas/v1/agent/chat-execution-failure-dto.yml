@@ -1,0 +1,19 @@
+ChatExecutionFailureDTO:
+  title: ChatExecutionFailureDTO
+  type: object
+  additionalProperties: false
+  required:
+    - code
+    - message
+  properties:
+    code:
+      type: string
+      description: Machine-readable terminal failure code.
+      example: AGENT_EXECUTION_FAILED
+    message:
+      type: string
+      description: Human-readable terminal failure message.
+    details:
+      type: object
+      additionalProperties: true
+      description: Optional machine-readable failure details.

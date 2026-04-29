@@ -1,0 +1,42 @@
+ChatExecutionDTO:
+  title: ChatExecutionDTO
+  type: object
+  additionalProperties: false
+  required:
+    - executionId
+    - conversationId
+    - status
+    - acceptedAt
+  properties:
+    executionId:
+      type: string
+      format: uuid
+      description: Execution identifier.
+    conversationId:
+      type: string
+      format: uuid
+      description: Conversation identifier linked to this execution.
+    status:
+      $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
+    acceptedAt:
+      type: string
+      format: date-time
+      description: Execution acceptance timestamp (UTC).
+    startedAt:
+      type: string
+      format: date-time
+      nullable: true
+      description: Execution start timestamp (UTC).
+    completedAt:
+      type: string
+      format: date-time
+      nullable: true
+      description: Terminal execution timestamp (UTC).
+    error:
+      nullable: true
+      allOf:
+        - $ref: './chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
+    assistantMessage:
+      nullable: true
+      allOf:
+        - $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'

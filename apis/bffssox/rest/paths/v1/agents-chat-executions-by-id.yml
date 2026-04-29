@@ -1,12 +1,11 @@
-post:
+get:
   tags:
     - Agent
-  operationId: submitAgentChatExecution
-  summary: Submit async agent chat execution
+  operationId: getAgentChatExecution
+  summary: Get async agent chat execution
   description: >
-    Accepts user message for asynchronous execution and returns lifecycle envelope.
-    Creates conversation when conversationId is absent.
-    Duplicate in-flight submit for the same clientRequestId returns the same executionId.
+    Returns current execution lifecycle state and terminal result by execution identifier.
+    When conversationId is provided, it must match execution's conversationId.
   security:
     - bearerAuth: []
   parameters:
@@ -16,25 +15,26 @@ post:
       schema:
         type: string
         format: uuid
-    - in: header
-      name: Idempotency-Key
+    - in: path
+      name: executionId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: query
+      name: conversationId
       required: false
       schema:
         type: string
-      description: Optional key for safe deduplication of submit retries.
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '../../openapi.yml#/components/schemas/ChatAgentRequestDTO'
+        format: uuid
+      description: Optional conversation consistency guard.
   responses:
-    '202':
-      description: Chat execution accepted
+    '200':
+      description: Chat execution state and result
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yml#/components/schemas/SubmitChatExecutionResponseDTO'
+            $ref: '../../openapi.yml#/components/schemas/ChatExecutionDTO'
     '400':
       $ref: '../../openapi.yml#/components/responses/BadRequest'
     '401':
