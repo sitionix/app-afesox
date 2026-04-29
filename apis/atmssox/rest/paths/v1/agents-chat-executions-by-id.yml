@@ -36,30 +36,14 @@ get:
           schema:
             $ref: '../../openapi.yml#/components/schemas/ChatExecutionDTO'
     '400':
-      description: Invalid query parameters.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
     '401':
       $ref: '../../openapi.yml#/components/responses/Unauthorized'
     '403':
-      description: Ownership or visibility violation for requested execution.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
     '404':
-      description: Conversation or execution not found for provided context.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/NotFound'
     '409':
-      description: Invalid lifecycle state request.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/Conflict'
     '500':
       $ref: '../../openapi.yml#/components/responses/InternalServerError'

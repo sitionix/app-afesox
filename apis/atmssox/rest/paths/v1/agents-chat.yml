@@ -36,30 +36,14 @@ post:
           schema:
             $ref: '../../openapi.yml#/components/schemas/SubmitChatExecutionResponseDTO'
     '400':
-      description: Invalid request payload or idempotency conflict.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
     '401':
       $ref: '../../openapi.yml#/components/responses/Unauthorized'
     '403':
-      description: Ownership or visibility violation for agent or conversation.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
     '404':
-      description: Conversation not found for provided context.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/NotFound'
     '409':
-      description: Invalid lifecycle transition or state conflict.
-      content:
-        application/json:
-          schema:
-            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+      $ref: '../../openapi.yml#/components/responses/Conflict'
     '500':
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
