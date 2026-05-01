@@ -23,9 +23,8 @@ SubmitChatExecutionResponseDTO:
       format: date-time
       description: Execution acceptance timestamp (UTC).
     error:
+      $ref: '../../../openapi.yml#/components/schemas/ChatExecutionFailureDTO'
       nullable: true
-      allOf:
-        - $ref: './chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
     idempotencyKey:
       type: string
       description: Echoed idempotency key when provided.
