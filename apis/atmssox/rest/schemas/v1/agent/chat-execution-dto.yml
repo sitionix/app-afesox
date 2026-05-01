@@ -33,10 +33,8 @@ ChatExecutionDTO:
       nullable: true
       description: Terminal execution timestamp (UTC).
     error:
+      $ref: '../../../openapi.yml#/components/schemas/ChatExecutionFailureDTO'
       nullable: true
-      allOf:
-        - $ref: './chat-execution-failure-dto.yml#/ChatExecutionFailureDTO'
     assistantMessage:
+      $ref: '../../../openapi.yml#/components/schemas/AgentConversationMessageDTO'
       nullable: true
-      allOf:
-        - $ref: './agent-conversation-message-dto.yml#/AgentConversationMessageDTO'

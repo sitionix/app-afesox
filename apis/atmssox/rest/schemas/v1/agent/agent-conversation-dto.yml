@@ -35,6 +35,5 @@ AgentConversationDTO:
       format: date-time
       description: Last message timestamp for list sorting (UTC).
     latestExecution:
+      $ref: '../../../openapi.yml#/components/schemas/ChatExecutionDTO'
       nullable: true
-      allOf:
-        - $ref: './chat-execution-dto.yml#/ChatExecutionDTO'

@@ -1,4 +1,2 @@
 ChatAgentResponseDTO:
-  title: ChatAgentResponseDTO
-  allOf:
-    - $ref: './chat-agent-execution-dto.yml#/ChatAgentExecutionDTO'
+  $ref: './chat-agent-execution-dto.yml#/ChatAgentExecutionDTO'
