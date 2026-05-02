@@ -5,6 +5,7 @@ SubmitChatExecutionResponseDTO:
   required:
     - executionId
     - conversationId
+    - userMessageId
     - status
     - acceptedAt
   properties:
@@ -16,6 +17,10 @@ SubmitChatExecutionResponseDTO:
       type: string
       format: uuid
       description: Conversation identifier linked to this execution.
+    userMessageId:
+      type: string
+      format: uuid
+      description: User message identifier persisted during submit transaction.
     status:
       $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
     acceptedAt:
