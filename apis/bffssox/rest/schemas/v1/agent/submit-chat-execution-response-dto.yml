@@ -5,7 +5,7 @@ SubmitChatExecutionResponseDTO:
   required:
     - executionId
     - conversationId
-    - userMessageId
+    - inputMessageId
     - status
     - acceptedAt
   properties:
@@ -17,7 +17,7 @@ SubmitChatExecutionResponseDTO:
       type: string
       format: uuid
       description: Conversation identifier linked to this execution.
-    userMessageId:
+    inputMessageId:
       type: string
       format: uuid
       description: User message identifier persisted during submit transaction.

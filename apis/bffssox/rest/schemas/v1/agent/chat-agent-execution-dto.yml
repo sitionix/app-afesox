@@ -30,7 +30,7 @@ ChatAgentExecutionDTO:
       type: string
       format: uuid
       description: Conversation identifier linked to the execution.
-    userMessageId:
+    inputMessageId:
       type: string
       format: uuid
       description: Persisted user message identifier.
