@@ -1,0 +1,23 @@
+AgentProjectsPageResponseDTO:
+  title: AgentProjectsPageResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+    - page
+    - size
+    - hasNext
+  properties:
+    items:
+      type: array
+      description: Persisted automation projects.
+      items:
+        $ref: './agent-project-dto.yml#/AgentProjectDTO'
+    page:
+      type: integer
+      minimum: 0
+    size:
+      type: integer
+      minimum: 1
+    hasNext:
+      type: boolean

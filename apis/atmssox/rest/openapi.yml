@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.19
+  version: 0.0.20
   contact:
     name: APP Sitionix
 servers:
@@ -13,6 +13,8 @@ tags:
 paths:
   /api/v1/agents:
     $ref: './paths/v1/agents.yml'
+  /api/v1/agent-projects:
+    $ref: './paths/v1/agent-projects.yml'
   /api/v1/agents/{agentId}:
     $ref: './paths/v1/agents-by-id.yml'
   /api/v1/agents/{agentId}/activate:
@@ -49,10 +51,18 @@ components:
   schemas:
     CreateAgentRequestDTO:
       $ref: './schemas/v1/agent/create-agent-request-dto.yml#/CreateAgentRequestDTO'
+    CreateAgentProjectRequestDTO:
+      $ref: './schemas/v1/agent/create-agent-project-request-dto.yml#/CreateAgentProjectRequestDTO'
     PatchAgentRequestDTO:
       $ref: './schemas/v1/agent/patch-agent-request-dto.yml#/PatchAgentRequestDTO'
     AgentDTO:
       $ref: './schemas/v1/agent/agent-dto.yml#/AgentDTO'
+    AgentProjectDTO:
+      $ref: './schemas/v1/agent/agent-project-dto.yml#/AgentProjectDTO'
+    AgentProjectsPageResponseDTO:
+      $ref: './schemas/v1/agent/agent-projects-page-response-dto.yml#/AgentProjectsPageResponseDTO'
+    AgentProjectStatusDTO:
+      $ref: './schemas/v1/agent/agent-project-status-dto.yml#/AgentProjectStatusDTO'
     AgentsResponseDTO:
       $ref: './schemas/v1/agent/agents-response-dto.yml#/AgentsResponseDTO'
     ChatAgentRequestDTO:

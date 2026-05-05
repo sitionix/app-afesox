@@ -1,0 +1,9 @@
+AgentProjectStatusDTO:
+  title: AgentProjectStatusDTO
+  type: string
+  description: Current project lifecycle status.
+  enum:
+    - ACTIVE
+    - ARCHIVED
+    - DELETED
+  example: ACTIVE
