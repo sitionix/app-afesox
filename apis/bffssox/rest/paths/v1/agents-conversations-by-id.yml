@@ -30,3 +30,32 @@ get:
       $ref: '../../openapi.yml#/components/responses/NotFound'
     '500':
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
+delete:
+  tags:
+    - Agent
+  operationId: deleteAgentConversation
+  summary: Soft delete agent conversation
+  description: >
+    Soft deletes one conversation owned by the authenticated user.
+    This operation is idempotent: repeated calls on an already `DELETED`
+    conversation return `204` with no response body.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: conversationId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Conversation soft deleted
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
