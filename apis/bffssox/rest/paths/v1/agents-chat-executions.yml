@@ -1,6 +1,6 @@
 post:
   tags:
-    - Agent
+    - AgentChat
   operationId: submitAgentChatExecutionByExecutionsPath
   summary: Submit async agent chat execution
   description: >

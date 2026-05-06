@@ -1,6 +1,6 @@
 get:
   tags:
-    - Agent
+    - AgentConversation
   operationId: getAgentConversations
   summary: Get agent conversations
   description: >

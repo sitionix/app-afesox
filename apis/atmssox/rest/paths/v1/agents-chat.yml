@@ -1,6 +1,6 @@
 post:
   tags:
-    - Agent
+    - AgentChat
   operationId: submitAgentChatExecution
   summary: Submit async agent chat execution
   description: >

@@ -1,6 +1,6 @@
 get:
   tags:
-    - Agent
+    - AgentConversation
   operationId: getAgentConversation
   summary: Get agent conversation details
   description: >
@@ -32,7 +32,7 @@ get:
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
 delete:
   tags:
-    - Agent
+    - AgentConversation
   operationId: deleteAgentConversation
   summary: Soft delete agent conversation
   description: >
