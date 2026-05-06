@@ -1,5 +1,5 @@
 api:
-  version: 0.0.36
+  version: 0.0.37
   visibility: PUBLIC
   metadata:
     version: "1.0"

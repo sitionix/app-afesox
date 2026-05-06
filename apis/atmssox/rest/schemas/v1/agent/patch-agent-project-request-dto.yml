@@ -1,0 +1,22 @@
+PatchAgentProjectRequestDTO:
+  title: PatchAgentProjectRequestDTO
+  type: object
+  additionalProperties: false
+  anyOf:
+    - required:
+        - name
+    - required:
+        - description
+  properties:
+    name:
+      type: string
+      minLength: 1
+      maxLength: 120
+      pattern: ".*\\S.*"
+      description: Human-readable agent project name. Value is trimmed before validation.
+      example: Updated Marketing Automation
+    description:
+      type: string
+      maxLength: 1000
+      description: Optional project description. Empty or blank value can be normalized during patch processing.
+      example: Updated project description
