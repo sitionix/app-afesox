@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.35
+  version: 0.0.36
   contact:
     name: APP Sitionix
 servers:
@@ -13,6 +13,10 @@ tags:
   - name: User
   - name: Site
   - name: Agent
+  - name: AgentProject
+  - name: AgentConversation
+  - name: AgentRule
+  - name: AgentChat
 paths:
   /api/v1/auth/refresh:
     $ref: './paths/v1/auth-refresh.yml'

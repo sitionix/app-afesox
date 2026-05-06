@@ -1,6 +1,6 @@
 post:
   tags:
-    - Agent
+    - AgentRule
   operationId: acceptAgentRule
   summary: Accept automation rule
   description: >

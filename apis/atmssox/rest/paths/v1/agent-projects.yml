@@ -1,6 +1,6 @@
 get:
   tags:
-    - Agent
+    - AgentProject
   operationId: getAgentProjects
   summary: Get agent projects
   description: >
@@ -41,7 +41,7 @@ get:
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
 post:
   tags:
-    - Agent
+    - AgentProject
   operationId: createAgentProject
   summary: Create agent project
   description: >

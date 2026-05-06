@@ -1,6 +1,6 @@
 post:
   tags:
-    - Agent
+    - AgentRule
   operationId: rejectAgentRule
   summary: Reject automation rule
   description: >

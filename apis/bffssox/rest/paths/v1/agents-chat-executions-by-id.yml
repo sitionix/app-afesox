@@ -1,6 +1,6 @@
 get:
   tags:
-    - Agent
+    - AgentChat
   operationId: getAgentChatExecution
   summary: Get async agent chat execution
   description: >

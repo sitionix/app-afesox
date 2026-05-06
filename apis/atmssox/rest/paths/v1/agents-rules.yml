@@ -1,6 +1,6 @@
 get:
   tags:
-    - Agent
+    - AgentRule
   operationId: getAgentRules
   summary: Get automation rules
   description: >
@@ -46,7 +46,7 @@ get:
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
 post:
   tags:
-    - Agent
+    - AgentRule
   operationId: createAgentRule
   summary: Create automation rule
   description: >

@@ -1,6 +1,6 @@
 get:
   tags:
-    - Agent
+    - AgentProject
   operationId: getAgentProject
   summary: Get agent project by id
   description: >
