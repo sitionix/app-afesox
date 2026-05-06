@@ -30,3 +30,67 @@ get:
       $ref: '../../openapi.yml#/components/responses/NotFound'
     '500':
       $ref: '../../openapi.yml#/components/responses/InternalServerError'
+patch:
+  tags:
+    - AgentProject
+  operationId: patchAgentProject
+  summary: Patch agent project identity
+  description: >
+    Partially updates one automation project for the authenticated user.
+    Supports only `name` and `description` fields.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/PatchAgentProjectRequestDTO'
+  responses:
+    '200':
+      description: Updated agent project details
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentProjectDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
+delete:
+  tags:
+    - AgentProject
+  operationId: deleteAgentProject
+  summary: Soft delete agent project
+  description: >
+    Soft deletes one automation project for the authenticated user.
+    Once deleted, it is hidden from list and details responses.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Project deleted
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
