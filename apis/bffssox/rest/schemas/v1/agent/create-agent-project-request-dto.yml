@@ -1,0 +1,19 @@
+CreateAgentProjectRequestDTO:
+  title: CreateAgentProjectRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      minLength: 1
+      maxLength: 120
+      pattern: ".*\\S.*"
+      description: Human-readable agent project name. Value is trimmed before validation.
+      example: Marketing Automation
+    description:
+      type: string
+      maxLength: 1000
+      description: Optional project description. Value is trimmed before persistence.
+      example: Project for marketing agents and campaign automation

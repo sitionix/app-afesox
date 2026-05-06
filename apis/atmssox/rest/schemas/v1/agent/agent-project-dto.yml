@@ -1,0 +1,31 @@
+AgentProjectDTO:
+  title: AgentProjectDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - name
+    - status
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Globally unique project identifier.
+    name:
+      type: string
+      description: Project name.
+    description:
+      type: string
+      description: Project description.
+    status:
+      $ref: './agent-project-status-dto.yml#/AgentProjectStatusDTO'
+    createdAt:
+      type: string
+      format: date-time
+      description: Project creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last project update timestamp (UTC).
