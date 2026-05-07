@@ -7,6 +7,8 @@ PatchAgentProjectRequestDTO:
         - name
     - required:
         - description
+    - required:
+        - context
   properties:
     name:
       type: string
@@ -20,3 +22,9 @@ PatchAgentProjectRequestDTO:
       maxLength: 1000
       description: Optional project description. Empty or blank value can be normalized during patch processing.
       example: Updated project description
+    context:
+      type: string
+      maxLength: 5000
+      nullable: true
+      description: Optional project-specific context. Empty or blank value can be normalized during patch processing.
+      example: Focus on coffee shop Instagram campaigns with concise friendly tone.
