@@ -1,0 +1,32 @@
+delete:
+  tags:
+    - AgentProject
+  operationId: removeAgentFromProject
+  summary: Remove agent from project
+  description: >
+    Soft deletes one active project-agent membership for a user-owned project and agent.
+    The agent entity itself is not deleted.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: path
+      name: agentId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    204:
+      description: Agent removed from project
+    401:
+      $ref: ../../openapi.yml#/components/responses/Unauthorized
+    404:
+      $ref: ../../openapi.yml#/components/responses/NotFound
+    500:
+      $ref: ../../openapi.yml#/components/responses/InternalServerError

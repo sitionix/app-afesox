@@ -1,0 +1,11 @@
+AddAgentToProjectRequestDTO:
+  title: AddAgentToProjectRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - agentId
+  properties:
+    agentId:
+      type: string
+      format: uuid
+      description: Existing user-owned agent identifier.
