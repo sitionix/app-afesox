@@ -1,0 +1,47 @@
+ProjectAgentResponseDTO:
+  title: ProjectAgentResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - name
+    - status
+    - createdAt
+    - updatedAt
+    - attachedAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Agent identifier.
+    name:
+      type: string
+      description: Agent name.
+    description:
+      type: string
+      description: Agent description.
+    status:
+      type: string
+      description: Agent lifecycle status.
+      enum:
+        - DRAFT
+        - ACTIVE
+        - ARCHIVED
+        - DELETED
+      example: ACTIVE
+    createdAt:
+      type: string
+      format: date-time
+      description: Agent creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last agent update timestamp (UTC).
+    membershipId:
+      type: string
+      format: uuid
+      description: Project-agent membership identifier.
+    attachedAt:
+      type: string
+      format: date-time
+      description: Membership creation timestamp (UTC).

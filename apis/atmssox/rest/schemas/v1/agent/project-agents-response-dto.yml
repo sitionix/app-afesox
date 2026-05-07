@@ -1,0 +1,12 @@
+ProjectAgentsResponseDTO:
+  title: ProjectAgentsResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      description: Agents attached to the project.
+      items:
+        $ref: ./project-agent-response-dto.yml#/ProjectAgentResponseDTO

@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.37
+  version: 0.0.38
   contact:
     name: APP Sitionix
 servers:
@@ -36,6 +36,10 @@ paths:
     $ref: './paths/v1/agent-projects.yml'
   /api/v1/agent-projects/{projectId}:
     $ref: './paths/v1/agent-projects-by-id.yml'
+  /api/v1/agent-projects/{projectId}/agents:
+    $ref: './paths/v1/agent-projects-agents.yml'
+  /api/v1/agent-projects/{projectId}/agents/{agentId}:
+    $ref: './paths/v1/agent-projects-agents-by-id.yml'
   /api/v1/agents/{agentId}:
     $ref: './paths/v1/agents-by-id.yml'
   /api/v1/agents/{agentId}/activate:
@@ -100,12 +104,18 @@ components:
       $ref: './schemas/v1/agent/patch-agent-request-dto.yml#/PatchAgentRequestDTO'
     PatchAgentProjectRequestDTO:
       $ref: './schemas/v1/agent/patch-agent-project-request-dto.yml#/PatchAgentProjectRequestDTO'
+    AddAgentToProjectRequestDTO:
+      $ref: './schemas/v1/agent/add-agent-to-project-request-dto.yml#/AddAgentToProjectRequestDTO'
     AgentDTO:
       $ref: './schemas/v1/agent/agent-dto.yml#/AgentDTO'
     AgentProjectDTO:
       $ref: './schemas/v1/agent/agent-project-dto.yml#/AgentProjectDTO'
     AgentProjectsPageResponseDTO:
       $ref: './schemas/v1/agent/agent-projects-page-response-dto.yml#/AgentProjectsPageResponseDTO'
+    ProjectAgentResponseDTO:
+      $ref: './schemas/v1/agent/project-agent-response-dto.yml#/ProjectAgentResponseDTO'
+    ProjectAgentsResponseDTO:
+      $ref: './schemas/v1/agent/project-agents-response-dto.yml#/ProjectAgentsResponseDTO'
     AgentProjectStatusDTO:
       $ref: './schemas/v1/agent/agent-project-status-dto.yml#/AgentProjectStatusDTO'
     AgentsResponseDTO:

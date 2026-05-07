@@ -1,0 +1,74 @@
+get:
+  tags:
+    - AgentProject
+  operationId: listAgentProjectAgents
+  summary: List agents attached to project
+  description: >
+    Returns active agent memberships for one project owned by the authenticated user.
+    Returns 404 when project is missing, deleted, or not owned by the current user.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    200:
+      description: Attached project agents
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yml#/components/schemas/ProjectAgentsResponseDTO
+    401:
+      $ref: ../../openapi.yml#/components/responses/Unauthorized
+    404:
+      $ref: ../../openapi.yml#/components/responses/NotFound
+    500:
+      $ref: ../../openapi.yml#/components/responses/InternalServerError
+post:
+  tags:
+    - AgentProject
+  operationId: addAgentToProject
+  summary: Attach agent to project
+  description: >
+    Attaches a user-owned agent to one user-owned project.
+    Operation is idempotent for already-attached memberships.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../openapi.yml#/components/schemas/AddAgentToProjectRequestDTO
+  responses:
+    200:
+      description: Agent attached to project
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yml#/components/schemas/ProjectAgentResponseDTO
+    201:
+      description: Agent attached to project
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yml#/components/schemas/ProjectAgentResponseDTO
+    400:
+      $ref: ../../openapi.yml#/components/responses/BadRequest
+    401:
+      $ref: ../../openapi.yml#/components/responses/Unauthorized
+    404:
+      $ref: ../../openapi.yml#/components/responses/NotFound
+    500:
+      $ref: ../../openapi.yml#/components/responses/InternalServerError
