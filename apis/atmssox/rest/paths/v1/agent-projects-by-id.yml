@@ -37,7 +37,7 @@ patch:
   summary: Patch agent project identity
   description: >
     Partially updates one automation project for the authenticated user.
-    Supports only `name` and `description` fields.
+    Supports only `name`, `description`, and `context` fields.
   security:
     - bearerAuth: []
   parameters:

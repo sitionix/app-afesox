@@ -19,6 +19,11 @@ AgentProjectDTO:
     description:
       type: string
       description: Project description.
+    context:
+      type: string
+      nullable: true
+      maxLength: 5000
+      description: Project-specific context that guides future agent work in this project.
     status:
       $ref: './agent-project-status-dto.yml#/AgentProjectStatusDTO'
     createdAt:
