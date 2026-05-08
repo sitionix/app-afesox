@@ -1,0 +1,68 @@
+post:
+  tags:
+    - AgentConversation
+  operationId: createProjectConversation
+  summary: Create project conversation shell
+  description: >
+    Creates one project-bound conversation shell for the authenticated user
+    with selected attached agents as participants.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/CreateProjectConversationRequestDTO'
+  responses:
+    '201':
+      description: Project conversation shell created
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ProjectConversationDetailsDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
+get:
+  tags:
+    - AgentConversation
+  operationId: listProjectConversations
+  summary: List project conversations
+  description: >
+    Returns active project conversations for one project owned by current user,
+    sorted by lastMessageAt descending, then updatedAt and createdAt.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Project conversation list
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ProjectConversationsResponseDTO'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

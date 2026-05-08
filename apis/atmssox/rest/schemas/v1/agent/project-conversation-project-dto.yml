@@ -1,0 +1,19 @@
+ProjectConversationProjectDTO:
+  title: ProjectConversationProjectDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Project identifier.
+    name:
+      type: string
+      description: Project name.
+    context:
+      type: string
+      nullable: true
+      description: Project context text.

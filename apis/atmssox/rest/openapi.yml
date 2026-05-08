@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.25
+  version: 0.0.26
   contact:
     name: APP Sitionix
 servers:
@@ -25,6 +25,10 @@ paths:
     $ref: './paths/v1/agent-projects-agents.yml'
   /api/v1/agent-projects/{projectId}/agents/{agentId}:
     $ref: './paths/v1/agent-projects-agents-by-id.yml'
+  /api/v1/agent-projects/{projectId}/conversations:
+    $ref: './paths/v1/agent-projects-conversations.yml'
+  /api/v1/agent-projects/{projectId}/conversations/{conversationId}:
+    $ref: './paths/v1/agent-projects-conversations-by-id.yml'
   /api/v1/agents/{agentId}:
     $ref: './paths/v1/agents-by-id.yml'
   /api/v1/agents/{agentId}/activate:
@@ -103,6 +107,18 @@ components:
       $ref: './schemas/v1/agent/agent-conversations-response-dto.yml#/AgentConversationsResponseDTO'
     AgentConversationDetailsDTO:
       $ref: './schemas/v1/agent/agent-conversation-details-dto.yml#/AgentConversationDetailsDTO'
+    CreateProjectConversationRequestDTO:
+      $ref: './schemas/v1/agent/create-project-conversation-request-dto.yml#/CreateProjectConversationRequestDTO'
+    ProjectConversationParticipantDTO:
+      $ref: './schemas/v1/agent/project-conversation-participant-dto.yml#/ProjectConversationParticipantDTO'
+    ProjectConversationDTO:
+      $ref: './schemas/v1/agent/project-conversation-dto.yml#/ProjectConversationDTO'
+    ProjectConversationsResponseDTO:
+      $ref: './schemas/v1/agent/project-conversations-response-dto.yml#/ProjectConversationsResponseDTO'
+    ProjectConversationProjectDTO:
+      $ref: './schemas/v1/agent/project-conversation-project-dto.yml#/ProjectConversationProjectDTO'
+    ProjectConversationDetailsDTO:
+      $ref: './schemas/v1/agent/project-conversation-details-dto.yml#/ProjectConversationDetailsDTO'
     AgentRuleDTO:
       $ref: './schemas/v1/agent/agent-rule-dto.yml#/AgentRuleDTO'
     AgentRuleStatusDTO:
