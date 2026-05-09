@@ -1,0 +1,67 @@
+ProjectConversationDetailsDTO:
+  title: ProjectConversationDetailsDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - projectId
+    - type
+    - title
+    - status
+    - participants
+    - messages
+    - canSendMessages
+    - createdAt
+    - updatedAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Conversation identifier.
+    projectId:
+      type: string
+      format: uuid
+      description: Project identifier that owns this conversation.
+    project:
+      $ref: '../../../openapi.yml#/components/schemas/ProjectConversationProjectDTO'
+      nullable: true
+    type:
+      type: string
+      enum:
+        - DIRECT
+        - MULTI_AGENT
+      description: Conversation type.
+    title:
+      type: string
+      description: Conversation title.
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - DELETED
+      description: Conversation status.
+    participants:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/ProjectConversationParticipantDTO'
+    messages:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/AgentConversationMessageDTO'
+      description: Ordered conversation messages. Empty for shell-only state.
+    canSendMessages:
+      type: boolean
+      description: Whether messaging is available for this conversation.
+    createdAt:
+      type: string
+      format: date-time
+      description: Conversation creation timestamp (UTC).
+    updatedAt:
+      type: string
+      format: date-time
+      description: Last conversation update timestamp (UTC).
+    lastMessageAt:
+      type: string
+      format: date-time
+      nullable: true
+      description: Last message timestamp (UTC).

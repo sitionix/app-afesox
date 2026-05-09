@@ -1,0 +1,39 @@
+ProjectConversationParticipantDTO:
+  title: ProjectConversationParticipantDTO
+  type: object
+  additionalProperties: false
+  required:
+    - type
+    - status
+  properties:
+    type:
+      type: string
+      enum:
+        - USER
+        - AGENT
+      description: Participant type.
+    userId:
+      type: string
+      format: uuid
+      nullable: true
+      description: User participant identifier when participant type is USER.
+    agentId:
+      type: string
+      format: uuid
+      nullable: true
+      description: Agent participant identifier when participant type is AGENT.
+    name:
+      type: string
+      nullable: true
+      description: Display name for participant.
+    description:
+      type: string
+      nullable: true
+      description: Participant description for AGENT entries.
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - ARCHIVED
+        - DELETED
+      description: Participant source entity status.

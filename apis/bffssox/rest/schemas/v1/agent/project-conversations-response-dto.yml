@@ -1,0 +1,11 @@
+ProjectConversationsResponseDTO:
+  title: ProjectConversationsResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/ProjectConversationDTO'

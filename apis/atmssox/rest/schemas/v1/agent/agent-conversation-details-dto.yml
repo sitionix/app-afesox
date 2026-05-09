@@ -23,6 +23,7 @@ AgentConversationDetailsDTO:
       type: string
       enum:
         - DIRECT
+        - MULTI_AGENT
       description: Conversation type.
     createdAt:
       type: string
