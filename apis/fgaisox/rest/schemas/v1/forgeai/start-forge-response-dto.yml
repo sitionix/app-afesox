@@ -1,0 +1,24 @@
+StartForgeResponseDTO:
+  type: object
+  required:
+    - id
+    - ticket
+    - task
+    - scope
+    - status
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+    ticket:
+      type: string
+    task:
+      type: string
+    scope:
+      type: string
+    status:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
