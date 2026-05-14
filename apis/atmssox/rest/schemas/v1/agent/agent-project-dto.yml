@@ -19,6 +19,10 @@ AgentProjectDTO:
     description:
       type: string
       description: Project description.
+    ownerDisplayName:
+      type: string
+      nullable: true
+      description: Display-safe owner name for workspace-facing project summary usage.
     context:
       type: string
       nullable: true

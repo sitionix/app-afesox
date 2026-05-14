@@ -1,0 +1,19 @@
+AgentProjectOwnerSummaryDTO:
+  title: AgentProjectOwnerSummaryDTO
+  type: object
+  additionalProperties: false
+  required:
+    - projectId
+    - projectName
+  properties:
+    projectId:
+      type: string
+      format: uuid
+      description: Globally unique project identifier.
+    projectName:
+      type: string
+      description: Project name.
+    ownerDisplayName:
+      type: string
+      nullable: true
+      description: Display-safe owner name for workspace-facing project details.

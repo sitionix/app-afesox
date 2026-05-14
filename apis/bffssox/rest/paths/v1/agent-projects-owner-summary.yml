@@ -1,0 +1,30 @@
+get:
+  tags:
+    - AgentProject
+  operationId: getAgentProjectOwnerSummary
+  summary: Get automation project owner summary by id
+  description: >
+    Returns compact automation project owner summary for the authenticated user.
+    Returns 404 when project is missing, deleted, or not owned by the current user.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Agent project owner summary
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentProjectOwnerSummaryDTO'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
