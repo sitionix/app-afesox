@@ -1,0 +1,38 @@
+openapi: "3.0.0"
+info:
+  title: API Forge AI Service Sitionix
+  description: API specification for Forge AI service
+  version: 0.0.1
+  contact:
+    name: APP Sitionix
+servers:
+  - description: Localhost (dev only)
+    url: 'http://localhost:9099/fgaisox'
+tags:
+  - name: ForgeAI
+paths:
+  /api/v1/forge-ai/ping:
+    $ref: './paths/v1/forge-ai-ping.yml'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Service-to-service access token (Bearer).
+  schemas:
+    ForgeAiPingRequestDTO:
+      $ref: './schemas/v1/forgeai/forge-ai-ping-request-dto.yml#/ForgeAiPingRequestDTO'
+    ForgeAiPingResponseDTO:
+      $ref: './schemas/v1/forgeai/forge-ai-ping-response-dto.yml#/ForgeAiPingResponseDTO'
+    ErrorDTO:
+      $ref: '../../common/rest/error/error-dto.yml#/ErrorDTO'
+  responses:
+    BadRequest:
+      $ref: '../../common/rest/error/responses.yml#/BadRequest'
+    Unauthorized:
+      $ref: '../../common/rest/error/responses.yml#/Unauthorized'
+    Forbidden:
+      $ref: '../../common/rest/error/responses.yml#/Forbidden'
+    InternalServerError:
+      $ref: '../../common/rest/error/responses.yml#/InternalServerError'
