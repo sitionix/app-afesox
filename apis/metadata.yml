@@ -32,6 +32,12 @@ apis:
   - name: CLIENT Workspace Aggregation SOX
     api-spec-type: client
     definition-path: /wagssox/rest
+  - name: API Forge AI SOX
+    api-spec-type: api-first
+    definition-path: /fgaisox/rest
+  - name: CLIENT Forge AI SOX
+    api-spec-type: client
+    definition-path: /fgaisox/rest
   - name: EVENT SiteMeta STSSSOX Producer
     api-spec-type: event-producer
     definition-path: /stsssox/event

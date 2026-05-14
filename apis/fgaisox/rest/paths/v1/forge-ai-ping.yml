@@ -1,0 +1,26 @@
+post:
+  tags:
+    - ForgeAI
+  summary: Create Forge AI ping
+  operationId: createPing
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/ForgeAiPingRequestDTO'
+  responses:
+    '201':
+      description: Ping persisted in MongoDB
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ForgeAiPingResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

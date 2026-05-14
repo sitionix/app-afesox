@@ -1,0 +1,15 @@
+ForgeAiPingResponseDTO:
+  type: object
+  required:
+    - id
+    - message
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+    message:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
