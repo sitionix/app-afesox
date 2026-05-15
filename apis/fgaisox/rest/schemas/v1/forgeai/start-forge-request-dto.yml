@@ -3,6 +3,7 @@ StartForgeRequestDTO:
   required:
     - ticket
     - task
+    - serviceIds
   properties:
     ticket:
       type: string
@@ -12,3 +13,9 @@ StartForgeRequestDTO:
       type: string
       minLength: 1
       maxLength: 4000
+    serviceIds:
+      type: array
+      minItems: 1
+      items:
+        type: string
+        minLength: 1
