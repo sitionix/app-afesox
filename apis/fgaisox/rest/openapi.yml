@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.1
+  version: 0.0.2
   contact:
     name: APP Sitionix
 servers:
@@ -11,8 +11,8 @@ servers:
 tags:
   - name: ForgeAI
 paths:
-  /api/v1/forge-ai/ping:
-    $ref: './paths/v1/forge-ai-ping.yml'
+  /api/v1/forge-ai/start:
+    $ref: './paths/v1/forge-ai-start.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -21,10 +21,10 @@ components:
       bearerFormat: JWT
       description: Service-to-service access token (Bearer).
   schemas:
-    ForgeAiPingRequestDTO:
-      $ref: './schemas/v1/forgeai/forge-ai-ping-request-dto.yml#/ForgeAiPingRequestDTO'
-    ForgeAiPingResponseDTO:
-      $ref: './schemas/v1/forgeai/forge-ai-ping-response-dto.yml#/ForgeAiPingResponseDTO'
+    StartForgeRequestDTO:
+      $ref: './schemas/v1/forgeai/start-forge-request-dto.yml#/StartForgeRequestDTO'
+    StartForgeResponseDTO:
+      $ref: './schemas/v1/forgeai/start-forge-response-dto.yml#/StartForgeResponseDTO'
     ErrorDTO:
       $ref: '../../common/rest/error/error-dto.yml#/ErrorDTO'
   responses:

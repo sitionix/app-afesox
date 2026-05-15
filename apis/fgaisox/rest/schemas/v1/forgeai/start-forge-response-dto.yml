@@ -1,14 +1,23 @@
-ForgeAiPingResponseDTO:
+StartForgeResponseDTO:
   type: object
   required:
     - id
-    - message
+    - ticket
+    - task
+    - scope
+    - status
     - createdAt
   properties:
     id:
       type: string
       format: uuid
-    message:
+    ticket:
+      type: string
+    task:
+      type: string
+    scope:
+      type: string
+    status:
       type: string
     createdAt:
       type: string

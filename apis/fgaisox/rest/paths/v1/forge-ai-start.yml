@@ -1,21 +1,21 @@
 post:
   tags:
     - ForgeAI
-  summary: Create Forge AI ping
-  operationId: createPing
+  summary: Start Forge AI task
+  operationId: startForge
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yml#/components/schemas/ForgeAiPingRequestDTO'
+          $ref: '../../openapi.yml#/components/schemas/StartForgeRequestDTO'
   responses:
     '201':
-      description: Ping persisted in MongoDB
+      description: Forge AI task started
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yml#/components/schemas/ForgeAiPingResponseDTO'
+            $ref: '../../openapi.yml#/components/schemas/StartForgeResponseDTO'
     '400':
       $ref: '../../openapi.yml#/components/responses/BadRequest'
     '401':
