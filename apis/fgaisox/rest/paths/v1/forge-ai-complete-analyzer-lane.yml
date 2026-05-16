@@ -1,0 +1,45 @@
+post:
+  tags:
+    - ForgeAI
+  summary: Complete analyzer lane
+  operationId: completeAnalyzerLane
+  parameters:
+    - name: ticketId
+      in: path
+      required: true
+      description: Ticket identifier.
+      schema:
+        type: string
+        format: uuid
+    - name: laneId
+      in: path
+      required: true
+      description: Lane identifier.
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/CompleteAnalyzerLaneRequestDTO'
+  responses:
+    '200':
+      description: Analyzer lane completed successfully.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/CompleteAnalyzerLaneResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

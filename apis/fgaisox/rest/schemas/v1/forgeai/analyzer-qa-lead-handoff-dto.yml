@@ -1,0 +1,85 @@
+AnalyzerQaLeadHandoffDTO:
+  type: object
+  description: Handoff payload produced by analyzer for QA lead lane.
+  required:
+    - task
+    - scope
+    - summary
+    - scopeRequirements
+    - constraints
+    - nonGoals
+    - dependencies
+    - qualityFocus
+    - riskAreas
+    - edgeConsiderations
+    - expectedOutput
+  properties:
+    writtenBy:
+      type: string
+      description: Agent identity that produced this handoff.
+      example: analyzer(automationservice-sox)
+    sourceOutput:
+      type: string
+      nullable: true
+      description: Optional reference to analyzer output artifact.
+    task:
+      type: string
+      minLength: 1
+      description: Task statement for QA lead lane.
+    scope:
+      type: string
+      minLength: 1
+      description: Service scope identifier.
+      example: automationservice-sox
+    summary:
+      type: string
+      minLength: 1
+      description: Scope-specific testing summary.
+    scopeRequirements:
+      type: array
+      description: Scope requirements for QA strategy.
+      items:
+        type: string
+        description: Scope requirement item.
+    constraints:
+      type: array
+      description: Testing constraints.
+      items:
+        type: string
+        description: Constraint item.
+    nonGoals:
+      type: array
+      description: Explicit non-goals for QA lane.
+      items:
+        type: string
+        description: Non-goal item.
+    dependencies:
+      type: array
+      description: External dependencies and prerequisites.
+      items:
+        type: string
+        description: Dependency item.
+    qualityFocus:
+      type: array
+      description: Quality focus areas.
+      items:
+        type: string
+        description: Quality focus item.
+    riskAreas:
+      type: array
+      description: Risk areas to prioritize.
+      items:
+        type: string
+        description: Risk area item.
+    edgeConsiderations:
+      type: array
+      description: Edge cases to include.
+      items:
+        type: string
+        description: Edge consideration item.
+    expectedOutput:
+      type: array
+      description: Expected artifacts from QA lead lane.
+      items:
+        type: string
+        description: Expected output item.

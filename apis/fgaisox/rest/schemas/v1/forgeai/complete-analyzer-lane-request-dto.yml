@@ -1,0 +1,16 @@
+CompleteAnalyzerLaneRequestDTO:
+  type: object
+  description: Analyzer completion payload with downstream handoff data.
+  required:
+    - summary
+    - architectHandoff
+    - qaLeadHandoff
+  properties:
+    summary:
+      type: string
+      minLength: 1
+      description: Short analyzer execution summary.
+    architectHandoff:
+      $ref: './analyzer-architect-handoff-dto.yml#/AnalyzerArchitectHandoffDTO'
+    qaLeadHandoff:
+      $ref: './analyzer-qa-lead-handoff-dto.yml#/AnalyzerQaLeadHandoffDTO'

@@ -1,0 +1,20 @@
+CompleteAnalyzerLaneResponseDTO:
+  type: object
+  description: Completion result for analyzer lane.
+  required:
+    - ticketId
+    - laneId
+    - laneStatus
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+      description: Ticket identifier.
+    laneId:
+      type: string
+      format: uuid
+      description: Lane identifier.
+    laneStatus:
+      type: string
+      description: Updated lane status.
+      example: DONE
