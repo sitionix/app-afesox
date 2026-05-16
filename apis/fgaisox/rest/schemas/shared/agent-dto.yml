@@ -2,13 +2,13 @@ AgentDTO:
   type: string
   description: Supported Forge AI agent identifier.
   enum:
-    - analyzer
-    - architect
-    - api
-    - event
-    - qa_lead
-    - implement_be
-    - implement_fe
-    - test_unit
-    - test_it
-    - test_ui
+    - ANALYZER
+    - ARCHITECT
+    - API
+    - EVENT
+    - QA_LEAD
+    - IMPLEMENT_BE
+    - IMPLEMENT_FE
+    - TEST_UNIT
+    - TEST_IT
+    - TEST_UI
