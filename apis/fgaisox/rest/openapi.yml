@@ -35,6 +35,8 @@ components:
       $ref: './schemas/v1/forgeai/analyzer-qa-lead-handoff-dto.yml#/AnalyzerQaLeadHandoffDTO'
     CompleteAnalyzerLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-analyzer-lane-response-dto.yml#/CompleteAnalyzerLaneResponseDTO'
+    AgentDTO:
+      $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:
       $ref: '../../common/rest/error/error-dto.yml#/ErrorDTO'
   responses:

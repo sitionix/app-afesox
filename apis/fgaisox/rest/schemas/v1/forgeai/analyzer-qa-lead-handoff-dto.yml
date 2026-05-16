@@ -12,12 +12,10 @@ AnalyzerQaLeadHandoffDTO:
     - qualityFocus
     - riskAreas
     - edgeConsiderations
-    - expectedOutput
   properties:
     writtenBy:
-      type: string
-      description: Agent identity that produced this handoff.
-      example: analyzer(automationservice-sox)
+      description: Agent that produced this handoff.
+      $ref: '../../shared/agent-dto.yml#/AgentDTO'
     sourceOutput:
       type: string
       nullable: true
@@ -77,9 +75,3 @@ AnalyzerQaLeadHandoffDTO:
       items:
         type: string
         description: Edge consideration item.
-    expectedOutput:
-      type: array
-      description: Expected artifacts from QA lead lane.
-      items:
-        type: string
-        description: Expected output item.

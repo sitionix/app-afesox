@@ -10,12 +10,10 @@ AnalyzerArchitectHandoffDTO:
     - nonGoals
     - risks
     - dependencies
-    - expectedOutput
   properties:
     writtenBy:
-      type: string
-      description: Agent identity that produced this handoff.
-      example: analyzer(automationservice-sox)
+      description: Agent that produced this handoff.
+      $ref: '../../shared/agent-dto.yml#/AgentDTO'
     sourceOutput:
       type: string
       nullable: true
@@ -63,9 +61,3 @@ AnalyzerArchitectHandoffDTO:
       items:
         type: string
         description: Dependency item.
-    expectedOutput:
-      type: array
-      description: Expected artifacts from architect lane.
-      items:
-        type: string
-        description: Expected output item.
