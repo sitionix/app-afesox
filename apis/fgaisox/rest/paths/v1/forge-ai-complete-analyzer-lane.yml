@@ -2,7 +2,7 @@ post:
   tags:
     - ForgeAI
   summary: Complete analyzer lane
-  operationId: completeAnalyzerLane
+  operationId: endpoint
   parameters:
     - name: ticketId
       in: path
