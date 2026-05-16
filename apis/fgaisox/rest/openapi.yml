@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.2
+  version: 0.0.3
   contact:
     name: APP Sitionix
 servers:
@@ -13,6 +13,8 @@ tags:
 paths:
   /api/v1/forge-ai/start:
     $ref: './paths/v1/forge-ai-start.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/analyzer/complete:
+    $ref: './paths/v1/forge-ai-complete-analyzer-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -25,11 +27,25 @@ components:
       $ref: './schemas/v1/forgeai/start-forge-request-dto.yml#/StartForgeRequestDTO'
     StartForgeResponseDTO:
       $ref: './schemas/v1/forgeai/start-forge-response-dto.yml#/StartForgeResponseDTO'
+    CompleteAnalyzerLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-analyzer-lane-request-dto.yml#/CompleteAnalyzerLaneRequestDTO'
+    AnalyzerArchitectHandoffDTO:
+      $ref: './schemas/v1/forgeai/analyzer-architect-handoff-dto.yml#/AnalyzerArchitectHandoffDTO'
+    AnalyzerQaLeadHandoffDTO:
+      $ref: './schemas/v1/forgeai/analyzer-qa-lead-handoff-dto.yml#/AnalyzerQaLeadHandoffDTO'
+    CompleteAnalyzerLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-analyzer-lane-response-dto.yml#/CompleteAnalyzerLaneResponseDTO'
+    AgentDTO:
+      $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:
       $ref: '../../common/rest/error/error-dto.yml#/ErrorDTO'
   responses:
     BadRequest:
       $ref: '../../common/rest/error/responses.yml#/BadRequest'
+    NotFound:
+      $ref: '../../common/rest/error/responses.yml#/NotFound'
+    Conflict:
+      $ref: '../../common/rest/error/responses.yml#/Conflict'
     Unauthorized:
       $ref: '../../common/rest/error/responses.yml#/Unauthorized'
     Forbidden:

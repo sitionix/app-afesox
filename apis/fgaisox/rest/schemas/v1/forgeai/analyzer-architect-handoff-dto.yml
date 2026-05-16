@@ -1,0 +1,63 @@
+AnalyzerArchitectHandoffDTO:
+  type: object
+  description: Handoff payload produced by analyzer for architect lane.
+  required:
+    - task
+    - scope
+    - summary
+    - requirements
+    - constraints
+    - nonGoals
+    - risks
+    - dependencies
+  properties:
+    writtenBy:
+      description: Agent that produced this handoff.
+      $ref: '../../shared/agent-dto.yml#/AgentDTO'
+    sourceOutput:
+      type: string
+      nullable: true
+      description: Optional reference to analyzer output artifact.
+    task:
+      type: string
+      minLength: 1
+      description: Task statement for architect lane.
+    scope:
+      type: string
+      minLength: 1
+      description: Service scope identifier.
+      example: automationservice-sox
+    summary:
+      type: string
+      minLength: 1
+      description: Scope-specific architecture summary.
+    requirements:
+      type: array
+      description: Functional requirements for architect lane.
+      items:
+        type: string
+        description: Requirement item.
+    constraints:
+      type: array
+      description: Implementation constraints.
+      items:
+        type: string
+        description: Constraint item.
+    nonGoals:
+      type: array
+      description: Explicit non-goals for this lane.
+      items:
+        type: string
+        description: Non-goal item.
+    risks:
+      type: array
+      description: Known risks.
+      items:
+        type: string
+        description: Risk item.
+    dependencies:
+      type: array
+      description: External dependencies and prerequisites.
+      items:
+        type: string
+        description: Dependency item.
