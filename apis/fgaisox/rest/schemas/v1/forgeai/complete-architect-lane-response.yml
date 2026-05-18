@@ -1,0 +1,16 @@
+CompleteArchitectLaneResponse:
+  type: object
+  required:
+    - ticketId
+    - laneId
+    - laneStatus
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+    laneId:
+      type: string
+      format: uuid
+    laneStatus:
+      type: string
+      example: DONE

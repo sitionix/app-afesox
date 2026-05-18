@@ -1,0 +1,40 @@
+ArchitectEventRequest:
+  type: object
+  required:
+    - required
+    - reason
+    - scope
+    - summary
+    - eventName
+    - payloadFields
+    - consumers
+    - notes
+  properties:
+    required:
+      type: boolean
+      description: Whether event contract work is required.
+    reason:
+      type: string
+      minLength: 1
+    scope:
+      type: string
+      minLength: 1
+    summary:
+      type: string
+      minLength: 1
+    eventName:
+      type: string
+      nullable: true
+      description: Event name when event work is required.
+    payloadFields:
+      type: array
+      items:
+        $ref: './architect-event-payload-field.yml#/ArchitectEventPayloadField'
+    consumers:
+      type: array
+      items:
+        type: string
+    notes:
+      type: array
+      items:
+        type: string

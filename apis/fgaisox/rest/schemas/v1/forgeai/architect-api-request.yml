@@ -1,0 +1,35 @@
+ArchitectApiRequest:
+  type: object
+  required:
+    - required
+    - reason
+    - scope
+    - summary
+    - operations
+    - consumers
+    - notes
+  properties:
+    required:
+      type: boolean
+      description: Whether API contract work is required.
+    reason:
+      type: string
+      minLength: 1
+    scope:
+      type: string
+      minLength: 1
+    summary:
+      type: string
+      minLength: 1
+    operations:
+      type: array
+      items:
+        $ref: './architect-api-operation.yml#/ArchitectApiOperation'
+    consumers:
+      type: array
+      items:
+        type: string
+    notes:
+      type: array
+      items:
+        type: string

@@ -1,0 +1,50 @@
+ArchitectImplementationHandoff:
+  type: object
+  required:
+    - task
+    - scope
+    - summary
+    - requirements
+    - constraints
+    - nonGoals
+    - architectureDecision
+    - dependencies
+    - acceptanceNotes
+    - risks
+  properties:
+    task:
+      type: string
+      minLength: 1
+    scope:
+      type: string
+      minLength: 1
+    summary:
+      type: string
+      minLength: 1
+    requirements:
+      type: array
+      items:
+        type: string
+    constraints:
+      type: array
+      items:
+        type: string
+    nonGoals:
+      type: array
+      items:
+        type: string
+    architectureDecision:
+      type: string
+      minLength: 1
+    dependencies:
+      type: array
+      items:
+        type: string
+    acceptanceNotes:
+      type: array
+      items:
+        type: string
+    risks:
+      type: array
+      items:
+        type: string

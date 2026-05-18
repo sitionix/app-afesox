@@ -1,0 +1,17 @@
+CompleteArchitectLaneRequest:
+  type: object
+  required:
+    - summary
+    - implementationHandoff
+    - apiRequest
+    - eventRequest
+  properties:
+    summary:
+      type: string
+      minLength: 1
+    implementationHandoff:
+      $ref: './architect-implementation-handoff.yml#/ArchitectImplementationHandoff'
+    apiRequest:
+      $ref: './architect-api-request.yml#/ArchitectApiRequest'
+    eventRequest:
+      $ref: './architect-event-request.yml#/ArchitectEventRequest'
