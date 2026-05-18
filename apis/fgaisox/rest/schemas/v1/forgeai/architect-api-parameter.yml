@@ -1,0 +1,27 @@
+ArchitectApiParameter:
+  type: object
+  required:
+    - name
+    - in
+    - required
+    - type
+    - description
+  properties:
+    name:
+      type: string
+      minLength: 1
+    in:
+      type: string
+      enum:
+        - path
+        - query
+        - header
+        - cookie
+    required:
+      type: boolean
+    type:
+      type: string
+      minLength: 1
+      example: string
+    description:
+      type: string

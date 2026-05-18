@@ -1,0 +1,9 @@
+ArchitectApiPayloadShape:
+  type: object
+  required:
+    - fields
+  properties:
+    fields:
+      type: array
+      items:
+        $ref: './architect-api-field.yml#/ArchitectApiField'
