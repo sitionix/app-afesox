@@ -1,0 +1,57 @@
+ApiLaneGeneratedArtifact:
+  type: object
+  required:
+    - kind
+    - role
+    - version
+    - dependency
+  properties:
+    kind:
+      type: string
+      description: Artifact ecosystem/type.
+      enum:
+        - MAVEN
+        - NPM
+        - OTHER
+      example: MAVEN
+    role:
+      type: string
+      description: Role of the generated artifact in downstream implementation.
+      enum:
+        - API_FIRST
+        - CLIENT
+        - FRONTEND_CONTRACT
+        - OTHER
+      example: API_FIRST
+    groupId:
+      type: string
+      description: Maven groupId. Empty or omitted for non-Maven artifacts.
+      example: com.afesox
+    artifactId:
+      type: string
+      description: Maven artifactId. Empty or omitted for non-Maven artifacts.
+      example: app-afesox-atmssox-api-first-sitionix-135-unstable
+    packageName:
+      type: string
+      description: NPM package name or generated Java package name when useful. Empty or omitted if not applicable.
+      example: com.app_afesox.atmssox.api_first
+    version:
+      type: string
+      minLength: 1
+      description: Generated artifact version.
+      example: 0.0.26
+    dependency:
+      type: string
+      minLength: 1
+      description: Exact dependency/import snippet produced by generation workflow. Downstream agents must use this value directly instead of reconstructing it.
+      example: |
+        <dependency>
+          <groupId>com.afesox</groupId>
+          <artifactId>app-afesox-atmssox-api-first-sitionix-135-unstable</artifactId>
+          <version>0.0.26</version>
+        </dependency>
+    notes:
+      type: array
+      description: Artifact-specific notes.
+      items:
+        type: string

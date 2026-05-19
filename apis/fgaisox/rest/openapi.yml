@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.4
+  version: 0.0.5
   contact:
     name: APP Sitionix
 servers:
@@ -17,6 +17,8 @@ paths:
     $ref: './paths/v1/forge-ai-complete-analyzer-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/architect/complete:
     $ref: './paths/v1/forge-ai-complete-architect-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/api/complete:
+    $ref: './paths/v1/forge-ai-complete-api-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -57,6 +59,14 @@ components:
       $ref: './schemas/v1/forgeai/architect-event-payload-field.yml#/ArchitectEventPayloadField'
     CompleteArchitectLaneResponse:
       $ref: './schemas/v1/forgeai/complete-architect-lane-response.yml#/CompleteArchitectLaneResponse'
+    CompleteApiLaneRequest:
+      $ref: './schemas/v1/forgeai/complete-api-lane-request.yml#/CompleteApiLaneRequest'
+    ApiLaneContractResult:
+      $ref: './schemas/v1/forgeai/api-lane-contract-result.yml#/ApiLaneContractResult'
+    ApiLaneGeneratedArtifact:
+      $ref: './schemas/v1/forgeai/api-lane-generated-artifact.yml#/ApiLaneGeneratedArtifact'
+    CompleteApiLaneResponse:
+      $ref: './schemas/v1/forgeai/complete-api-lane-response.yml#/CompleteApiLaneResponse'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:
