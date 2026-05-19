@@ -1,0 +1,21 @@
+CreateAgentActionRequestDTO:
+  title: CreateAgentActionRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      minLength: 1
+      pattern: ".*\\S.*"
+      description: Agent action title.
+      example: Validate pull request checks
+    description:
+      type: string
+      description: Optional agent action description.
+      example: Ensure CI and contract checks are green before approval.
+    metadata:
+      type: object
+      description: Optional metadata payload forwarded as object.
+      additionalProperties: true

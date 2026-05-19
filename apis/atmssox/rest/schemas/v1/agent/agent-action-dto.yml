@@ -1,0 +1,31 @@
+AgentActionDTO:
+  title: AgentActionDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - title
+    - status
+    - createdAt
+  properties:
+    id:
+      type: string
+      description: Created agent action identifier.
+    title:
+      type: string
+      description: Agent action title.
+    description:
+      type: string
+      description: Agent action description.
+    metadata:
+      type: object
+      description: Agent action metadata payload.
+      additionalProperties: true
+    status:
+      type: string
+      description: Current agent action status.
+      example: CREATED
+    createdAt:
+      type: string
+      format: date-time
+      description: Agent action creation timestamp (UTC).
