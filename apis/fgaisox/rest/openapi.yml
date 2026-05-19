@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.3
+  version: 0.0.4
   contact:
     name: APP Sitionix
 servers:
@@ -15,6 +15,8 @@ paths:
     $ref: './paths/v1/forge-ai-start.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/analyzer/complete:
     $ref: './paths/v1/forge-ai-complete-analyzer-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/architect/complete:
+    $ref: './paths/v1/forge-ai-complete-architect-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -35,6 +37,26 @@ components:
       $ref: './schemas/v1/forgeai/analyzer-qa-lead-handoff-dto.yml#/AnalyzerQaLeadHandoffDTO'
     CompleteAnalyzerLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-analyzer-lane-response-dto.yml#/CompleteAnalyzerLaneResponseDTO'
+    CompleteArchitectLaneRequest:
+      $ref: './schemas/v1/forgeai/complete-architect-lane-request.yml#/CompleteArchitectLaneRequest'
+    ArchitectImplementationHandoff:
+      $ref: './schemas/v1/forgeai/architect-implementation-handoff.yml#/ArchitectImplementationHandoff'
+    ArchitectApiRequest:
+      $ref: './schemas/v1/forgeai/architect-api-request.yml#/ArchitectApiRequest'
+    ArchitectApiOperation:
+      $ref: './schemas/v1/forgeai/architect-api-operation.yml#/ArchitectApiOperation'
+    ArchitectApiParameter:
+      $ref: './schemas/v1/forgeai/architect-api-parameter.yml#/ArchitectApiParameter'
+    ArchitectApiPayloadShape:
+      $ref: './schemas/v1/forgeai/architect-api-payload-shape.yml#/ArchitectApiPayloadShape'
+    ArchitectApiField:
+      $ref: './schemas/v1/forgeai/architect-api-field.yml#/ArchitectApiField'
+    ArchitectEventRequest:
+      $ref: './schemas/v1/forgeai/architect-event-request.yml#/ArchitectEventRequest'
+    ArchitectEventPayloadField:
+      $ref: './schemas/v1/forgeai/architect-event-payload-field.yml#/ArchitectEventPayloadField'
+    CompleteArchitectLaneResponse:
+      $ref: './schemas/v1/forgeai/complete-architect-lane-response.yml#/CompleteArchitectLaneResponse'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:

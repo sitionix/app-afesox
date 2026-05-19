@@ -1,0 +1,34 @@
+ArchitectApiOperation:
+  type: object
+  required:
+    - intent
+    - method
+    - path
+    - parameters
+    - request
+    - response
+  properties:
+    intent:
+      type: string
+      minLength: 1
+      example: create agent action record
+    method:
+      type: string
+      enum:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+    path:
+      type: string
+      minLength: 1
+      example: /api/v1/agent-actions
+    parameters:
+      type: array
+      items:
+        $ref: './architect-api-parameter.yml#/ArchitectApiParameter'
+    request:
+      $ref: './architect-api-payload-shape.yml#/ArchitectApiPayloadShape'
+    response:
+      $ref: './architect-api-payload-shape.yml#/ArchitectApiPayloadShape'
