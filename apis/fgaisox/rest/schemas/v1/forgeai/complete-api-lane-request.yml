@@ -1,0 +1,22 @@
+CompleteApiLaneRequest:
+  type: object
+  required:
+    - summary
+    - contracts
+    - notes
+  properties:
+    summary:
+      type: string
+      minLength: 1
+      description: Short summary of API contract work completed by the API lane.
+      example: API contracts generated for agent action record creation.
+    contracts:
+      type: array
+      description: List of generated or updated contract results. Each item groups operation metadata with the generated artifacts needed by downstream implementers.
+      items:
+        $ref: './api-lane-contract-result.yml#/ApiLaneContractResult'
+    notes:
+      type: array
+      description: Additional API-lane level notes that apply to all contract results.
+      items:
+        type: string

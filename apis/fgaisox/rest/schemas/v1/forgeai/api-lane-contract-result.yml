@@ -1,0 +1,57 @@
+ApiLaneContractResult:
+  type: object
+  required:
+    - summary
+    - operationId
+    - method
+    - path
+    - artifacts
+    - notes
+  properties:
+    summary:
+      type: string
+      minLength: 1
+      description: Human-readable summary of this API contract result.
+      example: Create agent action record operation.
+    operationId:
+      type: string
+      minLength: 1
+      description: OpenAPI operationId for the generated or updated operation.
+      example: createAgentAction
+    method:
+      type: string
+      description: HTTP method of the operation.
+      enum:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+      example: POST
+    path:
+      type: string
+      minLength: 1
+      description: HTTP path of the operation.
+      example: /api/v1/agent-actions
+    clientClass:
+      type: string
+      description: Generated client/API class associated with this operation, if available. Use empty string when not applicable or unknown.
+      example: AgentActionsApi
+    requestDto:
+      type: string
+      description: Generated request DTO/schema class for this operation, if available. Use empty string when operation has no request DTO or it is unknown.
+      example: CreateAgentActionRequestDTO
+    responseDto:
+      type: string
+      description: Generated response DTO/schema class for this operation, if available. Use empty string when operation has no response DTO or it is unknown.
+      example: CreateAgentActionResponseDTO
+    artifacts:
+      type: array
+      description: Generated artifacts required to implement or consume this operation.
+      items:
+        $ref: './api-lane-generated-artifact.yml#/ApiLaneGeneratedArtifact'
+    notes:
+      type: array
+      description: Operation-level notes for downstream implementation agents.
+      items:
+        type: string

@@ -1,0 +1,19 @@
+CompleteApiLaneResponse:
+  type: object
+  required:
+    - ticketId
+    - laneId
+    - laneStatus
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+      description: Forge AI ticket id.
+    laneId:
+      type: string
+      format: uuid
+      description: Completed API lane id.
+    laneStatus:
+      type: string
+      description: Resulting API lane status.
+      example: DONE
