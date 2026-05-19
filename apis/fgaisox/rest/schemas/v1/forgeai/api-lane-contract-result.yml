@@ -1,6 +1,7 @@
 ApiLaneContractResult:
   type: object
   required:
+    - scope
     - summary
     - operationId
     - method
@@ -8,6 +9,11 @@ ApiLaneContractResult:
     - artifacts
     - notes
   properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Service scope path that owns this contract unit (for example backendforfrontendservice-sox, automationservice-sox).
+      example: backendforfrontendservice-sox
     summary:
       type: string
       minLength: 1
