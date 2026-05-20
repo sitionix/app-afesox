@@ -1,0 +1,32 @@
+AgentActionDTO:
+  title: AgentActionDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - title
+    - status
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Created agent action identifier.
+    title:
+      type: string
+      description: Persisted action title.
+    description:
+      type: string
+      description: Persisted action description.
+    metadata:
+      type: object
+      description: Persisted metadata JSON object.
+      additionalProperties: true
+    status:
+      type: string
+      description: Initial action status assigned at creation.
+      example: CREATED
+    createdAt:
+      type: string
+      format: date-time
+      description: Creation timestamp.

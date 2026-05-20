@@ -1,0 +1,28 @@
+CreateAgentActionRequestDTO:
+  title: CreateAgentActionRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      minLength: 1
+      maxLength: 120
+      pattern: ".*\\S.*"
+      description: Action title; must be non-blank.
+      example: Investigate flaky pipeline
+    description:
+      type: string
+      minLength: 1
+      maxLength: 500
+      pattern: ".*\\S.*"
+      description: Optional action description.
+      example: Re-run failed suite and collect diagnostics
+    metadata:
+      type: object
+      description: Optional JSON object metadata; non-object shapes are invalid.
+      additionalProperties: true
+      example:
+        source: workspace
+        priority: high

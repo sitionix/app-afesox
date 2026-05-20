@@ -1,0 +1,32 @@
+AgentActionDTO:
+  title: AgentActionDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - title
+    - status
+    - createdAt
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Created action identifier returned by upstream domain backend.
+    title:
+      type: string
+      description: Created action title from upstream response contract.
+    description:
+      type: string
+      description: Created action description from upstream response contract.
+    metadata:
+      type: object
+      description: Created action metadata from upstream response contract.
+      additionalProperties: true
+    status:
+      type: string
+      description: Backend-controlled action status returned to Workspace client.
+      example: CREATED
+    createdAt:
+      type: string
+      format: date-time
+      description: Creation timestamp from upstream response contract.
