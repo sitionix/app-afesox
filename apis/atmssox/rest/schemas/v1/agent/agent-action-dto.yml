@@ -1,0 +1,38 @@
+AgentActionDTO:
+  title: AgentActionDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - title
+    - status
+    - createdAt
+  properties:
+    id:
+      type: string
+      description: Generated record identifier.
+      example: 6f89f3b3-3e27-4d9d-8d8a-23b09fda7fcb
+    title:
+      type: string
+      description: Persisted action title.
+      example: Trigger workspace automation reconciliation
+    description:
+      type: string
+      description: Persisted optional action description.
+      example: Reconcile project-level pending automation tasks
+    metadata:
+      type: object
+      additionalProperties: true
+      description: Persisted optional metadata object.
+      example:
+        source: workspace-ui
+        priority: high
+    status:
+      type: string
+      description: Initial action status assigned by backend create flow.
+      example: CREATED
+    createdAt:
+      type: string
+      format: date-time
+      description: Action record creation timestamp (UTC).
+      example: 2026-05-20T09:31:54Z

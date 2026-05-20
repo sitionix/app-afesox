@@ -1,0 +1,31 @@
+post:
+  tags:
+    - Agent
+  operationId: createAgentAction
+  summary: Create agent action record
+  description: >
+    Creates a new agent action record for workspace automation flow.
+    Validation and authorization errors are returned with explicit controlled responses.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../openapi.yml#/components/schemas/CreateAgentActionRequestDTO
+  responses:
+    201:
+      description: Agent action record created
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yml#/components/schemas/AgentActionDTO
+    400:
+      $ref: ../../openapi.yml#/components/responses/BadRequest
+    401:
+      $ref: ../../openapi.yml#/components/responses/Unauthorized
+    403:
+      $ref: ../../openapi.yml#/components/responses/Forbidden
+    500:
+      $ref: ../../openapi.yml#/components/responses/InternalServerError

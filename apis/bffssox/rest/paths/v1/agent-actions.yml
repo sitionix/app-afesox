@@ -1,0 +1,37 @@
+post:
+  tags:
+    - Agent
+  operationId: createAgentAction
+  summary: Create agent action record
+  description: >
+    Creates a workspace agent action record and proxies controlled backend validation and authorization errors.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: X-Session-Id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Session context propagated to backend access control and audit flows when present.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../openapi.yml#/components/schemas/CreateAgentActionRequestDTO
+  responses:
+    201:
+      description: Agent action record created
+      content:
+        application/json:
+          schema:
+            $ref: ../../openapi.yml#/components/schemas/AgentActionDTO
+    400:
+      $ref: ../../openapi.yml#/components/responses/BadRequest
+    401:
+      $ref: ../../openapi.yml#/components/responses/Unauthorized
+    403:
+      $ref: ../../openapi.yml#/components/responses/Forbidden
+    500:
+      $ref: ../../openapi.yml#/components/responses/InternalServerError

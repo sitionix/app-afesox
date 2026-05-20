@@ -1,0 +1,28 @@
+CreateAgentActionRequestDTO:
+  title: CreateAgentActionRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - title
+  properties:
+    title:
+      type: string
+      minLength: 1
+      maxLength: 160
+      pattern: ".*\\S.*"
+      description: Action title. Value must contain at least one non-whitespace character.
+      example: Trigger workspace automation reconciliation
+    description:
+      type: string
+      minLength: 1
+      maxLength: 1000
+      pattern: ".*\\S.*"
+      description: Optional action description.
+      example: Reconcile project-level pending automation tasks
+    metadata:
+      type: object
+      additionalProperties: true
+      description: Optional metadata object forwarded to backend create flow as-is.
+      example:
+        source: workspace-ui
+        priority: high
