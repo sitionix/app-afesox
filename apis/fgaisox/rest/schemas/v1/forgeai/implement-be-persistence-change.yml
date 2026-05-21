@@ -1,4 +1,4 @@
-ImplementBePersistenceChange:
+ImplementBePersistenceChangeDTO:
   type: object
   additionalProperties: false
   required:

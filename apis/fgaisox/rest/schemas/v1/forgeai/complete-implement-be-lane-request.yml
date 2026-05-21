@@ -1,4 +1,4 @@
-CompleteImplementBeLaneRequest:
+CompleteImplementBeLaneRequestDTO:
   type: object
   additionalProperties: false
   required:
@@ -23,14 +23,14 @@ CompleteImplementBeLaneRequest:
       minItems: 1
       description: Changed backend files for downstream Unit Test lane input.
       items:
-        $ref: './implement-be-changed-file.yml#/ImplementBeChangedFile'
+        $ref: './implement-be-changed-file.yml#/ImplementBeChangedFileDTO'
     integrationFlows:
       type: array
       description: Implemented or changed integration boundaries (REST/internal flows) for downstream Integration Test lane input.
       items:
-        $ref: './implement-be-integration-flow.yml#/ImplementBeIntegrationFlow'
+        $ref: './implement-be-integration-flow.yml#/ImplementBeIntegrationFlowDTO'
     persistenceChanges:
       type: array
       description: Implemented persistence/data-model changes for downstream Integration Test lane input.
       items:
-        $ref: './implement-be-persistence-change.yml#/ImplementBePersistenceChange'
+        $ref: './implement-be-persistence-change.yml#/ImplementBePersistenceChangeDTO'

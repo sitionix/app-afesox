@@ -1,19 +1,9 @@
-ImplementBeIntegrationFlow:
+ImplementBeIntegrationFlowDTO:
   type: object
   additionalProperties: false
   required:
     - name
     - summary
-  oneOf:
-    - required:
-        - method
-        - path
-    - not:
-        anyOf:
-          - required:
-              - method
-          - required:
-              - path
   properties:
     name:
       type: string

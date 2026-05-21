@@ -69,16 +69,16 @@ components:
       $ref: './schemas/v1/forgeai/api-lane-generated-artifact.yml#/ApiLaneGeneratedArtifact'
     CompleteApiLaneResponse:
       $ref: './schemas/v1/forgeai/complete-api-lane-response.yml#/CompleteApiLaneResponse'
-    CompleteImplementBeLaneRequest:
-      $ref: './schemas/v1/forgeai/complete-implement-be-lane-request.yml#/CompleteImplementBeLaneRequest'
-    ImplementBeChangedFile:
-      $ref: './schemas/v1/forgeai/implement-be-changed-file.yml#/ImplementBeChangedFile'
-    ImplementBeIntegrationFlow:
-      $ref: './schemas/v1/forgeai/implement-be-integration-flow.yml#/ImplementBeIntegrationFlow'
-    ImplementBePersistenceChange:
-      $ref: './schemas/v1/forgeai/implement-be-persistence-change.yml#/ImplementBePersistenceChange'
-    CompleteImplementBeLaneResponse:
-      $ref: './schemas/v1/forgeai/complete-implement-be-lane-response.yml#/CompleteImplementBeLaneResponse'
+    CompleteImplementBeLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-implement-be-lane-request.yml#/CompleteImplementBeLaneRequestDTO'
+    ImplementBeChangedFileDTO:
+      $ref: './schemas/v1/forgeai/implement-be-changed-file.yml#/ImplementBeChangedFileDTO'
+    ImplementBeIntegrationFlowDTO:
+      $ref: './schemas/v1/forgeai/implement-be-integration-flow.yml#/ImplementBeIntegrationFlowDTO'
+    ImplementBePersistenceChangeDTO:
+      $ref: './schemas/v1/forgeai/implement-be-persistence-change.yml#/ImplementBePersistenceChangeDTO'
+    CompleteImplementBeLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-implement-be-lane-response.yml#/CompleteImplementBeLaneResponseDTO'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:

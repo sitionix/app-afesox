@@ -1,4 +1,4 @@
-ImplementBeChangedFile:
+ImplementBeChangedFileDTO:
   type: object
   additionalProperties: false
   required:

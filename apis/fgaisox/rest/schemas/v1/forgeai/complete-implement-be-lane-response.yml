@@ -1,4 +1,4 @@
-CompleteImplementBeLaneResponse:
+CompleteImplementBeLaneResponseDTO:
   type: object
   additionalProperties: false
   required:

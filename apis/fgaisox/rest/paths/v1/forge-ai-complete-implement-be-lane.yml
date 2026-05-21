@@ -21,14 +21,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: '../../openapi.yml#/components/schemas/CompleteImplementBeLaneRequest'
+          $ref: '../../openapi.yml#/components/schemas/CompleteImplementBeLaneRequestDTO'
   responses:
     '200':
       description: Backend implementation lane completion accepted.
       content:
         application/json:
           schema:
-            $ref: '../../openapi.yml#/components/schemas/CompleteImplementBeLaneResponse'
+            $ref: '../../openapi.yml#/components/schemas/CompleteImplementBeLaneResponseDTO'
     '400':
       description: Validation failed (VALIDATION_FAILED).
       content:
