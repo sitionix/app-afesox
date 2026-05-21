@@ -1,0 +1,20 @@
+CompleteImplementBeLaneResponse:
+  type: object
+  additionalProperties: false
+  required:
+    - ticketId
+    - laneId
+    - status
+  properties:
+    ticketId:
+      type: string
+      description: Ticket identifier for which backend implementation lane was completed.
+      example: SITIONIX-135
+    laneId:
+      type: string
+      description: Completed backend implementation lane identifier.
+      example: implement-be.automationservice-sox
+    status:
+      type: string
+      description: Resulting lane status after successful completion.
+      example: DONE

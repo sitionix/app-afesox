@@ -1,0 +1,55 @@
+post:
+  tags:
+    - ForgeAI
+  summary: Complete backend implementation lane
+  operationId: completeImplementBeLane
+  parameters:
+    - name: ticketId
+      in: path
+      required: true
+      description: Forge AI ticket identifier (for example, SITIONIX-135).
+      schema:
+        type: string
+    - name: laneId
+      in: path
+      required: true
+      description: Backend implementer lane identifier (for example, implement-be.automationservice-sox).
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/CompleteImplementBeLaneRequest'
+  responses:
+    '200':
+      description: Backend implementation lane completion accepted.
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/CompleteImplementBeLaneResponse'
+    '400':
+      description: Validation failed (VALIDATION_FAILED).
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      description: Ticket or lane not found (TICKET_NOT_FOUND, LANE_NOT_FOUND).
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '409':
+      description: Invalid lane state/agent/scope (INVALID_LANE_AGENT, INVALID_LANE_STATE, LANE_SCOPE_MISMATCH).
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/ErrorDTO'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

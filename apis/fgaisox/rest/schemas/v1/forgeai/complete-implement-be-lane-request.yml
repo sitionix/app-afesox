@@ -1,0 +1,36 @@
+CompleteImplementBeLaneRequest:
+  type: object
+  additionalProperties: false
+  required:
+    - scope
+    - summary
+    - changedFiles
+    - integrationFlows
+    - persistenceChanges
+  properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Service scope where backend implementation was done; must match lane scope and configured runtime scope.
+      example: automationservice-sox
+    summary:
+      type: string
+      minLength: 1
+      description: Compact human-readable summary of backend implementation result for runtime/ticket state.
+      example: Implemented backend support for agent action creation.
+    changedFiles:
+      type: array
+      minItems: 1
+      description: Changed backend files for downstream Unit Test lane input.
+      items:
+        $ref: './implement-be-changed-file.yml#/ImplementBeChangedFile'
+    integrationFlows:
+      type: array
+      description: Implemented or changed integration boundaries (REST/internal flows) for downstream Integration Test lane input.
+      items:
+        $ref: './implement-be-integration-flow.yml#/ImplementBeIntegrationFlow'
+    persistenceChanges:
+      type: array
+      description: Implemented persistence/data-model changes for downstream Integration Test lane input.
+      items:
+        $ref: './implement-be-persistence-change.yml#/ImplementBePersistenceChange'

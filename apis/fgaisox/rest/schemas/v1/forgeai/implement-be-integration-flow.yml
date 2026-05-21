@@ -1,0 +1,47 @@
+ImplementBeIntegrationFlow:
+  type: object
+  additionalProperties: false
+  required:
+    - name
+    - summary
+  oneOf:
+    - required:
+        - method
+        - path
+    - not:
+        anyOf:
+          - required:
+              - method
+          - required:
+              - path
+  properties:
+    name:
+      type: string
+      minLength: 1
+      description: Human-readable integration flow name affected by backend implementation.
+      example: Create agent action
+    operationId:
+      type: string
+      nullable: true
+      description: OpenAPI operationId when this flow maps to an API-first operation and the id exists in the contract.
+      example: createAgentAction
+    method:
+      type: string
+      description: HTTP method for REST flow; required when the flow represents a REST endpoint.
+      enum:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+      example: POST
+    path:
+      type: string
+      description: REST path for the implemented flow; required when the flow represents a REST endpoint.
+      pattern: '^/'
+      example: /api/v1/agent-actions
+    summary:
+      type: string
+      minLength: 1
+      description: Short description of what this implemented integration flow does.
+      example: Creates an agent action record through REST API.
