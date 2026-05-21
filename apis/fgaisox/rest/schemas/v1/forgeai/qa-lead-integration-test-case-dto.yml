@@ -1,0 +1,52 @@
+QaLeadIntegrationTestCaseDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - title
+    - flow
+    - given
+    - when
+    - then
+    - priority
+  properties:
+    title:
+      type: string
+      minLength: 1
+      description: Short action-oriented integration test case title.
+      example: Create agent action successfully
+    flow:
+      $ref: './qa-lead-integration-flow-dto.yml#/QaLeadIntegrationFlowDTO'
+    given:
+      type: array
+      minItems: 1
+      description: Preconditions required before running the integration test case.
+      items:
+        type: string
+        minLength: 1
+    when:
+      type: array
+      minItems: 1
+      description: Action performed by the integration test case.
+      items:
+        type: string
+        minLength: 1
+    then:
+      type: array
+      minItems: 1
+      description: Observable expected results that must be asserted.
+      items:
+        type: string
+        minLength: 1
+    dataChecks:
+      type: array
+      description: Optional persistence/data assertions relevant for this integration test case.
+      items:
+        $ref: './qa-lead-data-check-dto.yml#/QaLeadDataCheckDTO'
+    priority:
+      type: string
+      description: Integration test case importance for downstream IT Test lane planning.
+      enum:
+        - HIGH
+        - MEDIUM
+        - LOW
+      example: HIGH
