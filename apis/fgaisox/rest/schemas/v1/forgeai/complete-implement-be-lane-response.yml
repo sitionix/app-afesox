@@ -8,12 +8,14 @@ CompleteImplementBeLaneResponseDTO:
   properties:
     ticketId:
       type: string
+      format: uuid
       description: Ticket identifier for which backend implementation lane was completed.
-      example: SITIONIX-135
+      example: 8f6f38ca-2f27-4c6a-a7f4-d6a1d7473f7e
     laneId:
       type: string
+      format: uuid
       description: Completed backend implementation lane identifier.
-      example: implement-be.automationservice-sox
+      example: 3c7ea31b-8660-4f89-a124-72be9d1b58f5
     status:
       type: string
       description: Resulting lane status after successful completion.

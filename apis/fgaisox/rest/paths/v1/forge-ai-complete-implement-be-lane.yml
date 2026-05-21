@@ -7,15 +7,17 @@ post:
     - name: ticketId
       in: path
       required: true
-      description: Forge AI ticket identifier (for example, SITIONIX-135).
+      description: Forge AI ticket identifier in UUID format.
       schema:
         type: string
+        format: uuid
     - name: laneId
       in: path
       required: true
-      description: Backend implementer lane identifier (for example, implement-be.automationservice-sox).
+      description: Backend implementer lane identifier in UUID format.
       schema:
         type: string
+        format: uuid
   requestBody:
     required: true
     content:
