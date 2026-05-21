@@ -1,0 +1,29 @@
+CompleteQaLeadLaneRequestDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - scope
+    - summary
+    - integrationTestCases
+    - unitTestNotes
+  properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Assigned service scope for which QA Lead prepared test context; must match lane scope.
+      example: automationservice-sox
+    summary:
+      type: string
+      minLength: 1
+      description: Short factual summary of prepared QA Lead test context output.
+      example: Prepared integration test cases for backend agent action implementation.
+    integrationTestCases:
+      type: array
+      description: Structured integration test cases intended for downstream IT Test lane implementation.
+      items:
+        $ref: './qa-lead-integration-test-case-dto.yml#/QaLeadIntegrationTestCaseDTO'
+    unitTestNotes:
+      type: array
+      description: Optional concise attention notes for downstream Unit Test lane.
+      items:
+        $ref: './qa-lead-unit-test-note-dto.yml#/QaLeadUnitTestNoteDTO'

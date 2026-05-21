@@ -1,0 +1,17 @@
+QaLeadUnitTestNoteDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - target
+    - note
+  properties:
+    target:
+      type: string
+      minLength: 1
+      description: Specific area/class/use-case/behavior that Unit Test lane should pay attention to.
+      example: CreateAgentActionUseCase
+    note:
+      type: string
+      minLength: 1
+      description: Concise unit-test attention note without test code or full test-case steps.
+      example: Pay attention to unknown agent id and unsupported action type handling.

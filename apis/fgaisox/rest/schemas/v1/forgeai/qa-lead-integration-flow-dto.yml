@@ -1,0 +1,31 @@
+QaLeadIntegrationFlowDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      minLength: 1
+      description: Human-readable integration flow name covered by the integration test case.
+      example: Create agent action
+    operationId:
+      type: string
+      nullable: true
+      description: OpenAPI operationId for API-first flows when available in the contract.
+      example: createAgentAction
+    method:
+      type: string
+      description: HTTP method for REST/API flow; should be provided for REST test cases.
+      enum:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+      example: POST
+    path:
+      type: string
+      description: REST path covered by this test case flow; should be provided for REST test cases and start with '/'.
+      pattern: '^/'
+      example: /api/v1/agent-actions

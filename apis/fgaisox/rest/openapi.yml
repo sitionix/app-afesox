@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.8
+  version: 0.0.9
   contact:
     name: APP Sitionix
 servers:
@@ -21,6 +21,8 @@ paths:
     $ref: './paths/v1/forge-ai-complete-api-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/implement-be/complete:
     $ref: './paths/v1/forge-ai-complete-implement-be-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/qa-lead/complete:
+    $ref: './paths/v1/forge-ai-complete-qa-lead-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -79,6 +81,18 @@ components:
       $ref: './schemas/v1/forgeai/implement-be-persistence-change.yml#/ImplementBePersistenceChangeDTO'
     CompleteImplementBeLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-implement-be-lane-response.yml#/CompleteImplementBeLaneResponseDTO'
+    CompleteQaLeadLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-qa-lead-lane-request-dto.yml#/CompleteQaLeadLaneRequestDTO'
+    QaLeadIntegrationTestCaseDTO:
+      $ref: './schemas/v1/forgeai/qa-lead-integration-test-case-dto.yml#/QaLeadIntegrationTestCaseDTO'
+    QaLeadIntegrationFlowDTO:
+      $ref: './schemas/v1/forgeai/qa-lead-integration-flow-dto.yml#/QaLeadIntegrationFlowDTO'
+    QaLeadDataCheckDTO:
+      $ref: './schemas/v1/forgeai/qa-lead-data-check-dto.yml#/QaLeadDataCheckDTO'
+    QaLeadUnitTestNoteDTO:
+      $ref: './schemas/v1/forgeai/qa-lead-unit-test-note-dto.yml#/QaLeadUnitTestNoteDTO'
+    CompleteQaLeadLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-qa-lead-lane-response-dto.yml#/CompleteQaLeadLaneResponseDTO'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:

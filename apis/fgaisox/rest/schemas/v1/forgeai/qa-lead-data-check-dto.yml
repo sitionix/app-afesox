@@ -1,0 +1,17 @@
+QaLeadDataCheckDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - target
+    - expectation
+  properties:
+    target:
+      type: string
+      minLength: 1
+      description: Persistence object that must be verified (table, collection, column, projection, or persisted object).
+      example: agent_actions
+    expectation:
+      type: string
+      minLength: 1
+      description: Expected persisted data state after the tested flow execution.
+      example: New row exists for the requested agent action
