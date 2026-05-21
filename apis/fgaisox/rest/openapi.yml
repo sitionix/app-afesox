@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.6
+  version: 0.0.7
   contact:
     name: APP Sitionix
 servers:
@@ -19,6 +19,8 @@ paths:
     $ref: './paths/v1/forge-ai-complete-architect-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/api/complete:
     $ref: './paths/v1/forge-ai-complete-api-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/implement-be/complete:
+    $ref: './paths/v1/forge-ai-complete-implement-be-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -67,6 +69,16 @@ components:
       $ref: './schemas/v1/forgeai/api-lane-generated-artifact.yml#/ApiLaneGeneratedArtifact'
     CompleteApiLaneResponse:
       $ref: './schemas/v1/forgeai/complete-api-lane-response.yml#/CompleteApiLaneResponse'
+    CompleteImplementBeLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-implement-be-lane-request.yml#/CompleteImplementBeLaneRequestDTO'
+    ImplementBeChangedFileDTO:
+      $ref: './schemas/v1/forgeai/implement-be-changed-file.yml#/ImplementBeChangedFileDTO'
+    ImplementBeIntegrationFlowDTO:
+      $ref: './schemas/v1/forgeai/implement-be-integration-flow.yml#/ImplementBeIntegrationFlowDTO'
+    ImplementBePersistenceChangeDTO:
+      $ref: './schemas/v1/forgeai/implement-be-persistence-change.yml#/ImplementBePersistenceChangeDTO'
+    CompleteImplementBeLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-implement-be-lane-response.yml#/CompleteImplementBeLaneResponseDTO'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:

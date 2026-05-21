@@ -1,0 +1,17 @@
+ImplementBeChangedFileDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - path
+    - reason
+  properties:
+    path:
+      type: string
+      minLength: 1
+      description: Repository-relative file path changed by backend implementation in the declared scope.
+      example: automationservice-sox/src/main/java/com/sitionix/atmssox/application/agent/CreateAgentActionUseCase.java
+    reason:
+      type: string
+      minLength: 1
+      description: Short explanation of why this file was changed from an implementation perspective.
+      example: Added backend use case for creating agent action records.

@@ -1,0 +1,36 @@
+ImplementBePersistenceChangeDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - type
+    - name
+    - summary
+  properties:
+    type:
+      type: string
+      description: Type of persistence change introduced by backend implementation.
+      enum:
+        - TABLE_CREATED
+        - TABLE_CHANGED
+        - COLUMN_ADDED
+        - COLUMN_CHANGED
+        - COLUMN_REMOVED
+        - INDEX_ADDED
+        - INDEX_CHANGED
+        - MIGRATION_ADDED
+        - ENTITY_ADDED
+        - ENTITY_CHANGED
+        - REPOSITORY_ADDED
+        - REPOSITORY_CHANGED
+        - OTHER
+      example: TABLE_CREATED
+    name:
+      type: string
+      minLength: 1
+      description: Name of changed persistence object (for example table, column, migration, entity, repository).
+      example: agent_actions
+    summary:
+      type: string
+      minLength: 1
+      description: Short factual explanation of what persistence change was implemented and why.
+      example: Stores agent action records.
