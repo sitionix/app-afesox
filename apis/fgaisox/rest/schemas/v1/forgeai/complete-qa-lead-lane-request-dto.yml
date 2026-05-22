@@ -4,6 +4,7 @@ CompleteQaLeadLaneRequestDTO:
   required:
     - scope
     - summary
+    - testRouting
     - integrationTestCases
     - unitTestNotes
   properties:
@@ -17,6 +18,8 @@ CompleteQaLeadLaneRequestDTO:
       minLength: 1
       description: Short factual summary of prepared QA Lead test context output.
       example: Prepared integration test cases for backend agent action implementation.
+    testRouting:
+      $ref: './qa-lead-test-routing-dto.yml#/QaLeadTestRoutingDTO'
     integrationTestCases:
       type: array
       description: Structured integration test cases intended for downstream IT Test lane implementation.

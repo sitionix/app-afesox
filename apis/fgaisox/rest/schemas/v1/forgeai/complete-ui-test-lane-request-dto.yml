@@ -1,0 +1,27 @@
+CompleteUiTestLaneRequestDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - scope
+    - summary
+    - coveredCases
+  properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Assigned frontend scope where UI-test work was completed.
+      example: sitionix-spa
+    summary:
+      type: string
+      minLength: 1
+      description: Short factual summary of completed UI-test work.
+      example: Completed UI tests for frontend flow.
+    coveredCases:
+      type: array
+      minItems: 1
+      description: Names of UI test cases covered by UI Test lane completion.
+      items:
+        type: string
+        minLength: 1
+        description: Covered UI test case name.
+        example: User can create agent action from UI
