@@ -1,0 +1,19 @@
+UnitTestSonarDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - coveragePercent
+    - issues
+  properties:
+    coveragePercent:
+      type: number
+      format: double
+      minimum: 90.0
+      maximum: 100.0
+      description: Aggregated Sonar coverage percentage after unit-test work; must be between 90.0 and 100.0 inclusive.
+      example: 94.2
+    issues:
+      type: integer
+      minimum: 0
+      description: Aggregated number of Sonar issues for this Unit Test lane result.
+      example: 0

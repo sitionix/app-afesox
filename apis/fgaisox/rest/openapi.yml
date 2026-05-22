@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.9
+  version: 0.0.10
   contact:
     name: APP Sitionix
 servers:
@@ -23,6 +23,8 @@ paths:
     $ref: './paths/v1/forge-ai-complete-implement-be-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/qa-lead/complete:
     $ref: './paths/v1/forge-ai-complete-qa-lead-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/test-unit/complete:
+    $ref: './paths/v1/forge-ai-complete-unit-test-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -93,6 +95,12 @@ components:
       $ref: './schemas/v1/forgeai/qa-lead-unit-test-note-dto.yml#/QaLeadUnitTestNoteDTO'
     CompleteQaLeadLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-qa-lead-lane-response-dto.yml#/CompleteQaLeadLaneResponseDTO'
+    CompleteUnitTestLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-unit-test-lane-request-dto.yml#/CompleteUnitTestLaneRequestDTO'
+    UnitTestSonarDTO:
+      $ref: './schemas/v1/forgeai/unit-test-sonar-dto.yml#/UnitTestSonarDTO'
+    CompleteUnitTestLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-unit-test-lane-response-dto.yml#/CompleteUnitTestLaneResponseDTO'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:
