@@ -1,0 +1,20 @@
+QaLeadTestLaneRequirementsDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - unitTestRequired
+    - integrationTestRequired
+    - uiTestRequired
+  properties:
+    unitTestRequired:
+      type: boolean
+      description: Whether Unit Test lane is required for the assigned scope after QA Lead analysis.
+      example: true
+    integrationTestRequired:
+      type: boolean
+      description: Whether Integration Test lane is required for the assigned scope after QA Lead analysis.
+      example: true
+    uiTestRequired:
+      type: boolean
+      description: Whether UI Test lane is required for the assigned scope after QA Lead analysis.
+      example: false

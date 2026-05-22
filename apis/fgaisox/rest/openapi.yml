@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.10
+  version: 0.0.11
   contact:
     name: APP Sitionix
 servers:
@@ -25,6 +25,10 @@ paths:
     $ref: './paths/v1/forge-ai-complete-qa-lead-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/test-unit/complete:
     $ref: './paths/v1/forge-ai-complete-unit-test-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/test-it/complete:
+    $ref: './paths/v1/forge-ai-complete-it-test-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/test-ui/complete:
+    $ref: './paths/v1/forge-ai-complete-ui-test-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -85,6 +89,8 @@ components:
       $ref: './schemas/v1/forgeai/complete-implement-be-lane-response.yml#/CompleteImplementBeLaneResponseDTO'
     CompleteQaLeadLaneRequestDTO:
       $ref: './schemas/v1/forgeai/complete-qa-lead-lane-request-dto.yml#/CompleteQaLeadLaneRequestDTO'
+    QaLeadTestLaneRequirementsDTO:
+      $ref: './schemas/v1/forgeai/qa-lead-test-lane-requirements-dto.yml#/QaLeadTestLaneRequirementsDTO'
     QaLeadIntegrationTestCaseDTO:
       $ref: './schemas/v1/forgeai/qa-lead-integration-test-case-dto.yml#/QaLeadIntegrationTestCaseDTO'
     QaLeadIntegrationFlowDTO:
@@ -101,6 +107,14 @@ components:
       $ref: './schemas/v1/forgeai/unit-test-sonar-dto.yml#/UnitTestSonarDTO'
     CompleteUnitTestLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-unit-test-lane-response-dto.yml#/CompleteUnitTestLaneResponseDTO'
+    CompleteItTestLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-it-test-lane-request-dto.yml#/CompleteItTestLaneRequestDTO'
+    CompleteItTestLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-it-test-lane-response-dto.yml#/CompleteItTestLaneResponseDTO'
+    CompleteUiTestLaneRequestDTO:
+      $ref: './schemas/v1/forgeai/complete-ui-test-lane-request-dto.yml#/CompleteUiTestLaneRequestDTO'
+    CompleteUiTestLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-ui-test-lane-response-dto.yml#/CompleteUiTestLaneResponseDTO'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:

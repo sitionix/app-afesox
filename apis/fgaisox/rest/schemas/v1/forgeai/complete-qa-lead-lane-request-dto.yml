@@ -4,8 +4,10 @@ CompleteQaLeadLaneRequestDTO:
   required:
     - scope
     - summary
+    - testLaneRequirements
     - integrationTestCases
     - unitTestNotes
+    - uiTestNotes
   properties:
     scope:
       type: string
@@ -17,6 +19,8 @@ CompleteQaLeadLaneRequestDTO:
       minLength: 1
       description: Short factual summary of prepared QA Lead test context output.
       example: Prepared integration test cases for backend agent action implementation.
+    testLaneRequirements:
+      $ref: './qa-lead-test-lane-requirements-dto.yml#/QaLeadTestLaneRequirementsDTO'
     integrationTestCases:
       type: array
       description: Structured integration test cases intended for downstream IT Test lane implementation.
@@ -25,5 +29,10 @@ CompleteQaLeadLaneRequestDTO:
     unitTestNotes:
       type: array
       description: Optional concise attention notes for downstream Unit Test lane.
+      items:
+        $ref: './qa-lead-unit-test-note-dto.yml#/QaLeadUnitTestNoteDTO'
+    uiTestNotes:
+      type: array
+      description: Optional concise attention notes for downstream UI Test lane; same note structure as unitTestNotes.
       items:
         $ref: './qa-lead-unit-test-note-dto.yml#/QaLeadUnitTestNoteDTO'

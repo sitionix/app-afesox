@@ -1,0 +1,27 @@
+CompleteItTestLaneRequestDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - scope
+    - summary
+    - coveredCases
+  properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Assigned backend service scope where integration-test work was completed.
+      example: automationservice-sox
+    summary:
+      type: string
+      minLength: 1
+      description: Short factual summary of completed integration-test work.
+      example: Completed integration tests for backend flow.
+    coveredCases:
+      type: array
+      minItems: 1
+      description: Names of integration test cases covered by IT Test lane completion.
+      items:
+        type: string
+        minLength: 1
+        description: Covered integration test case name.
+        example: Create agent action successfully
