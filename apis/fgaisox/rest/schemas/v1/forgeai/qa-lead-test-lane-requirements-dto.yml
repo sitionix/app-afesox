@@ -1,4 +1,4 @@
-QaLeadTestRoutingDTO:
+QaLeadTestLaneRequirementsDTO:
   type: object
   additionalProperties: false
   required:

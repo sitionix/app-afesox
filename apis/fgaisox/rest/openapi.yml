@@ -89,8 +89,8 @@ components:
       $ref: './schemas/v1/forgeai/complete-implement-be-lane-response.yml#/CompleteImplementBeLaneResponseDTO'
     CompleteQaLeadLaneRequestDTO:
       $ref: './schemas/v1/forgeai/complete-qa-lead-lane-request-dto.yml#/CompleteQaLeadLaneRequestDTO'
-    QaLeadTestRoutingDTO:
-      $ref: './schemas/v1/forgeai/qa-lead-test-routing-dto.yml#/QaLeadTestRoutingDTO'
+    QaLeadTestLaneRequirementsDTO:
+      $ref: './schemas/v1/forgeai/qa-lead-test-lane-requirements-dto.yml#/QaLeadTestLaneRequirementsDTO'
     QaLeadIntegrationTestCaseDTO:
       $ref: './schemas/v1/forgeai/qa-lead-integration-test-case-dto.yml#/QaLeadIntegrationTestCaseDTO'
     QaLeadIntegrationFlowDTO:
