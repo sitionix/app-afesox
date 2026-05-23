@@ -1,0 +1,17 @@
+ImplementFeChangedFileDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - path
+    - reason
+  properties:
+    path:
+      type: string
+      minLength: 1
+      description: Repository-relative path to a changed frontend source file within the assigned frontend scope.
+      example: apps/workspace/src/features/agents/pages/AgentDetailsPage.tsx
+    reason:
+      type: string
+      minLength: 1
+      description: Short explanation of why this frontend file was changed.
+      example: Added action creation entry point on agent details page.

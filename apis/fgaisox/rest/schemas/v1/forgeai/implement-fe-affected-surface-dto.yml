@@ -1,0 +1,31 @@
+ImplementFeAffectedSurfaceDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - type
+    - name
+    - summary
+  properties:
+    type:
+      type: string
+      description: Frontend surface category affected by the implementation.
+      enum:
+        - ROUTE
+        - PAGE
+        - COMPONENT
+        - HOOK
+        - CLIENT
+        - STATE
+        - STYLE
+        - OTHER
+      example: PAGE
+    name:
+      type: string
+      minLength: 1
+      description: Human-readable name of the affected frontend surface.
+      example: Agent details
+    summary:
+      type: string
+      minLength: 1
+      description: Short explanation of how this frontend surface was affected.
+      example: Added user entry point for creating an agent action.
