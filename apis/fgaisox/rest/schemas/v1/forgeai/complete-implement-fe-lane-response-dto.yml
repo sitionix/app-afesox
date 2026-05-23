@@ -1,0 +1,22 @@
+CompleteImplementFeLaneResponseDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - ticketId
+    - laneId
+    - status
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+      description: Ticket identifier used to complete the frontend implementation lane.
+      example: 8f6f38ca-2f27-4c6a-a7f4-d6a1d7473f7e
+    laneId:
+      type: string
+      format: uuid
+      description: Frontend implementer lane identifier that was completed.
+      example: 3c7ea31b-8660-4f89-a124-72be9d1b58f5
+    status:
+      type: string
+      description: Resulting lane status after successful frontend implementation completion.
+      example: DONE

@@ -1,0 +1,39 @@
+CompleteImplementFeLaneRequestDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - scope
+    - summary
+    - changedFiles
+    - affectedSurfaces
+    - uiBehavior
+  properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Assigned frontend scope where implementation was completed and that must match the lane scope.
+      example: sitionix-spa
+    summary:
+      type: string
+      minLength: 1
+      description: Short factual summary of the completed frontend implementation.
+      example: Implemented frontend changes for agent action creation flow.
+    changedFiles:
+      type: array
+      minItems: 1
+      description: Repository-relative frontend source files changed by the FE implementer.
+      items:
+        $ref: './implement-fe-changed-file-dto.yml#/ImplementFeChangedFileDTO'
+    affectedSurfaces:
+      type: array
+      description: Frontend surfaces affected by the implementation, such as pages, components, routes, or styles.
+      items:
+        $ref: './implement-fe-affected-surface-dto.yml#/ImplementFeAffectedSurfaceDTO'
+    uiBehavior:
+      type: array
+      description: User-visible behavior changes implemented by the frontend lane.
+      items:
+        type: string
+        minLength: 1
+        description: Single implemented UI behavior item.
+        example: User can open action creation UI from agent details page.
