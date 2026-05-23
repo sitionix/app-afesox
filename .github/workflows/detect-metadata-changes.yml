@@ -88,7 +88,8 @@ jobs:
 
           # ---------- determine base/head ----------
           # Prefer exact PR base/head for pull_request events. For push events use before/after.
-          git fetch origin develop --prune
+          # Do not run additional network fetches here:
+          # checkout@v4 already fetched refs (fetch-depth: 0), and extra fetch can fail intermittently on auth.
 
           BASE=""
           HEAD=""
@@ -101,8 +102,6 @@ jobs:
               BASE="$(jq -r '.pull_request.base.sha // empty' "$GITHUB_EVENT_PATH" || true)"
               HEAD="$(jq -r '.pull_request.head.sha // empty' "$GITHUB_EVENT_PATH" || true)"
 
-              # Ensure the PR head objects are available even for closed PRs.
-              git fetch origin "pull/${PR_NUMBER}/head:refs/remotes/origin/pr/${PR_NUMBER}/head" --prune || true
             else
               BASE="$(jq -r '.before // empty' "$GITHUB_EVENT_PATH" || true)"
               HEAD="$(jq -r '.after // empty' "$GITHUB_EVENT_PATH" || true)"
@@ -114,8 +113,8 @@ jobs:
           fi
 
           if [[ -z "$BASE" || "$BASE" == "0000000000000000000000000000000000000000" ]]; then
-            # fallback: previous commit of origin/develop
-            BASE="$(git rev-parse origin/develop^)"
+            # fallback: previous commit of current HEAD
+            BASE="$(git rev-parse HEAD^)"
           fi
 
           echo "BASE=$BASE"
