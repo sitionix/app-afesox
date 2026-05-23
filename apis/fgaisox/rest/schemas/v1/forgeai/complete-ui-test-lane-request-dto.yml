@@ -5,6 +5,7 @@ CompleteUiTestLaneRequestDTO:
     - scope
     - summary
     - coveredCases
+    - sonar
   properties:
     scope:
       type: string
@@ -25,3 +26,5 @@ CompleteUiTestLaneRequestDTO:
         minLength: 1
         description: Covered UI test case name.
         example: User can create agent action from UI
+    sonar:
+      $ref: './unit-test-sonar-dto.yml#/UnitTestSonarDTO'

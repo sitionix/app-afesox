@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.12
+  version: 0.0.13
   contact:
     name: APP Sitionix
 servers:
@@ -107,6 +107,8 @@ components:
       $ref: './schemas/v1/forgeai/complete-unit-test-lane-request-dto.yml#/CompleteUnitTestLaneRequestDTO'
     UnitTestSonarDTO:
       $ref: './schemas/v1/forgeai/unit-test-sonar-dto.yml#/UnitTestSonarDTO'
+    ImplementationSonarDTO:
+      $ref: './schemas/v1/forgeai/implementation-sonar-dto.yml#/ImplementationSonarDTO'
     CompleteUnitTestLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-unit-test-lane-response-dto.yml#/CompleteUnitTestLaneResponseDTO'
     CompleteItTestLaneRequestDTO:

@@ -7,6 +7,7 @@ CompleteImplementBeLaneRequestDTO:
     - changedFiles
     - integrationFlows
     - persistenceChanges
+    - sonar
   properties:
     scope:
       type: string
@@ -34,3 +35,5 @@ CompleteImplementBeLaneRequestDTO:
       description: Implemented persistence/data-model changes for downstream Integration Test lane input.
       items:
         $ref: './implement-be-persistence-change.yml#/ImplementBePersistenceChangeDTO'
+    sonar:
+      $ref: './implementation-sonar-dto.yml#/ImplementationSonarDTO'

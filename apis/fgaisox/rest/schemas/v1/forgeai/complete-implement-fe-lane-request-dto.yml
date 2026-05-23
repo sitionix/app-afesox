@@ -7,6 +7,7 @@ CompleteImplementFeLaneRequestDTO:
     - changedFiles
     - affectedSurfaces
     - uiBehavior
+    - sonar
   properties:
     scope:
       type: string
@@ -37,3 +38,5 @@ CompleteImplementFeLaneRequestDTO:
         minLength: 1
         description: Single implemented UI behavior item.
         example: User can open action creation UI from agent details page.
+    sonar:
+      $ref: './implementation-sonar-dto.yml#/ImplementationSonarDTO'

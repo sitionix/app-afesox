@@ -1,0 +1,11 @@
+ImplementationSonarDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - issues
+  properties:
+    issues:
+      type: integer
+      minimum: 0
+      description: Aggregated Sonar issues count for implementation lane completion.
+      example: 7
