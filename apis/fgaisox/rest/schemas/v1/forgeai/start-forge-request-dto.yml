@@ -12,7 +12,6 @@ StartForgeRequestDTO:
     task:
       type: string
       minLength: 1
-      maxLength: 4000
     serviceIds:
       type: array
       minItems: 1
