@@ -1,9 +1,5 @@
 api:
-<<<<<<< HEAD
   version: 0.0.16
-=======
-  version: 0.0.14
->>>>>>> origin/develop
   visibility: PUBLIC
   metadata:
     version: "1.0"
