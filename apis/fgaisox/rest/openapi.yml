@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.14
+  version: 0.0.16
   contact:
     name: APP Sitionix
 servers:
@@ -31,6 +31,8 @@ paths:
     $ref: './paths/v1/forge-ai-complete-ui-test-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/implement-fe/complete:
     $ref: './paths/v1/forge-ai-complete-implement-fe-lane.yml'
+  /api/v1/forge-ai/tickets/{ticketId}/reviewer/complete:
+    $ref: './paths/v1/forge-ai-complete-reviewer-lane.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -127,6 +129,8 @@ components:
       $ref: './schemas/v1/forgeai/implement-fe-affected-surface-dto.yml#/ImplementFeAffectedSurfaceDTO'
     CompleteImplementFeLaneResponseDTO:
       $ref: './schemas/v1/forgeai/complete-implement-fe-lane-response-dto.yml#/CompleteImplementFeLaneResponseDTO'
+    CompleteReviewerLaneResponseDTO:
+      $ref: './schemas/v1/forgeai/complete-reviewer-lane-response-dto.yml#/CompleteReviewerLaneResponseDTO'
     AgentDTO:
       $ref: './schemas/shared/agent-dto.yml#/AgentDTO'
     ErrorDTO:

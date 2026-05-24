@@ -1,0 +1,16 @@
+CompleteReviewerLaneResponseDTO:
+  type: object
+  additionalProperties: false
+  required:
+    - ticketId
+    - status
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+      description: Ticket identifier that was used to complete the reviewer lane.
+      example: 8f6f38ca-2f27-4c6a-a7f4-d6a1d7473f7e
+    status:
+      type: string
+      description: Resulting lane status after successful reviewer completion.
+      example: DONE
