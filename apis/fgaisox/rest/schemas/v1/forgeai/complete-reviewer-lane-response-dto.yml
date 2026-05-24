@@ -3,7 +3,6 @@ CompleteReviewerLaneResponseDTO:
   additionalProperties: false
   required:
     - ticketId
-    - laneId
     - status
   properties:
     ticketId:
@@ -11,10 +10,6 @@ CompleteReviewerLaneResponseDTO:
       format: uuid
       description: Ticket identifier that was used to complete the reviewer lane.
       example: 8f6f38ca-2f27-4c6a-a7f4-d6a1d7473f7e
-    laneId:
-      type: string
-      description: Reviewer lane identifier that was completed.
-      example: reviewer.automationservice-sox
     status:
       type: string
       description: Resulting lane status after successful reviewer completion.

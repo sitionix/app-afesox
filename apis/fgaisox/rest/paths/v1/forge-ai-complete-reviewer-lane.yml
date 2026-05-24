@@ -11,12 +11,6 @@ post:
       schema:
         type: string
         format: uuid
-    - name: laneId
-      in: path
-      required: true
-      description: Reviewer lane identifier from lane state.
-      schema:
-        type: string
   responses:
     '200':
       description: Reviewer lane completion accepted.
