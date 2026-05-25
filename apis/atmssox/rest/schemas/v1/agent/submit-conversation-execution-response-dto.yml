@@ -1,0 +1,24 @@
+SubmitConversationExecutionResponseDTO:
+  title: SubmitConversationExecutionResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - conversationId
+    - inputMessageId
+    - executionStatus
+  properties:
+    conversationId:
+      type: string
+      format: uuid
+      description: Conversation identifier linked to this execution.
+    inputMessageId:
+      type: string
+      format: uuid
+      description: User message identifier persisted during submit transaction.
+    executionId:
+      type: string
+      format: uuid
+      nullable: true
+      description: Execution identifier when execution is created.
+    executionStatus:
+      $ref: './execution-status-dto.yml#/ExecutionStatusDTO'

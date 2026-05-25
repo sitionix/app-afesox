@@ -1,0 +1,13 @@
+SubmitConversationExecutionRequestDTO:
+  title: SubmitConversationExecutionRequestDTO
+  type: object
+  additionalProperties: false
+  required:
+    - message
+  properties:
+    message:
+      type: string
+      minLength: 1
+      pattern: ".*\\S.*"
+      description: User message to persist and execute.
+      example: Explain clean architecture in simple words.

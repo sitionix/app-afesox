@@ -7,3 +7,4 @@ ExecutionStatusDTO:
     - IN_PROGRESS
     - SUCCEEDED
     - FAILED
+    - DISPATCH_SKIPPED
