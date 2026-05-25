@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.26
+  version: 0.0.27
   contact:
     name: APP Sitionix
 servers:
@@ -55,6 +55,8 @@ paths:
     $ref: './paths/v1/agents-conversations.yml'
   /api/v1/conversations/{conversationId}:
     $ref: './paths/v1/agents-conversations-by-id.yml'
+  /api/v1/conversations/{conversationId}/executions:
+    $ref: './paths/v1/conversations-executions.yml'
 components:
   securitySchemes:
     bearerAuth:
@@ -93,6 +95,10 @@ components:
       $ref: './schemas/v1/agent/chat-agent-response-dto.yml#/ChatAgentResponseDTO'
     SubmitChatExecutionResponseDTO:
       $ref: './schemas/v1/agent/submit-chat-execution-response-dto.yml#/SubmitChatExecutionResponseDTO'
+    SubmitConversationExecutionRequestDTO:
+      $ref: './schemas/v1/agent/submit-conversation-execution-request-dto.yml#/SubmitConversationExecutionRequestDTO'
+    SubmitConversationExecutionResponseDTO:
+      $ref: './schemas/v1/agent/submit-conversation-execution-response-dto.yml#/SubmitConversationExecutionResponseDTO'
     ChatExecutionDTO:
       $ref: './schemas/v1/agent/chat-execution-dto.yml#/ChatExecutionDTO'
     ChatExecutionFailureDTO:

@@ -1,0 +1,42 @@
+post:
+  tags:
+    - AgentConversation
+  operationId: submitConversationExecution
+  summary: Submit conversation execution
+  description: >
+    Persists a user message for an existing conversation and submits execution.
+    Execution may be terminal immediately when dispatch is skipped.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: conversationId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/SubmitConversationExecutionRequestDTO'
+  responses:
+    '200':
+      description: Conversation execution submitted
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/SubmitConversationExecutionResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '403':
+      $ref: '../../openapi.yml#/components/responses/Forbidden'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
