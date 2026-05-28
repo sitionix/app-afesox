@@ -1,0 +1,30 @@
+AgentProjectFlowEdgeDTO:
+  title: AgentProjectFlowEdgeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - sourceNodeId
+    - targetNodeId
+    - edgeType
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Edge identifier.
+    sourceNodeId:
+      type: string
+      format: uuid
+      description: Source node identifier.
+    targetNodeId:
+      type: string
+      format: uuid
+      description: Target node identifier.
+    edgeType:
+      type: string
+      description: Edge type.
+    config:
+      type: object
+      nullable: true
+      additionalProperties: true
+      description: Edge configuration payload.

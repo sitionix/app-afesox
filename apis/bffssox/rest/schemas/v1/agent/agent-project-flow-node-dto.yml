@@ -1,0 +1,31 @@
+AgentProjectFlowNodeDTO:
+  title: AgentProjectFlowNodeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - nodeType
+    - position
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Node identifier.
+    nodeType:
+      type: string
+      description: Node type.
+    referenceId:
+      type: string
+      format: uuid
+      nullable: true
+      description: Optional referenced source identifier.
+    position:
+      $ref: ./agent-project-flow-node-position-dto.yml#/AgentProjectFlowNodePositionDTO
+    designStatus:
+      type: string
+      description: Optional design lifecycle status for the node.
+    config:
+      type: object
+      nullable: true
+      additionalProperties: true
+      description: Node configuration payload.

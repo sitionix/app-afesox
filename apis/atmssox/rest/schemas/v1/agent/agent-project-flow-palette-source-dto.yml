@@ -1,0 +1,19 @@
+AgentProjectFlowPaletteSourceDTO:
+  title: AgentProjectFlowPaletteSourceDTO
+  type: object
+  additionalProperties: false
+  required:
+    - sourceType
+    - sourceId
+    - sourceName
+  properties:
+    sourceType:
+      type: string
+      description: Source type (USER or AGENT).
+    sourceId:
+      type: string
+      format: uuid
+      description: Source identifier.
+    sourceName:
+      type: string
+      description: Source display name.

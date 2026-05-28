@@ -1,0 +1,12 @@
+AgentProjectFlowPaletteResponseDTO:
+  title: AgentProjectFlowPaletteResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - sources
+  properties:
+    sources:
+      type: array
+      description: Palette sources for flow design.
+      items:
+        $ref: ./agent-project-flow-palette-source-dto.yml#/AgentProjectFlowPaletteSourceDTO
