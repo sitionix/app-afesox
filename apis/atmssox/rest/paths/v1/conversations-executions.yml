@@ -4,8 +4,8 @@ post:
   operationId: submitConversationExecution
   summary: Submit conversation execution
   description: >
-    Persists a user message for an existing conversation and submits execution.
-    Execution may be terminal immediately when dispatch is skipped.
+    Persists a user message for an existing conversation.
+    Execution metadata is included only when runtime dispatch creates an execution.
   security:
     - bearerAuth: []
   parameters:

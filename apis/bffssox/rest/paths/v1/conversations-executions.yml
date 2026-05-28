@@ -4,8 +4,8 @@ post:
   operationId: submitConversationExecution
   summary: Submit conversation execution
   description: >
-    Submits conversation message execution by existing conversation id.
-    Returns persisted message reference and execution status for SPA reconciliation.
+    Persists a user message for an existing conversation.
+    Execution metadata is included only when runtime dispatch creates an execution.
   security:
     - bearerAuth: []
   parameters:

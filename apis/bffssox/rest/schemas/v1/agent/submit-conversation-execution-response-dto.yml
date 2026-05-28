@@ -5,7 +5,7 @@ SubmitConversationExecutionResponseDTO:
   required:
     - conversationId
     - inputMessageId
-    - executionStatus
+    - runtimeDispatched
   properties:
     conversationId:
       type: string
@@ -15,10 +15,14 @@ SubmitConversationExecutionResponseDTO:
       type: string
       format: uuid
       description: User message identifier persisted during submit transaction.
+    runtimeDispatched:
+      type: boolean
+      description: Indicates whether runtime execution dispatch was created.
     executionId:
       type: string
       format: uuid
       nullable: true
-      description: Execution identifier when dispatch created execution.
+      description: Execution identifier only when runtime dispatch created execution.
     executionStatus:
       $ref: './execution-status-dto.yml#/ExecutionStatusDTO'
+      description: Real execution lifecycle status only when execution exists.
