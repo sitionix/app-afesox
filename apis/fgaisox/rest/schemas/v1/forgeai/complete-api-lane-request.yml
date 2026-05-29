@@ -3,6 +3,9 @@ CompleteApiLaneRequest:
   required:
     - summary
     - contracts
+    - prUrl
+    - repo
+    - dependencies
     - notes
   properties:
     summary:
@@ -15,6 +18,21 @@ CompleteApiLaneRequest:
       description: List of generated or updated contract results. Each item groups operation metadata with the generated artifacts needed by downstream implementers.
       items:
         $ref: './api-lane-contract-result.yml#/ApiLaneContractResult'
+    prUrl:
+      type: string
+      minLength: 1
+      description: Pull request URL for the API contract unit where generation was executed.
+      example: https://github.com/sitionix/app-afesox/pull/143
+    repo:
+      type: string
+      minLength: 1
+      description: GitHub repository in owner/repo format where evidence workflow runs were executed.
+      example: sitionix/app-afesox
+    dependencies:
+      type: array
+      description: Generation evidence entries by scope. Extra entries are allowed, but required scopes must be present.
+      items:
+        $ref: './api-lane-dependency-evidence.yml#/ApiLaneDependencyEvidence'
     notes:
       type: array
       description: Additional API-lane level notes that apply to all contract results.
