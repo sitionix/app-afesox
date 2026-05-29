@@ -1,0 +1,16 @@
+ApiLaneEvidence:
+  type: object
+  required:
+    - prUrl
+    - dependencies
+  properties:
+    prUrl:
+      type: string
+      minLength: 1
+      description: Pull request URL for the API contract unit where generation was executed.
+      example: https://github.com/sitionix/app-afesox/pull/143
+    dependencies:
+      type: array
+      description: Generation evidence entries by scope. Extra entries are allowed, but required scopes must be present.
+      items:
+        $ref: './api-lane-dependency-evidence.yml#/ApiLaneDependencyEvidence'

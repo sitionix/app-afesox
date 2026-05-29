@@ -3,6 +3,7 @@ CompleteApiLaneRequest:
   required:
     - summary
     - contracts
+    - evidence
     - notes
   properties:
     summary:
@@ -15,6 +16,8 @@ CompleteApiLaneRequest:
       description: List of generated or updated contract results. Each item groups operation metadata with the generated artifacts needed by downstream implementers.
       items:
         $ref: './api-lane-contract-result.yml#/ApiLaneContractResult'
+    evidence:
+      $ref: './api-lane-evidence.yml#/ApiLaneEvidence'
     notes:
       type: array
       description: Additional API-lane level notes that apply to all contract results.

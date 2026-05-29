@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.16
+  version: 0.0.17
   contact:
     name: APP Sitionix
 servers:
@@ -79,6 +79,10 @@ components:
       $ref: './schemas/v1/forgeai/api-lane-contract-result.yml#/ApiLaneContractResult'
     ApiLaneGeneratedArtifact:
       $ref: './schemas/v1/forgeai/api-lane-generated-artifact.yml#/ApiLaneGeneratedArtifact'
+    ApiLaneEvidence:
+      $ref: './schemas/v1/forgeai/api-lane-evidence.yml#/ApiLaneEvidence'
+    ApiLaneDependencyEvidence:
+      $ref: './schemas/v1/forgeai/api-lane-dependency-evidence.yml#/ApiLaneDependencyEvidence'
     CompleteApiLaneResponse:
       $ref: './schemas/v1/forgeai/complete-api-lane-response.yml#/CompleteApiLaneResponse'
     CompleteImplementBeLaneRequestDTO:

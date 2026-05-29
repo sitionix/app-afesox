@@ -1,0 +1,17 @@
+ApiLaneDependencyEvidence:
+  type: object
+  required:
+    - scope
+    - runId
+  properties:
+    scope:
+      type: string
+      minLength: 1
+      description: Scope for which generation evidence is provided.
+      example: backendforfrontendservice-sox
+    runId:
+      type: integer
+      format: int64
+      minimum: 1
+      description: GitHub Actions workflow run identifier that generated required dependency artifacts.
+      example: 26088670378
