@@ -30,7 +30,7 @@ ApiLaneGeneratedArtifact:
     artifactId:
       type: string
       description: Maven artifactId. Empty or omitted for non-Maven artifacts.
-      example: app-afesox-atmssox-api-first-sitionix-135-unstable
+      example: app-afesox-atmssox-api-first
     packageName:
       type: string
       description: NPM package name or generated Java package name when useful. Empty or omitted if not applicable.
@@ -47,7 +47,7 @@ ApiLaneGeneratedArtifact:
       example: |
         <dependency>
           <groupId>com.afesox</groupId>
-          <artifactId>app-afesox-atmssox-api-first-sitionix-135-unstable</artifactId>
+          <artifactId>app-afesox-atmssox-api-first</artifactId>
           <version>0.0.26</version>
         </dependency>
     notes:
