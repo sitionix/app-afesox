@@ -3,6 +3,7 @@ ApiLaneGeneratedArtifact:
   required:
     - kind
     - role
+    - runId
     - version
     - dependency
   properties:
@@ -40,6 +41,12 @@ ApiLaneGeneratedArtifact:
       minLength: 1
       description: Generated artifact version.
       example: 0.0.26
+    runId:
+      type: integer
+      format: int64
+      minimum: 1
+      description: GitHub Actions workflow run identifier that generated this artifact.
+      example: 26088670378
     dependency:
       type: string
       minLength: 1

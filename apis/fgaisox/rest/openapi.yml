@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.16
+  version: 0.0.17
   contact:
     name: APP Sitionix
 servers:
