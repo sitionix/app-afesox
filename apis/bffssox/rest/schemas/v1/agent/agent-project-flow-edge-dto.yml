@@ -1,0 +1,25 @@
+AgentProjectFlowEdgeDTO:
+  title: AgentProjectFlowEdgeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - source
+    - target
+    - edgeType
+    - configJson
+  properties:
+    source:
+      type: string
+      format: uuid
+      description: Source node reference identifier.
+    target:
+      type: string
+      format: uuid
+      description: Target node reference identifier.
+    edgeType:
+      type: string
+      description: Flow edge type.
+    configJson:
+      type: object
+      additionalProperties: true
+      description: Raw edge configuration payload.

@@ -1,0 +1,28 @@
+AgentProjectFlowDTO:
+  title: AgentProjectFlowDTO
+  type: object
+  additionalProperties: false
+  required:
+    - projectId
+    - nodes
+    - edges
+  properties:
+    projectId:
+      type: string
+      format: uuid
+      description: Agent project identifier.
+    flowId:
+      type: string
+      format: uuid
+      nullable: true
+      description: Flow identifier or null when no persisted flow exists.
+    nodes:
+      type: array
+      description: Persisted flow nodes.
+      items:
+        $ref: ./agent-project-flow-node-dto.yml#/AgentProjectFlowNodeDTO
+    edges:
+      type: array
+      description: Persisted flow edges.
+      items:
+        $ref: ./agent-project-flow-edge-dto.yml#/AgentProjectFlowEdgeDTO

@@ -1,0 +1,33 @@
+AgentProjectFlowNodeDTO:
+  title: AgentProjectFlowNodeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - nodeType
+    - referenceId
+    - label
+    - designStatus
+    - configJson
+  properties:
+    nodeType:
+      type: string
+      description: Flow node type.
+    referenceId:
+      type: string
+      format: uuid
+      description: Node reference identifier.
+    label:
+      type: string
+      description: Node label.
+    position:
+      type: object
+      nullable: true
+      additionalProperties: true
+      description: Optional node position payload.
+    designStatus:
+      type: string
+      description: Node design status.
+    configJson:
+      type: object
+      additionalProperties: true
+      description: Raw node configuration payload.

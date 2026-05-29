@@ -1,0 +1,5 @@
+AgentProjectFlowPaletteItemDTO:
+  title: AgentProjectFlowPaletteItemDTO
+  type: object
+  additionalProperties: true
+  description: Flow palette item payload.
