@@ -5,7 +5,6 @@ CompleteApiLaneRequest:
     - contracts
     - prUrl
     - repo
-    - dependencies
     - notes
   properties:
     summary:
@@ -28,11 +27,6 @@ CompleteApiLaneRequest:
       minLength: 1
       description: GitHub repository in owner/repo format where evidence workflow runs were executed.
       example: sitionix/app-afesox
-    dependencies:
-      type: array
-      description: Generation evidence entries by scope. Extra entries are allowed, but required scopes must be present.
-      items:
-        $ref: './api-lane-dependency-evidence.yml#/ApiLaneDependencyEvidence'
     notes:
       type: array
       description: Additional API-lane level notes that apply to all contract results.
