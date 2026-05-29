@@ -3,8 +3,13 @@ AgentProjectFlowPaletteDTO:
   type: object
   additionalProperties: false
   required:
+    - projectId
     - items
   properties:
+    projectId:
+      type: string
+      format: uuid
+      description: Agent project identifier.
     items:
       type: array
       description: Palette items containing one USER source and project-attached visible AGENT sources.
