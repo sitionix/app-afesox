@@ -1,0 +1,18 @@
+AgentProjectFlowEdgeDTO:
+  title: AgentProjectFlowEdgeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - source
+    - target
+  properties:
+    id:
+      type: string
+      description: Flow edge identifier.
+    source:
+      type: string
+      description: Source node identifier.
+    target:
+      type: string
+      description: Target node identifier.

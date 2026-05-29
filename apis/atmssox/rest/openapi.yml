@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Automation Service Sitionix
   description: API specification for automation service
-  version: 0.0.28
+  version: 0.0.29
   contact:
     name: APP Sitionix
 servers:
@@ -29,6 +29,10 @@ paths:
     $ref: './paths/v1/agent-projects-conversations.yml'
   /api/v1/agent-projects/{projectId}/conversations/{conversationId}:
     $ref: './paths/v1/agent-projects-conversations-by-id.yml'
+  /api/v1/agent-projects/{projectId}/flow:
+    $ref: './paths/v1/agent-projects-flow.yml'
+  /api/v1/agent-projects/{projectId}/flow/palette:
+    $ref: './paths/v1/agent-projects-flow-palette.yml'
   /api/v1/agents/{agentId}:
     $ref: './paths/v1/agents-by-id.yml'
   /api/v1/agents/{agentId}/activate:
@@ -125,6 +129,18 @@ components:
       $ref: './schemas/v1/agent/project-conversation-project-dto.yml#/ProjectConversationProjectDTO'
     ProjectConversationDetailsDTO:
       $ref: './schemas/v1/agent/project-conversation-details-dto.yml#/ProjectConversationDetailsDTO'
+    AgentProjectFlowResponseDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-response-dto.yml#/AgentProjectFlowResponseDTO'
+    AgentProjectFlowNodeDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-node-dto.yml#/AgentProjectFlowNodeDTO'
+    AgentProjectFlowEdgeDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-edge-dto.yml#/AgentProjectFlowEdgeDTO'
+    AgentProjectFlowPaletteResponseDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-palette-response-dto.yml#/AgentProjectFlowPaletteResponseDTO'
+    AgentProjectFlowPaletteItemDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO'
+    AgentProjectFlowPaletteSourceTypeDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-palette-source-type-dto.yml#/AgentProjectFlowPaletteSourceTypeDTO'
     AgentRuleDTO:
       $ref: './schemas/v1/agent/agent-rule-dto.yml#/AgentRuleDTO'
     AgentRuleStatusDTO:

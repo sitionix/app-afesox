@@ -1,0 +1,21 @@
+AgentProjectFlowPaletteItemDTO:
+  title: AgentProjectFlowPaletteItemDTO
+  type: object
+  additionalProperties: false
+  required:
+    - sourceType
+    - referenceId
+    - label
+    - nodeType
+  properties:
+    sourceType:
+      $ref: ./agent-project-flow-palette-source-type-dto.yml#/AgentProjectFlowPaletteSourceTypeDTO
+    referenceId:
+      type: string
+      description: Palette source reference identifier.
+    label:
+      type: string
+      description: Label shown in the palette.
+    nodeType:
+      type: string
+      description: Node type used when creating a flow node from this item.

@@ -1,0 +1,6 @@
+AgentProjectFlowPaletteSourceTypeDTO:
+  title: AgentProjectFlowPaletteSourceTypeDTO
+  type: string
+  enum:
+    - USER
+    - AGENT

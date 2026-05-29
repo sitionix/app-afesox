@@ -1,0 +1,22 @@
+AgentProjectFlowNodeDTO:
+  title: AgentProjectFlowNodeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - label
+    - nodeType
+    - referenceId
+  properties:
+    id:
+      type: string
+      description: Flow node identifier.
+    label:
+      type: string
+      description: Human-readable node label.
+    nodeType:
+      type: string
+      description: Node type used by the flow renderer.
+    referenceId:
+      type: string
+      description: Source reference identifier used by this node.

@@ -1,0 +1,17 @@
+AgentProjectFlowPaletteResponseDTO:
+  title: AgentProjectFlowPaletteResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - projectId
+    - items
+  properties:
+    projectId:
+      type: string
+      format: uuid
+      description: Agent project identifier.
+    items:
+      type: array
+      description: Addable node sources for the project flow palette.
+      items:
+        $ref: ./agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO

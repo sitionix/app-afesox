@@ -1,0 +1,32 @@
+get:
+  tags:
+    - AgentProject
+  operationId: getAgentProjectFlowPalette
+  summary: Get automation project flow palette
+  description: >
+    Returns addable flow node sources for one automation project owned by the authenticated user.
+    The response proxies Automation Service palette data through BFF.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Agent project flow palette
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentProjectFlowPaletteProxyResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

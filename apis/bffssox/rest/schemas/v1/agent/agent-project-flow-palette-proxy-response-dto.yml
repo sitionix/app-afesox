@@ -1,0 +1,9 @@
+AgentProjectFlowPaletteProxyResponseDTO:
+  title: AgentProjectFlowPaletteProxyResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - palette
+  properties:
+    palette:
+      $ref: ./agent-project-flow-palette-dto.yml#/AgentProjectFlowPaletteDTO
