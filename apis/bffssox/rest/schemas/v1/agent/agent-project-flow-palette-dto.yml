@@ -1,0 +1,12 @@
+AgentProjectFlowPaletteDTO:
+  title: AgentProjectFlowPaletteDTO
+  type: object
+  additionalProperties: false
+  required:
+    - items
+  properties:
+    items:
+      type: array
+      description: Palette items containing one USER source and project-attached visible AGENT sources.
+      items:
+        $ref: ./agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO

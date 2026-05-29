@@ -3,16 +3,7 @@ AgentProjectFlowPaletteResponseDTO:
   type: object
   additionalProperties: false
   required:
-    - userSources
-    - agents
+    - palette
   properties:
-    userSources:
-      type: array
-      description: Palette USER source item collection.
-      items:
-        $ref: ./agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO
-    agents:
-      type: array
-      description: Palette AGENT items attached to the project.
-      items:
-        $ref: ./agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO
+    palette:
+      $ref: ./agent-project-flow-palette-dto.yml#/AgentProjectFlowPaletteDTO

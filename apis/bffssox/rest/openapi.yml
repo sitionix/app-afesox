@@ -122,6 +122,8 @@ components:
       $ref: './schemas/v1/agent/agent-project-dto.yml#/AgentProjectDTO'
     AgentProjectsPageResponseDTO:
       $ref: './schemas/v1/agent/agent-projects-page-response-dto.yml#/AgentProjectsPageResponseDTO'
+    AgentProjectFlowResponseDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-response-dto.yml#/AgentProjectFlowResponseDTO'
     AgentProjectFlowDTO:
       $ref: './schemas/v1/agent/agent-project-flow-dto.yml#/AgentProjectFlowDTO'
     AgentProjectFlowNodeDTO:
@@ -130,6 +132,8 @@ components:
       $ref: './schemas/v1/agent/agent-project-flow-edge-dto.yml#/AgentProjectFlowEdgeDTO'
     AgentProjectFlowPaletteItemDTO:
       $ref: './schemas/v1/agent/agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO'
+    AgentProjectFlowPaletteDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-palette-dto.yml#/AgentProjectFlowPaletteDTO'
     AgentProjectFlowPaletteResponseDTO:
       $ref: './schemas/v1/agent/agent-project-flow-palette-response-dto.yml#/AgentProjectFlowPaletteResponseDTO'
     ProjectAgentResponseDTO:

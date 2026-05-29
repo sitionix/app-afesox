@@ -1,0 +1,9 @@
+AgentProjectFlowResponseDTO:
+  title: AgentProjectFlowResponseDTO
+  type: object
+  additionalProperties: false
+  required:
+    - flow
+  properties:
+    flow:
+      $ref: ./agent-project-flow-dto.yml#/AgentProjectFlowDTO

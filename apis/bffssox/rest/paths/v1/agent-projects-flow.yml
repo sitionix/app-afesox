@@ -21,7 +21,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../../openapi.yml#/components/schemas/AgentProjectFlowDTO"
+            $ref: "../../openapi.yml#/components/schemas/AgentProjectFlowResponseDTO"
     "400":
       $ref: "../../openapi.yml#/components/responses/BadRequest"
     "401":
