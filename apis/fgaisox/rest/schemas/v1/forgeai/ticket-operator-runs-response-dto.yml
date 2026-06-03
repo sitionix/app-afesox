@@ -1,0 +1,7 @@
+TicketOperatorRunsResponseDTO:
+  type: object
+  properties:
+    items:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/TicketOperatorRunDTO'

@@ -1,0 +1,38 @@
+TicketOperatorRunDTO:
+  type: object
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+    ticketKey:
+      type: string
+    status:
+      type: string
+    watcherId:
+      type: string
+    lastHeartbeatAt:
+      type: string
+      format: date-time
+    cancelRequestedAt:
+      type: string
+      format: date-time
+    cancelledAt:
+      type: string
+      format: date-time
+    interruptReason:
+      type: string
+    activeExecutionIds:
+      type: array
+      items:
+        type: string
+        format: uuid
+    activeLaneIds:
+      type: array
+      items:
+        type: string
+        format: uuid
+    lastProgressEvent:
+      type: string
+    lastProgressAt:
+      type: string
+      format: date-time
