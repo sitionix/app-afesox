@@ -1,0 +1,29 @@
+post:
+  tags:
+    - ForgeAiOperatorTicket
+  summary: Interrupt one Forge AI ticket
+  operationId: interruptOperatorTicket
+  parameters:
+    - in: path
+      name: ticketId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: query
+      name: reason
+      required: false
+      schema:
+        type: string
+        default: OPERATOR_TICKET_INTERRUPT
+  responses:
+    '200':
+      description: Updated ticket operator run
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/TicketOperatorRunDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

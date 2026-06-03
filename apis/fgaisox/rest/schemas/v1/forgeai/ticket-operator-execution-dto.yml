@@ -1,0 +1,31 @@
+TicketOperatorExecutionDTO:
+  type: object
+  properties:
+    executionId:
+      type: string
+      format: uuid
+    laneId:
+      type: string
+      format: uuid
+    agentId:
+      type: string
+    scope:
+      type: string
+    status:
+      type: string
+    processPid:
+      type: integer
+      format: int64
+    codexSessionId:
+      type: string
+    codexThreadId:
+      type: string
+    activeTurnId:
+      type: string
+    activeStepId:
+      type: string
+    activeStepOrder:
+      type: integer
+      format: int32
+    activeStepTitle:
+      type: string

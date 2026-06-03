@@ -1,0 +1,23 @@
+get:
+  tags:
+    - ForgeAiOperatorExecution
+  summary: Get one Forge AI execution
+  operationId: getOperatorExecution
+  parameters:
+    - in: path
+      name: executionId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Execution
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/OperatorExecutionDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

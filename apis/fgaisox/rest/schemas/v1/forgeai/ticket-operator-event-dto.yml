@@ -1,0 +1,42 @@
+TicketOperatorEventDTO:
+  type: object
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+    laneId:
+      type: string
+      format: uuid
+    executionId:
+      type: string
+      format: uuid
+    agentId:
+      type: string
+    scope:
+      type: string
+    stepId:
+      type: string
+    stepTitle:
+      type: string
+    stepOrder:
+      type: integer
+      format: int32
+    totalSteps:
+      type: integer
+      format: int32
+    codexProcessPid:
+      type: integer
+      format: int64
+    codexSessionId:
+      type: string
+    codexThreadId:
+      type: string
+    activeTurnId:
+      type: string
+    eventType:
+      type: string
+    message:
+      type: string
+    timestamp:
+      type: string
+      format: date-time

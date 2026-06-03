@@ -1,0 +1,29 @@
+get:
+  tags:
+    - ForgeAiOperatorTicket
+  summary: Get one Forge AI operator ticket snapshot
+  operationId: getOperatorTicket
+  parameters:
+    - in: path
+      name: ticketId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: query
+      name: verbosity
+      required: false
+      schema:
+        type: string
+        default: minimal
+  responses:
+    '200':
+      description: Ticket operator snapshot
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/TicketOperatorSnapshotResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

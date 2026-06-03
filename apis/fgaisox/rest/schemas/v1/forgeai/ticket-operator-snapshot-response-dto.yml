@@ -1,0 +1,15 @@
+TicketOperatorSnapshotResponseDTO:
+  type: object
+  properties:
+    run:
+      $ref: '../../../openapi.yml#/components/schemas/TicketOperatorRunDTO'
+    laneSummary:
+      $ref: '../../../openapi.yml#/components/schemas/TicketOperatorLaneSummaryDTO'
+    activeExecutions:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/TicketOperatorExecutionDTO'
+    recentEvents:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/TicketOperatorEventDTO'

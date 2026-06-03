@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.17
+  version: 0.0.18
   contact:
     name: APP Sitionix
 servers:
@@ -10,9 +10,29 @@ servers:
     url: 'http://localhost:9099/fgaisox'
 tags:
   - name: ForgeAI
+  - name: ForgeAiOperatorExecution
+  - name: ForgeAiOperatorTicket
 paths:
   /api/v1/forge-ai/start:
     $ref: './paths/v1/forge-ai-start.yml'
+  /api/v1/forge-ai/operator/executions:
+    $ref: './paths/v1/forge-ai-operator-executions.yml'
+  /api/v1/forge-ai/operator/executions/active:
+    $ref: './paths/v1/forge-ai-operator-executions-active.yml'
+  /api/v1/forge-ai/operator/executions/{executionId}:
+    $ref: './paths/v1/forge-ai-operator-executions-by-id.yml'
+  /api/v1/forge-ai/operator/executions/{executionId}/interrupt:
+    $ref: './paths/v1/forge-ai-operator-executions-interrupt.yml'
+  /api/v1/forge-ai/operator/tickets/active:
+    $ref: './paths/v1/forge-ai-operator-tickets-active.yml'
+  /api/v1/forge-ai/operator/tickets/{ticketId}:
+    $ref: './paths/v1/forge-ai-operator-tickets-by-id.yml'
+  /api/v1/forge-ai/operator/tickets/{ticketId}/stream:
+    $ref: './paths/v1/forge-ai-operator-tickets-stream.yml'
+  /api/v1/forge-ai/operator/tickets/{ticketId}/watchers/{watcherId}/heartbeat:
+    $ref: './paths/v1/forge-ai-operator-tickets-watchers-heartbeat.yml'
+  /api/v1/forge-ai/operator/tickets/{ticketId}/interrupt:
+    $ref: './paths/v1/forge-ai-operator-tickets-interrupt.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/analyzer/complete:
     $ref: './paths/v1/forge-ai-complete-analyzer-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/architect/complete:
@@ -45,6 +65,22 @@ components:
       $ref: './schemas/v1/forgeai/start-forge-request-dto.yml#/StartForgeRequestDTO'
     StartForgeResponseDTO:
       $ref: './schemas/v1/forgeai/start-forge-response-dto.yml#/StartForgeResponseDTO'
+    OperatorExecutionDTO:
+      $ref: './schemas/v1/forgeai/operator-execution-dto.yml#/OperatorExecutionDTO'
+    OperatorExecutionsResponseDTO:
+      $ref: './schemas/v1/forgeai/operator-executions-response-dto.yml#/OperatorExecutionsResponseDTO'
+    TicketOperatorRunDTO:
+      $ref: './schemas/v1/forgeai/ticket-operator-run-dto.yml#/TicketOperatorRunDTO'
+    TicketOperatorRunsResponseDTO:
+      $ref: './schemas/v1/forgeai/ticket-operator-runs-response-dto.yml#/TicketOperatorRunsResponseDTO'
+    TicketOperatorEventDTO:
+      $ref: './schemas/v1/forgeai/ticket-operator-event-dto.yml#/TicketOperatorEventDTO'
+    TicketOperatorExecutionDTO:
+      $ref: './schemas/v1/forgeai/ticket-operator-execution-dto.yml#/TicketOperatorExecutionDTO'
+    TicketOperatorLaneSummaryDTO:
+      $ref: './schemas/v1/forgeai/ticket-operator-lane-summary-dto.yml#/TicketOperatorLaneSummaryDTO'
+    TicketOperatorSnapshotResponseDTO:
+      $ref: './schemas/v1/forgeai/ticket-operator-snapshot-response-dto.yml#/TicketOperatorSnapshotResponseDTO'
     CompleteAnalyzerLaneRequestDTO:
       $ref: './schemas/v1/forgeai/complete-analyzer-lane-request-dto.yml#/CompleteAnalyzerLaneRequestDTO'
     AnalyzerArchitectHandoffDTO:

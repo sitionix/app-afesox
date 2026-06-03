@@ -1,0 +1,14 @@
+get:
+  tags:
+    - ForgeAiOperatorTicket
+  summary: Get active Forge AI operator tickets
+  operationId: getActiveOperatorTickets
+  responses:
+    '200':
+      description: Active ticket operator runs
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/TicketOperatorRunsResponseDTO'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
