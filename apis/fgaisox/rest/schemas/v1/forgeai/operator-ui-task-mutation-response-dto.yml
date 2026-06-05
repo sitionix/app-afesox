@@ -1,0 +1,16 @@
+OperatorUiTaskMutationResponseDTO:
+  type: object
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+    ticketKey:
+      type: string
+    status:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time

@@ -1,0 +1,7 @@
+OperatorUiServiceCatalogResponseDTO:
+  type: object
+  properties:
+    services:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/OperatorUiServiceOptionDTO'

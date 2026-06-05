@@ -1,0 +1,26 @@
+OperatorUiTicketGraphResponseDTO:
+  type: object
+  properties:
+    ticketId:
+      type: string
+      format: uuid
+    ticketKey:
+      type: string
+    status:
+      type: string
+    operatorStatus:
+      type: string
+    taskDescription:
+      type: string
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+    laneCounts:
+      $ref: '../../../openapi.yml#/components/schemas/OperatorUiLaneCountsDTO'
+    lanes:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/OperatorUiLaneNodeDTO'

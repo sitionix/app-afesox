@@ -1,0 +1,25 @@
+OperatorUiLaneExecutionDTO:
+  type: object
+  properties:
+    executionId:
+      type: string
+      format: uuid
+    status:
+      type: string
+    currentStepId:
+      type: string
+    currentStepOrder:
+      type: integer
+      format: int32
+    currentStepTitle:
+      type: string
+    lastProgressEvent:
+      type: string
+    lastProgressAt:
+      type: string
+      format: date-time
+    processPid:
+      type: integer
+      format: int64
+    failureMessage:
+      type: string

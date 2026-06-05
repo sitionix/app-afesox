@@ -1,0 +1,15 @@
+OperatorUiServiceOptionDTO:
+  type: object
+  properties:
+    id:
+      type: string
+    label:
+      type: string
+    path:
+      type: string
+    group:
+      type: string
+    tags:
+      type: array
+      items:
+        type: string
