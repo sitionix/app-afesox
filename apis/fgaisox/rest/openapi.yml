@@ -36,6 +36,8 @@ paths:
     $ref: './paths/v1/forge-ai-operator-tickets-interrupt.yml'
   /api/v1/forge-ai/operator/ui/tickets:
     $ref: './paths/v1/forge-ai-operator-ui-tickets.yml'
+  /api/v1/forge-ai/operator/ui/tickets/{ticketId}:
+    $ref: './paths/v1/forge-ai-operator-ui-tickets-by-id.yml'
   /api/v1/forge-ai/operator/ui/services:
     $ref: './paths/v1/forge-ai-operator-ui-services.yml'
   /api/v1/forge-ai/operator/ui/tickets/{ticketId}/execute:
