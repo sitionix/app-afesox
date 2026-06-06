@@ -1,0 +1,49 @@
+get:
+  tags:
+    - ForgeAiOperatorUi
+  summary: List Forge AI operator UI tickets
+  operationId: getOperatorUiTickets
+  parameters:
+    - in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 200
+  responses:
+    '200':
+      description: Operator UI ticket list
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/OperatorUiTicketListResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
+post:
+  tags:
+    - ForgeAiOperatorUi
+  summary: Create Forge AI operator UI ticket
+  operationId: createOperatorUiTicket
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../openapi.yml#/components/schemas/OperatorUiCreateTaskRequestDTO'
+  responses:
+    '201':
+      description: Operator UI ticket created
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/OperatorUiTaskMutationResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

@@ -1,0 +1,27 @@
+post:
+  tags:
+    - ForgeAiOperatorUi
+  summary: Mark Forge AI operator UI ticket ready to start
+  operationId: executeOperatorUiTicket
+  parameters:
+    - in: path
+      name: ticketId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Operator UI ticket marked ready to start
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/OperatorUiTaskMutationResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

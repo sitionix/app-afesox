@@ -1,0 +1,23 @@
+delete:
+  tags:
+    - ForgeAiOperatorUi
+  summary: Delete Forge AI operator UI ticket
+  operationId: deleteOperatorUiTicket
+  parameters:
+    - in: path
+      name: ticketId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '204':
+      description: Operator UI ticket deleted
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '409':
+      $ref: '../../openapi.yml#/components/responses/Conflict'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

@@ -1,0 +1,18 @@
+OperatorUiLaneCountsDTO:
+  type: object
+  properties:
+    notStarted:
+      type: integer
+      format: int64
+    ready:
+      type: integer
+      format: int64
+    inProgress:
+      type: integer
+      format: int64
+    completed:
+      type: integer
+      format: int64
+    notNeeded:
+      type: integer
+      format: int64

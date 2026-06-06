@@ -1,0 +1,22 @@
+OperatorUiLaneStepDTO:
+  type: object
+  properties:
+    stepId:
+      type: string
+    stepOrder:
+      type: integer
+      format: int32
+    stepTitle:
+      type: string
+    status:
+      type: string
+    startedAt:
+      type: string
+      format: date-time
+    completedAt:
+      type: string
+      format: date-time
+    resultJson:
+      type: string
+    evidenceJson:
+      type: string

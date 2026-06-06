@@ -1,0 +1,26 @@
+OperatorUiLaneNodeDTO:
+  type: object
+  properties:
+    laneId:
+      type: string
+      format: uuid
+    agent:
+      type: string
+    scope:
+      type: string
+    serviceId:
+      type: string
+    status:
+      type: string
+    attempt:
+      type: integer
+      format: int32
+    inputTaskCount:
+      type: integer
+      format: int32
+    dependencies:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/OperatorUiLaneDependencyDTO'
+    execution:
+      $ref: '../../../openapi.yml#/components/schemas/OperatorUiLaneExecutionDTO'

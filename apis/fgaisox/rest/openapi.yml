@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Forge AI Service Sitionix
   description: API specification for Forge AI service
-  version: 0.0.18
+  version: 0.0.19
   contact:
     name: APP Sitionix
 servers:
@@ -12,6 +12,7 @@ tags:
   - name: ForgeAI
   - name: ForgeAiOperatorExecution
   - name: ForgeAiOperatorTicket
+  - name: ForgeAiOperatorUi
 paths:
   /api/v1/forge-ai/start:
     $ref: './paths/v1/forge-ai-start.yml'
@@ -33,6 +34,18 @@ paths:
     $ref: './paths/v1/forge-ai-operator-tickets-watchers-heartbeat.yml'
   /api/v1/forge-ai/operator/tickets/{ticketId}/interrupt:
     $ref: './paths/v1/forge-ai-operator-tickets-interrupt.yml'
+  /api/v1/forge-ai/operator/ui/tickets:
+    $ref: './paths/v1/forge-ai-operator-ui-tickets.yml'
+  /api/v1/forge-ai/operator/ui/tickets/{ticketId}:
+    $ref: './paths/v1/forge-ai-operator-ui-tickets-by-id.yml'
+  /api/v1/forge-ai/operator/ui/services:
+    $ref: './paths/v1/forge-ai-operator-ui-services.yml'
+  /api/v1/forge-ai/operator/ui/tickets/{ticketId}/execute:
+    $ref: './paths/v1/forge-ai-operator-ui-tickets-execute.yml'
+  /api/v1/forge-ai/operator/ui/tickets/{ticketId}/graph:
+    $ref: './paths/v1/forge-ai-operator-ui-tickets-graph.yml'
+  /api/v1/forge-ai/operator/ui/tickets/{ticketId}/lanes/{laneId}:
+    $ref: './paths/v1/forge-ai-operator-ui-lanes-by-id.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/analyzer/complete:
     $ref: './paths/v1/forge-ai-complete-analyzer-lane.yml'
   /api/v1/forge-ai/tickets/{ticketId}/lanes/{laneId}/architect/complete:
@@ -81,6 +94,36 @@ components:
       $ref: './schemas/v1/forgeai/ticket-operator-lane-summary-dto.yml#/TicketOperatorLaneSummaryDTO'
     TicketOperatorSnapshotResponseDTO:
       $ref: './schemas/v1/forgeai/ticket-operator-snapshot-response-dto.yml#/TicketOperatorSnapshotResponseDTO'
+    OperatorUiTicketListResponseDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-ticket-list-response-dto.yml#/OperatorUiTicketListResponseDTO'
+    OperatorUiTicketSummaryDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-ticket-summary-dto.yml#/OperatorUiTicketSummaryDTO'
+    OperatorUiTicketGraphResponseDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-ticket-graph-response-dto.yml#/OperatorUiTicketGraphResponseDTO'
+    OperatorUiLaneCountsDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-counts-dto.yml#/OperatorUiLaneCountsDTO'
+    OperatorUiLaneNodeDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-node-dto.yml#/OperatorUiLaneNodeDTO'
+    OperatorUiLaneDependencyDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-dependency-dto.yml#/OperatorUiLaneDependencyDTO'
+    OperatorUiLaneExecutionDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-execution-dto.yml#/OperatorUiLaneExecutionDTO'
+    OperatorUiLaneDetailResponseDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-detail-response-dto.yml#/OperatorUiLaneDetailResponseDTO'
+    OperatorUiLaneInputTaskDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-input-task-dto.yml#/OperatorUiLaneInputTaskDTO'
+    OperatorUiLaneStepDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-step-dto.yml#/OperatorUiLaneStepDTO'
+    OperatorUiLaneEventDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-lane-event-dto.yml#/OperatorUiLaneEventDTO'
+    OperatorUiServiceCatalogResponseDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-service-catalog-response-dto.yml#/OperatorUiServiceCatalogResponseDTO'
+    OperatorUiServiceOptionDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-service-option-dto.yml#/OperatorUiServiceOptionDTO'
+    OperatorUiCreateTaskRequestDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-create-task-request-dto.yml#/OperatorUiCreateTaskRequestDTO'
+    OperatorUiTaskMutationResponseDTO:
+      $ref: './schemas/v1/forgeai/operator-ui-task-mutation-response-dto.yml#/OperatorUiTaskMutationResponseDTO'
     CompleteAnalyzerLaneRequestDTO:
       $ref: './schemas/v1/forgeai/complete-analyzer-lane-request-dto.yml#/CompleteAnalyzerLaneRequestDTO'
     AnalyzerArchitectHandoffDTO:

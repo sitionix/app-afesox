@@ -1,0 +1,7 @@
+OperatorUiTicketListResponseDTO:
+  type: object
+  properties:
+    tickets:
+      type: array
+      items:
+        $ref: '../../../openapi.yml#/components/schemas/OperatorUiTicketSummaryDTO'

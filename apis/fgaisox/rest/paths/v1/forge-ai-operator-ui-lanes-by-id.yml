@@ -1,0 +1,31 @@
+get:
+  tags:
+    - ForgeAiOperatorUi
+  summary: Get Forge AI operator UI lane detail
+  operationId: getOperatorUiLane
+  parameters:
+    - in: path
+      name: ticketId
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - in: path
+      name: laneId
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Operator UI lane detail
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/OperatorUiLaneDetailResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'

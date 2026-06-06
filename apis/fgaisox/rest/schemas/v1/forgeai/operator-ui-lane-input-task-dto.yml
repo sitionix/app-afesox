@@ -1,0 +1,22 @@
+OperatorUiLaneInputTaskDTO:
+  type: object
+  properties:
+    taskId:
+      type: string
+      format: uuid
+    sourceLaneId:
+      type: string
+      format: uuid
+    sourceAgent:
+      type: string
+    sourceScope:
+      type: string
+    status:
+      type: string
+    payloadType:
+      type: string
+    payloadJson:
+      type: string
+    createdAt:
+      type: string
+      format: date-time

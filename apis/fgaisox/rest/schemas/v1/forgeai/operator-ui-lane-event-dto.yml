@@ -1,0 +1,19 @@
+OperatorUiLaneEventDTO:
+  type: object
+  properties:
+    timestamp:
+      type: string
+      format: date-time
+    eventType:
+      type: string
+    message:
+      type: string
+    stepId:
+      type: string
+    stepOrder:
+      type: integer
+      format: int32
+    turnId:
+      type: string
+    role:
+      type: string
