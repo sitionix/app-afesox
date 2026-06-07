@@ -1,0 +1,25 @@
+AgentProjectFlowPaletteItemDTO:
+  title: AgentProjectFlowPaletteItemDTO
+  type: object
+  additionalProperties: false
+  required:
+    - sourceType
+    - referenceId
+    - label
+    - nodeType
+  properties:
+    sourceType:
+      type: string
+      description: Palette item source type.
+      enum:
+        - USER
+        - AGENT
+    referenceId:
+      type: string
+      description: Palette source reference identifier.
+    label:
+      type: string
+      description: Label shown in the palette.
+    nodeType:
+      type: string
+      description: Node type used when representing this palette item.

@@ -1,0 +1,31 @@
+AgentProjectFlowEdgeDTO:
+  title: AgentProjectFlowEdgeDTO
+  type: object
+  additionalProperties: false
+  required:
+    - id
+    - sourceNodeId
+    - targetNodeId
+    - edgeType
+    - sourceStatus
+    - config
+  properties:
+    id:
+      type: string
+      description: Flow edge identifier.
+    sourceNodeId:
+      type: string
+      description: Source node identifier.
+    targetNodeId:
+      type: string
+      description: Target node identifier.
+    edgeType:
+      type: string
+      description: Saved edge type metadata.
+    sourceStatus:
+      type: string
+      description: Saved source status metadata.
+    config:
+      type: object
+      additionalProperties: true
+      description: Opaque read-only edge configuration metadata.

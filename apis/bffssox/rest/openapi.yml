@@ -2,7 +2,7 @@ openapi: "3.0.0"
 info:
   title: API Backend for Frontend Sitionix
   description: API specification for the BFF authentication facade
-  version: 0.0.42
+  version: 0.0.43
   contact:
     name: APP Sitionix
 servers:
@@ -36,6 +36,10 @@ paths:
     $ref: './paths/v1/agent-projects.yml'
   /api/v1/agent-projects/{projectId}:
     $ref: './paths/v1/agent-projects-by-id.yml'
+  /api/v1/agent-projects/{projectId}/flow:
+    $ref: './paths/v1/agent-projects-flow.yml'
+  /api/v1/agent-projects/{projectId}/flow/palette:
+    $ref: './paths/v1/agent-projects-flow-palette.yml'
   /api/v1/agent-projects/{projectId}/agents:
     $ref: './paths/v1/agent-projects-agents.yml'
   /api/v1/agent-projects/{projectId}/agents/{agentId}:
@@ -116,6 +120,18 @@ components:
       $ref: './schemas/v1/agent/agent-dto.yml#/AgentDTO'
     AgentProjectDTO:
       $ref: './schemas/v1/agent/agent-project-dto.yml#/AgentProjectDTO'
+    AgentProjectFlowResponseDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-response-dto.yml#/AgentProjectFlowResponseDTO'
+    AgentProjectFlowNodeDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-node-dto.yml#/AgentProjectFlowNodeDTO'
+    AgentProjectFlowNodePositionDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-node-position-dto.yml#/AgentProjectFlowNodePositionDTO'
+    AgentProjectFlowEdgeDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-edge-dto.yml#/AgentProjectFlowEdgeDTO'
+    AgentProjectFlowPaletteResponseDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-palette-response-dto.yml#/AgentProjectFlowPaletteResponseDTO'
+    AgentProjectFlowPaletteItemDTO:
+      $ref: './schemas/v1/agent/agent-project-flow-palette-item-dto.yml#/AgentProjectFlowPaletteItemDTO'
     AgentProjectsPageResponseDTO:
       $ref: './schemas/v1/agent/agent-projects-page-response-dto.yml#/AgentProjectsPageResponseDTO'
     ProjectAgentResponseDTO:

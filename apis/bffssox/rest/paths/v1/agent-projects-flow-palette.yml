@@ -1,0 +1,33 @@
+get:
+  tags:
+    - AgentProject
+  operationId: getAgentProjectFlowPalette
+  summary: Get agent project flow palette
+  description: >
+    Returns agent project flow palette data for one accessible automation project.
+    The response does not include saved graph nodes or edges.
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: projectId
+      required: true
+      description: Agent project identifier.
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Agent project flow palette data
+      content:
+        application/json:
+          schema:
+            $ref: '../../openapi.yml#/components/schemas/AgentProjectFlowPaletteResponseDTO'
+    '400':
+      $ref: '../../openapi.yml#/components/responses/BadRequest'
+    '401':
+      $ref: '../../openapi.yml#/components/responses/Unauthorized'
+    '404':
+      $ref: '../../openapi.yml#/components/responses/NotFound'
+    '500':
+      $ref: '../../openapi.yml#/components/responses/InternalServerError'
