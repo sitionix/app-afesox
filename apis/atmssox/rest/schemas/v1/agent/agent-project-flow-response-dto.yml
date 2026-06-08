@@ -3,14 +3,14 @@ AgentProjectFlowResponseDTO:
   type: object
   additionalProperties: false
   required:
-    - projectId
     - nodes
     - edges
   properties:
-    projectId:
+    flowId:
       type: string
       format: uuid
-      description: Agent project identifier.
+      nullable: true
+      description: Saved flow identifier, null when no flow has been saved.
     nodes:
       type: array
       description: Persisted flow design nodes.

@@ -6,7 +6,9 @@ AgentProjectFlowPaletteItemDTO:
     - sourceType
     - referenceId
     - label
+    - description
     - nodeType
+    - sourceStatus
   properties:
     sourceType:
       type: string
@@ -20,6 +22,12 @@ AgentProjectFlowPaletteItemDTO:
     label:
       type: string
       description: Label shown in the palette.
+    description:
+      type: string
+      description: Palette item description.
     nodeType:
       type: string
       description: Node type used when representing this palette item.
+    sourceStatus:
+      type: string
+      description: Source status shown for this palette item.

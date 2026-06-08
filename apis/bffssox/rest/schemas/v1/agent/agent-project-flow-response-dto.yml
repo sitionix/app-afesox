@@ -4,6 +4,7 @@ AgentProjectFlowResponseDTO:
   additionalProperties: false
   required:
     - projectId
+    - flowId
     - nodes
     - edges
   properties:
@@ -11,6 +12,11 @@ AgentProjectFlowResponseDTO:
       type: string
       format: uuid
       description: Agent project identifier.
+    flowId:
+      type: string
+      format: uuid
+      nullable: true
+      description: Saved flow identifier when present.
     nodes:
       type: array
       description: Saved flow nodes.

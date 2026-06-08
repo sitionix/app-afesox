@@ -3,15 +3,10 @@ AgentProjectFlowPaletteResponseDTO:
   type: object
   additionalProperties: false
   required:
-    - projectId
-    - sources
+    - items
   properties:
-    projectId:
-      type: string
-      format: uuid
-      description: Agent project identifier.
-    sources:
+    items:
       type: array
-      description: Available flow source entries containing the user source and visible attached project agent sources.
+      description: Available flow palette items containing the user item and visible attached project agent items.
       items:
         $ref: '../../../openapi.yml#/components/schemas/AgentProjectFlowPaletteItemDTO'
