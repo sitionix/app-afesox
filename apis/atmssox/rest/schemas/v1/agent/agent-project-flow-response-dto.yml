@@ -3,9 +3,14 @@ AgentProjectFlowResponseDTO:
   type: object
   additionalProperties: false
   required:
+    - projectId
     - nodes
     - edges
   properties:
+    projectId:
+      type: string
+      format: uuid
+      description: Agent project identifier.
     flowId:
       type: string
       format: uuid

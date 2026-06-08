@@ -6,9 +6,7 @@ AgentProjectFlowPaletteItemDTO:
     - sourceType
     - referenceId
     - label
-    - description
     - nodeType
-    - sourceStatus
   properties:
     sourceType:
       type: string

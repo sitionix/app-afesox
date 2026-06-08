@@ -3,8 +3,13 @@ AgentProjectFlowPaletteResponseDTO:
   type: object
   additionalProperties: false
   required:
+    - projectId
     - items
   properties:
+    projectId:
+      type: string
+      format: uuid
+      description: Agent project identifier.
     items:
       type: array
       description: Available flow palette items containing the user item and visible attached project agent items.
